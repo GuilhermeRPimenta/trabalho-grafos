@@ -20,6 +20,15 @@ class GrafoMatriz: public Grafo {
         void carrega_grafo() {
 
         }
+
+        void imprimir_grafo() {
+            for (int i = 0; i < 5; i++) {
+                for (int j = 0; j < 5; j++) {
+                    cout << matriz[i][j] << " ";
+                }
+                cout << endl;
+            }
+        }
     private:
         void iniciar_matriz(int n_vertices, bool direcionado) {
             matriz = new int*[n_vertices];
