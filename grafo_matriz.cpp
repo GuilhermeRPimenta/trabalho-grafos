@@ -16,6 +16,15 @@ GrafoMatriz::~GrafoMatriz() {
     delete[] vertices;
 }
 
+void GrafoMatriz::imprimir_grafo() {
+            for (int i = 0; i < n_vertices; i++) {
+                for (int j = 0; j < n_vertices; j++) {
+                    cout << get_aresta(i,j) << " ";
+                }
+                cout << endl;
+            }
+        }
+
 void GrafoMatriz::carrega_grafo(std::string *arquivo) {
     ifstream arquivo_grafo(*arquivo);
     if (arquivo_grafo.is_open()) {
@@ -35,6 +44,49 @@ void GrafoMatriz::carrega_grafo(std::string *arquivo) {
         }
         cout << endl;
     }
+}
+
+int GrafoMatriz::get_aresta(int i, int j) {
+    if (grafo_direcionado) {
+        return matriz[i][j];
+    } else {
+        if (i < j) {
+            return matriz_sem_direcao[(i * (i-1))/2 + j];
+        } else {
+            return matriz_sem_direcao[(j * (j-1))/2 + i];
+        }
+    }
+}
+
+void GrafoMatriz::set_aresta(int i, int j, int val) {
+    if (grafo_direcionado) {
+        matriz[i][j] = val;
+    } else {
+        if (i < j) {
+            matriz_sem_direcao[(i * (i-1))/2 + j] = val;
+        } else {
+            matriz_sem_direcao[(j * (j-1))/2 + i] = val;
+        }
+    }
+}
+void GrafoMatriz::novo_grafo(int n_vertices, bool direcionado) {
+    matriz = new int*[n_vertices];
+    if (direcionado) {
+        grafo_direcionado = true;
+        for (int i = 0; i < n_vertices; i++) {
+            matriz[i] = new int[n_vertices];
+            for (int j = 0; j < n_vertices; j++) {
+                matriz[i][j] = 0;
+            }
+        }
+    } else {
+        grafo_direcionado = false;
+        for (int i = 0; i < n_vertices; i++) {
+            matriz_sem_direcao = new int[(n_vertices * (n_vertices-1))/2];
+        }
+    }
+
+    vertices = new int[n_vertices];
 }
 
 bool GrafoMatriz::eh_bipartido() {
