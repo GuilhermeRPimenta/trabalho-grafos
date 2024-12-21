@@ -15,6 +15,13 @@ class GrafoMatriz: public Grafo {
             */
            iniciar_matriz(5, true);
         }
+        ~GrafoMatriz() {
+            for (int i = 0; i < 5; i++) {
+                delete[] matriz[i];
+            }
+            delete[] matriz;
+            delete[] vertices;
+        }
 
         
         void carrega_grafo() {
