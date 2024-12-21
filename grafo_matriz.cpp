@@ -19,6 +19,10 @@ GrafoMatriz::~GrafoMatriz() {
 }
 
 void GrafoMatriz::imprimir_grafo() {
+    /*
+    Imprime grafo em formato de matriz de adjacência
+    não importa se direcionado ou não mostrará a matriz inteira
+    */
     for (int i = 0; i < n_vertices; i++) {
         for (int j = 0; j < n_vertices; j++) {
             cout << get_aresta(i,j) << " ";
@@ -51,13 +55,20 @@ void GrafoMatriz::novo_grafo(int n, bool direcionado) {
 void GrafoMatriz::carrega_grafo(const std::string &arquivo) {
     ifstream arquivo_grafo(arquivo);
     if (arquivo_grafo.is_open()) {
+        // Lendo o cabeçalho do arquivo
         arquivo_grafo >> n_vertices >> grafo_direcionado >> vertices_ponderado >> arestas_ponderado;
+        
+        // Define dados básicos do grafo
         novo_grafo(n_vertices, grafo_direcionado);
+
+        // Lê peso dos vértices apenas se for ponderado
         if (vertices_ponderado) {
             for (int i = 0; i < n_vertices; i++) {
                 arquivo_grafo >> vertices[i];
             }
         }
+
+        // Finalmente coloca os dados na matriz
         int v1, v2, peso;
         while (arquivo_grafo >> v1 && arquivo_grafo >> v2) {
             if (arestas_ponderado) {
@@ -72,6 +83,7 @@ void GrafoMatriz::carrega_grafo(const std::string &arquivo) {
 }
 
 int GrafoMatriz::get_aresta(int i, int j) {
+    // Suporte a grafos direcionados e não direcionados
     if (grafo_direcionado) {
         return matriz[i][j];
     } else {
@@ -84,6 +96,7 @@ int GrafoMatriz::get_aresta(int i, int j) {
 }
 
 void GrafoMatriz::set_aresta(int i, int j, int val) {
+    //Supote a grafos direcionados e não direcionados
     if (grafo_direcionado) {
         matriz[i][j] = val;
     } else {
