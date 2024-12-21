@@ -37,7 +37,7 @@ class GrafoMatriz: public Grafo {
             }
         }
     private:
-        void iniciar_matriz(int n_vertices, bool direcionado) {
+        void novo_grafo(int n_vertices, bool direcionado) {
             matriz = new int*[n_vertices];
             for (int i = 0; i < n_vertices; i++) {
                 matriz[i] = new int[n_vertices];
