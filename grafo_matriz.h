@@ -13,7 +13,7 @@ class GrafoMatriz: public Grafo {
             /*
             Apenas para motivos de teste:
             */
-           iniciar_matriz(5, true);
+           novo_grafo(5, true);
         }
         ~GrafoMatriz() {
             for (int i = 0; i < 5; i++) {
