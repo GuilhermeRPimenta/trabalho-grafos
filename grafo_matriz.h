@@ -19,46 +19,19 @@ class GrafoMatriz: public Grafo {
 
         GrafoMatriz();
         ~GrafoMatriz();
-        void carrega_grafo(std::string *arquivo);
-        bool eh_bipartido();
-        int get_grau(int vertice);
-        int get_ordem();
-        bool eh_direcionado();
-        bool vertice_ponderado();
-        bool aresta_ponderada();
-
+        void carrega_grafo(const std::string &arquivo);
         void imprimir_grafo();
 
-        bool eh_bipartido() {
-            return false;
-        }
-        int get_grau(int vertice) {
-            return 0;
-        }
-        int get_ordem() {
-            return 0;
-        }
-        bool eh_direcionado() {
-            return false;
-        }
-        bool vertice_ponderado() {
-            return false;
-        }
-        bool aresta_ponderada() {
-            return false;
-        }
-        bool eh_completo() {
-            return false;
-        }
-        bool eh_arvore() {
-            return false;
-        }
-        bool possui_articulacao() {
-            return false;
-        }
-        bool possui_ponte() {
-            return false;
-        }
+        bool eh_bipartido() const;
+        int get_grau(int vertice) const;
+        int get_ordem() const;
+        bool eh_direcionado() const;
+        bool vertice_ponderado() const;
+        bool aresta_ponderada() const;
+        bool eh_completo() const;
+        bool eh_arvore() const;
+        bool possui_articulacao() const;
+        bool possui_ponte() const;
     private:
         int get_aresta(int i, int j);
         void set_aresta(int i, int j, int valor);

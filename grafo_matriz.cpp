@@ -5,6 +5,8 @@ GrafoMatriz::GrafoMatriz() {
     Apenas para motivos de teste:
     */
     string arquivo = "grafo.txt";
+    carrega_grafo(arquivo);
+    imprimir_grafo();
 }
 
 GrafoMatriz::~GrafoMatriz() {
@@ -17,16 +19,30 @@ GrafoMatriz::~GrafoMatriz() {
 }
 
 void GrafoMatriz::imprimir_grafo() {
-            for (int i = 0; i < n_vertices; i++) {
-                for (int j = 0; j < n_vertices; j++) {
-                    cout << get_aresta(i,j) << " ";
-                }
-                cout << endl;
-            }
+    for (int i = 0; i < n_vertices; i++) {
+        for (int j = 0; j < n_vertices; j++) {
+            cout << get_aresta(i,j) << " ";
         }
+        cout << endl;
+    }
+}
 
-void GrafoMatriz::carrega_grafo(std::string *arquivo) {
-    ifstream arquivo_grafo(*arquivo);
+void GrafoMatriz::novo_grafo(int n, bool direcionado) {
+    n_vertices = n;
+    grafo_direcionado = direcionado;
+    matriz = new int*[n_vertices];
+    for (int i = 0; i < n_vertices; i++) {
+        matriz[i] = new int[n_vertices];
+        for (int j = 0; j < n_vertices; j++) {
+            matriz[i][j] = 0; // Inicializa com 0 (sem aresta)
+        }
+    }
+    matriz_sem_direcao = new int[(n_vertices * (n_vertices - 1)) / 2];
+    vertices = new int[n_vertices];
+}
+
+void GrafoMatriz::carrega_grafo(const std::string &arquivo) {
+    ifstream arquivo_grafo(arquivo);
     if (arquivo_grafo.is_open()) {
         arquivo_grafo >> n_vertices >> grafo_direcionado >> vertices_ponderado >> arestas_ponderado;
         novo_grafo(n_vertices, false);
@@ -89,26 +105,36 @@ void GrafoMatriz::novo_grafo(int n_vertices, bool direcionado) {
     vertices = new int[n_vertices];
 }
 
-bool GrafoMatriz::eh_bipartido() {
+bool GrafoMatriz::eh_bipartido() const {
     return false;
-}
+} 
 
-int GrafoMatriz::get_grau(int vertice) {
+int GrafoMatriz::get_grau(int vertice) const {
     return 0;
 }
 
-int GrafoMatriz::get_ordem() {
+int GrafoMatriz::get_ordem() const {
     return 0;
 }
 
-bool GrafoMatriz::eh_direcionado() {
+bool GrafoMatriz::eh_direcionado() const {
     return false;
 }
 
-bool GrafoMatriz::vertice_ponderado() {
+bool GrafoMatriz::vertice_ponderado() const {
     return false;
 }
 
-bool GrafoMatriz::aresta_ponderada() {
+bool GrafoMatriz::aresta_ponderada() const {
     return false;
+}
+
+
+/*
+Para testes com o arquivo grafo.txt
+*/
+
+int main() {
+    GrafoMatriz *g = new GrafoMatriz();
+    return 0;
 }
