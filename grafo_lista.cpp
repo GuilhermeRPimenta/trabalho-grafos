@@ -4,7 +4,7 @@
 
     grafo_lista::grafo_lista() 
     {
-
+        
     }
     grafo_lista::~grafo_lista() 
     {
