@@ -122,15 +122,15 @@ int GrafoMatriz::get_ordem() const {
 }
 
 bool GrafoMatriz::eh_direcionado() const {
-    return false;
+    return grafo_direcionado;
 }
 
 bool GrafoMatriz::vertice_ponderado() const {
-    return false;
+    return vertices_ponderado;
 }
 
 bool GrafoMatriz::aresta_ponderada() const {
-    return false;
+    return arestas_ponderado;
 }
 
 bool GrafoMatriz::eh_completo() const {
