@@ -118,7 +118,7 @@ int GrafoMatriz::get_grau(int vertice) const {
 }
 
 int GrafoMatriz::get_ordem() const {
-    return 0;
+    return n_vertices;
 }
 
 bool GrafoMatriz::eh_direcionado() const {
