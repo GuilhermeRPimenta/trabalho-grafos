@@ -13,6 +13,7 @@ public:
     virtual bool aresta_ponderada() const = 0;
     virtual bool eh_completo() const = 0;
     virtual bool eh_arvore() const = 0;
+    virtual int eh_conexo() const = 0;
     virtual bool possui_articulacao() const = 0;
     virtual bool possui_ponte() const = 0;
     virtual void carrega_grafo(const std::string& arquivo) = 0;

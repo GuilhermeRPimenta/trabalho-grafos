@@ -1,6 +1,46 @@
-#ifndef GRAFO_LISTA_H_INCLUDED
-#define GRAFO_LISTA_H_INCLUDED
+#ifndef GRAFO_LISTA_H
+#define GRAFO_LISTA_H
 
+#include "lista_encad.h"
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <ctime>
+#include <string>
 
+class GrafoLista {
+private:
+    ListaEncadeada* vertices; 
+    int ordem;
+    bool direcionado;
+    bool vertices_ponderados;
+    bool arestas_ponderadas;
 
-#endif // GRAFO_LISTA_H_INCLUDED
+    void inicializar_vertices();
+
+public:
+    GrafoLista();
+    GrafoLista(int ordem, bool direcionado, bool vertices_ponderados, bool arestas_ponderadas);
+    ~GrafoLista();
+
+    void carrega_grafo(const std::string &arquivo);
+    void salva_grafo(std::ofstream &saida) const;
+    void novo_grafo(const std::string &descricao);
+
+    int get_numero_componentes_conexas() const;
+    void dfs(int vertice, bool* visitado) const;
+
+    int get_grau() const;
+    int get_ordem() const;
+    bool eh_direcionado() const;
+    bool vertice_ponderado() const;
+    bool aresta_ponderada() const;
+    bool eh_completo() const;
+    bool eh_bipartido() const;
+    bool eh_conexo() const;
+    bool eh_arvore() const;
+    bool possui_ponte() const;
+    bool possui_articulacao() const;
+};
+
+#endif
