@@ -114,6 +114,11 @@ bool GrafoMatriz::eh_bipartido() const {
 } 
 
 int GrafoMatriz::get_grau(int vertice) const {
+    //Assumindo que o vértice é 1-indexado
+    int grau = 0;
+    for (int i = 0; i < n_vertices; i++) {
+        grau += get_aresta(vertice, i);
+    }
     return vertice;
 }
 

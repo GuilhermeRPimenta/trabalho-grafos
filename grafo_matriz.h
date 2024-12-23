@@ -33,7 +33,7 @@ class GrafoMatriz: public Grafo {
         bool possui_articulacao() const;
         bool possui_ponte() const;
     private:
-        int get_aresta(int i, int j);
+        int get_aresta(int i, int j) const;
         void set_aresta(int i, int j, int valor);
         void novo_grafo(int n_vertices, bool direcionado);
 };
