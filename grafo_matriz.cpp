@@ -82,7 +82,7 @@ void GrafoMatriz::carrega_grafo(const std::string &arquivo) {
     }
 }
 
-int GrafoMatriz::get_aresta(int i, int j) {
+int GrafoMatriz::get_aresta(int i, int j) const {
     // Suporte a grafos direcionados e não direcionados
     if (grafo_direcionado) {
         return matriz[i][j];
@@ -117,9 +117,9 @@ int GrafoMatriz::get_grau(int vertice) const {
     //Assumindo que o vértice é 1-indexado
     int grau = 0;
     for (int i = 0; i < n_vertices; i++) {
-        grau += get_aresta(vertice, i);
+        grau += get_aresta(vertice-1, i);
     }
-    return vertice;
+    return grau;
 }
 
 int GrafoMatriz::get_ordem() const {
