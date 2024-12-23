@@ -7,6 +7,7 @@ GrafoMatriz::GrafoMatriz() {
     string arquivo = "grafo.txt";
     carrega_grafo(arquivo);
     imprimir_grafo();
+    cout << get_grau(1);
 }
 
 GrafoMatriz::~GrafoMatriz() {
@@ -117,7 +118,8 @@ int GrafoMatriz::get_grau(int vertice) const {
     //Assumindo que o vértice é 1-indexado
     int grau = 0;
     for (int i = 0; i < n_vertices; i++) {
-        grau += get_aresta(vertice-1, i);
+        if (get_aresta(vertice-1, i) != 0)
+        grau++;
     }
     return grau;
 }
