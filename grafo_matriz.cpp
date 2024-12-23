@@ -7,7 +7,7 @@ GrafoMatriz::GrafoMatriz() {
     string arquivo = "grafo.txt";
     carrega_grafo(arquivo);
     imprimir_grafo();
-    cout << get_grau(1);
+    cout << get_grau(2);
 }
 
 GrafoMatriz::~GrafoMatriz() {
