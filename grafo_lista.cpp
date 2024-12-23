@@ -62,7 +62,7 @@ void GrafoLista::carrega_grafo(const std::string &arquivo) {
     entrada.close();
 
     std::cout << "Grafo carregado com sucesso!" << std::endl;
-    std::cout << "Ordem: " << ordem << " | Direcionado: " << (direcionado ? "Sim" : "Não") << std::endl;
+    std::cout << "Ordem: " << ordem << " | Direcionado: " << (direcionado ? "Sim" : "Não") <<std::endl<< std::endl;
 }
 
 
@@ -143,7 +143,7 @@ bool GrafoLista::eh_conexo() const {
             int vizinho = elementos[i];
             if (!visitado[i]) { // Se o vizinho não foi visitado
                 visitado[i] = true;
-                fila[fim++] = vizinho; // Adiciona o vizinho à fila
+                fila[fim++] = vizinho; 
                 visitados++; 
             }
         }
@@ -154,42 +154,102 @@ bool GrafoLista::eh_conexo() const {
     return visitados == ordem; // Verifica se todos os vértices foram visitados
 }
 
+void GrafoLista::dfs_ordem(int vertice, bool* visitado, int* pilha, int& topo) const {
+    visitado[vertice] = true;
+    No* noAtual = vertices[vertice].getPrimeiro();
+    while (noAtual) {
+        int adj = noAtual->getInfo();
+        if (!visitado[adj]) {
+            dfs_ordem(adj, visitado, pilha, topo);
+        }
+        noAtual = noAtual->getProx();
+    }
+    pilha[++topo] = vertice;
+}
+
 void GrafoLista::dfs(int vertice, bool* visitado) const {
-    visitado[vertice] = true; // Marca o vértice como visitado
-
-    // Percorre todos os vizinhos do vértice
-    No* atual = vertices[vertice].getPrimeiro();
-    while (atual != nullptr) {
-        int vizinho = atual->getInfo();
-        if (!visitado[vizinho]) {
-            dfs(vizinho, visitado);
+    visitado[vertice] = true;
+    No* noAtual = vertices[vertice].getPrimeiro();
+    while (noAtual) {
+        int adj = noAtual->getInfo();
+        if (!visitado[adj]) {
+            dfs(adj, visitado);
         }
-        atual = atual->getProx();
+        noAtual = noAtual->getProx();
     }
 }
 
-int GrafoLista::get_numero_componentes_conexas() const {
-    if (ordem == 0) {
-        return 0; // Sem vértices, sem componentes
-    }
 
-    bool* visitado = new bool[ordem];
+GrafoLista GrafoLista::transpor() const {
+    GrafoLista transposto(ordem, true, vertices_ponderados, arestas_ponderadas);
     for (int i = 0; i < ordem; ++i) {
-        visitado[i] = false; 
-    }
-
-    int num_componentes = 0;
-
-    for (int i = 0; i < ordem; ++i) {
-        if (!visitado[i]) {
-            ++num_componentes;
-            dfs(i, visitado); // Explora o componente conexo
+        No* noAtual = vertices[i].getPrimeiro();
+        while (noAtual) {
+            int adj = noAtual->getInfo();
+            float peso = noAtual->getPeso();
+            transposto.vertices[adj].insereFinal(i, peso);
+            noAtual = noAtual->getProx();
         }
     }
-
-    delete[] visitado; // Libera a memória alocada
-    return num_componentes;
+    return transposto;
 }
+
+
+int GrafoLista::numero_componentes_conexas() const {
+    if (eh_direcionado()) {
+        // Algoritmo de Kosaraju para grafos direcionados
+        int* pilha = new int[ordem];
+        bool* visitado = new bool[ordem];
+        int topo = -1;
+
+        // Preenche a pilha na ordem de inversa
+        for (int i = 0; i < ordem; ++i)
+            visitado[i] = false;
+
+        for (int i = 0; i < ordem; ++i) {
+            if (!visitado[i])
+                dfs_ordem(i, visitado, pilha, topo);
+        }
+
+        GrafoLista grafoTransposto = transpor();
+
+        // Conta componentes fortemente conectadas
+        for (int i = 0; i < ordem; ++i)
+            visitado[i] = false;
+
+        int numComponentes = 0;
+        while (topo >= 0) {
+            int v = pilha[topo--];
+            if (!visitado[v]) {
+                grafoTransposto.dfs(v, visitado);
+                ++numComponentes;
+            }
+        }
+
+        delete[] pilha;
+        delete[] visitado;
+
+        return numComponentes;
+    } else {
+        // Algoritmo grafos não direcionados
+        bool* visitado = new bool[ordem];
+        for (int i = 0; i < ordem; ++i)
+            visitado[i] = false;
+
+        int numComponentes = 0;
+        for (int i = 0; i < ordem; ++i) {
+            if (!visitado[i]) {
+                dfs(i, visitado);
+                ++numComponentes;
+            }
+        }
+
+        delete[] visitado;
+        return numComponentes;
+    }
+}
+
+
 
 bool GrafoLista::eh_bipartido() const {
    

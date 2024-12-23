@@ -27,8 +27,10 @@ public:
     void salva_grafo(std::ofstream &saida) const;
     void novo_grafo(const std::string &descricao);
 
-    int get_numero_componentes_conexas() const;
+    int numero_componentes_conexas() const;
     void dfs(int vertice, bool* visitado) const;
+    void dfs_ordem(int vertice, bool* visitado, int* pilha, int& topo) const;
+    GrafoLista transpor() const;
 
     int get_grau() const;
     int get_ordem() const;

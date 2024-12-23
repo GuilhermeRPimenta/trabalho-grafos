@@ -8,13 +8,12 @@ void imprimir_dados_grafo(GrafoLista* grafo) {
     std::cout << "Grau: " << grafo->get_grau() << std::endl;
     std::cout << "Ordem: " << grafo->get_ordem() << std::endl;
     std::cout << "Direcionado: " << (grafo->eh_direcionado() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Conexo: " << (grafo->eh_conexo() ? 1 : 0) << std::endl;
-    std::cout << "Componentes conexas: " << (grafo->get_numero_componentes_conexas()) << std::endl;
+    std::cout << "Componentes conexas: " << (grafo->numero_componentes_conexas()) << std::endl;
     std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
     std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Arvore: " << (grafo->eh_arvore() ? "Sim" : "Nao") << std::endl;
     std::cout << "Bipartido: " << (grafo->eh_bipartido() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Arvore: " << (grafo->eh_arvore() ? "Sim" : "Nao") << std::endl;
 }
 
 
