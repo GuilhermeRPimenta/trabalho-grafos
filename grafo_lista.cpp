@@ -263,12 +263,11 @@ bool GrafoLista::eh_arvore() const {
 }
 
 
-
 void GrafoLista::imprime_grafoLista() const {
     cout<<"grafo.txt"<<endl;
     cout<<endl;
     cout<<"Grau: "<<get_grau()<<endl;
-    cout<<"Ordem: "<<get_grdem()<<endl;
+    cout<<"Ordem: "<<get_ordem()<<endl;
     cout<<"Direcionado: "<<eh_direcionado()<<endl;
     cout<<"Componentes conexas: "<<numero_componentes_conexas()<<endl;
     cout<<"Vertices ponderados: "<<vertice_ponderado()<<endl;
