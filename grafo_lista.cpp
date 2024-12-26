@@ -2,14 +2,6 @@
 #include <string>
 #include <iostream>
 
-    grafo_lista::grafo_lista() 
-    {
-        
-    }
-    grafo_lista::~grafo_lista() 
-    {
-
-    }
     bool eh_bipartido()
     {
         return false;
