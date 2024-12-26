@@ -1,20 +1,29 @@
-#ifndef LISTAENCAD_H_INCLUDED
-#define LISTAENCAD_H_INCLUDED
-#include "No.h"
+#ifndef LISTA_ENCADEADA_H
+#define LISTA_ENCADEADA_H
 
-class lista_encad
-{
-  public:
-    lista_encad();
-    ~lista_encad();
-    int get(int k);
-    void insere_final(int val);
-    void setPrimeiro(no *p) { primeiro = p; }
-    no* getPrimeiro() { return primeiro; }
-    
+#include <iostream>
+#include "no.h"
 
-  private:
-    no *primeiro;
+class ListaEncadeada {
+private:
+    No* primeiro;
+    float pesoV;
+
+public:
+    ListaEncadeada();
+    ~ListaEncadeada();
+
+    void insereFinal(int val, float peso = 1.0); 
+    int get(int k) const;
+    No* getPrimeiro();
+    int tamanho() const;
+    void imprimir() const;
+
+    void setPesoV(float peso);
+    int* obter_elementos() const; // elementos como  array
+
+    void escrever(std::ofstream &saida, int origem) const;
+
 };
 
-#endif
+#endif 

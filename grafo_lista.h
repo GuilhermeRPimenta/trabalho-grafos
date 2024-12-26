@@ -1,26 +1,49 @@
-#include <string>
-#include "lista_encad.h"
-#include "No.h"
-#ifndef GRAFO_LISTA_H_INCLUDED
-#define GRAFO_LISTA_H_INCLUDED
+#ifndef GRAFO_LISTA_H
+#define GRAFO_LISTA_H
 
-class grafo_lista
-{
-    private:
-    int V;
-    lista_encad* vetor;
+#include "lista_encad.h"
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <ctime>
+#include <string>
+
+class GrafoLista {
+private:
+    ListaEncadeada* vertices; 
+    int ordem;
+    bool direcionado;
+    bool vertices_ponderados;
+    bool arestas_ponderadas;
+
+    void inicializar_vertices();
+
 public:
-    grafo_lista(int V) : V(V) {
-        vetor = new lista_encad[V];
-        for (int i = 0; i < V; ++i)
-            vetor[i].setPrimeiro(nullptr); //inicializa uma nova lista do grafo vazia
-    }
-    virtual ~grafo_lista() {
-        delete[] vetor;
-    }
-    virtual bool eh_bipartido() const = 0;
-    virtual int get_grau(int vertice) const = 0;
-    virtual int get_ordem() const = 0;
+    GrafoLista();
+    GrafoLista(int ordem, bool direcionado, bool vertices_ponderados, bool arestas_ponderadas);
+    ~GrafoLista();
+
+    void carrega_grafo(const std::string &arquivo);
+    void salva_grafo(std::ofstream &saida) const;
+    void novo_grafo(const std::string &descricao);
+
+    int numero_componentes_conexas() const;
+    void dfs(int vertice, bool* visitado) const;
+    void dfs_ordem(int vertice, bool* visitado, int* pilha, int& topo) const;
+    GrafoLista transpor() const;
+
+    int get_grau() const;
+    int get_ordem() const;
+    bool eh_direcionado() const;
+    bool vertice_ponderado() const;
+    bool aresta_ponderada() const;
+    bool eh_completo() const;
+    bool eh_bipartido() const;
+    bool eh_conexo() const;
+    bool eh_arvore() const;
+    bool possui_ponte() const;
+    bool possui_articulacao() const;
+    void imprime_grafoLista() const;
 };
 
-#endif // GRAFO_LISTA_H_INCLUDED
+#endif
