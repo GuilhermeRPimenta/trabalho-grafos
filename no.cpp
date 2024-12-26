@@ -1,26 +1,19 @@
 #include "no.h"
 
-no::no(){}
+//No::No() : info(0), peso(1.0f), prox(nullptr) {}
 
-no::no(int val, no *p){
-    info = val;
-    prox = p;
-}
+No::No(int val, float p, No* pNext) : info(val), peso(p), prox(pNext) {}
 
-no::~no(){}
+No::~No() {}
 
-int no::getInfo(){
-    return info;
-}
+int No::getInfo() { return info; }
 
-no* no::getProx(){
-    return prox;
-}
+float No::getPeso() { return peso; }
 
-void no::setInfo(int val){
-    info = val;
-}
+No* No::getProx() { return prox; }
 
-void no::setProx(no *p){
-    prox = p;
-}
+void No::setInfo(int val) { info = val; }
+
+void No::setPeso(float p) { peso = p; }
+
+void No::setProx(No* p) { prox = p; }
