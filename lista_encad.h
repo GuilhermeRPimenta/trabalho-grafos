@@ -11,7 +11,6 @@ class lista_encad
     void insere_final(int val);
     void setPrimeiro(no *p) { primeiro = p; }
     no* getPrimeiro() { return primeiro; }
-    
 
   private:
     no *primeiro;
