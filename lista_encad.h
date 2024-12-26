@@ -9,8 +9,8 @@ class lista_encad
     ~lista_encad();
     int get(int k);
     void insere_final(int val);
-    no *getPrimeiro(){return primeiro;}
-    void setPrimeiro(no* novoPrimeiro) {this->primeiro = novoPrimeiro;}
+    void setPrimeiro(no *p) { primeiro = p; }
+    no* getPrimeiro() { return primeiro; }
 
   private:
     no *primeiro;
