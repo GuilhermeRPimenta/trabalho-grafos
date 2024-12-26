@@ -1,0 +1,41 @@
+#ifndef GRAFO_MATRIZ_H_INCLUDED
+#define GRAFO_MATRIZ_H_INCLUDED
+#include "grafo.h"
+#include "iostream"
+#include "fstream"
+#include "string"
+
+using namespace std;
+
+class GrafoMatriz: public Grafo {
+    public:
+        int **matriz;
+        int *matriz_sem_direcao;
+        int *vertices;
+        int n_vertices;
+        bool grafo_direcionado;
+        bool arestas_ponderado;
+        bool vertices_ponderado;
+
+        GrafoMatriz();
+        ~GrafoMatriz();
+        void carrega_grafo(const std::string &arquivo);
+        void imprimir_grafo();
+
+        bool eh_bipartido() const;
+        int get_grau(int vertice) const;
+        int get_ordem() const;
+        bool eh_direcionado() const;
+        bool vertice_ponderado() const;
+        bool aresta_ponderada() const;
+        bool eh_completo() const;
+        bool eh_arvore() const;
+        bool possui_articulacao() const;
+        bool possui_ponte() const;
+    private:
+        int get_aresta(int i, int j);
+        void set_aresta(int i, int j, int valor);
+        void novo_grafo(int n_vertices, bool direcionado);
+};
+
+#endif
