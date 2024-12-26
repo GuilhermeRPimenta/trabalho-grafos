@@ -156,14 +156,29 @@ bool GrafoMatriz::possui_ponte() const {
     return false;
 }
 
-
+void GrafoMatriz::imprimir_grafo_formato_txt(int vertice) {
+    cout<<"grafo.txt"<<endl;
+    cout<<endl;
+    cout<<"Grau: "<<get_grau(vertice)<<endl;
+    cout<<"Ordem: "<<get_ordem()<<endl;
+    cout<<"Direcionado: "<<eh_direcionado()<<endl;
+    cout<<"Componentes conexas: "<<get_NcomponentesConexas()<<endl;
+    cout<<"Vertices ponderados: "<<vertice_ponderado()<<endl;
+    cout<<"Arestas ponderadas: "<<aresta_ponderada()<<endl;
+    cout<<"Completo: "<<eh_completo()<<endl;
+    cout<<"Bipartido: "<<eh_bipartido()<<endl;
+    cout<<"Arvore: "<<eh_arvore()<<endl;
+    cout<<"Aresta Ponte: "<<possui_ponte()<<endl;
+    cout<<"Vertice Articulação: "<<possui_articulacao()<<endl;
+}
 
 
 /*
 Para testes com o arquivo grafo.txt
 */
-
+/*
 int main() {
     GrafoMatriz *g = new GrafoMatriz();
     return 0;
 }
+*/

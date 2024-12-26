@@ -1,23 +1,6 @@
 #ifndef GRAFO_LISTA_H
 #define GRAFO_LISTA_H
 
-#include "lista_encad.h"
-#include <iostream>
-#include <fstream>
-#include <cstdlib>
-#include <ctime>
-#include <string>
-
-class GrafoLista {
-private:
-    ListaEncadeada* vertices; 
-    int ordem;
-    bool direcionado;
-    bool vertices_ponderados;
-    bool arestas_ponderadas;
-
-    void inicializar_vertices();
-
 #include <iostream>
 #include <fstream>
 #include <cstdlib>

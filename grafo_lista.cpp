@@ -1,9 +1,9 @@
 #include "grafo_lista.h"
 #include "lista_encad.h"
 #include "lista_encad.h"
-#include <iostream>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 GrafoLista::GrafoLista()
     : vertices(nullptr), ordem(0), direcionado(false), vertices_ponderados(false), arestas_ponderadas(false) {}
@@ -321,7 +321,6 @@ bool GrafoLista::eh_arvore() const {
 
 void GrafoLista::imprime_grafoLista() const {
     cout<<"grafo.txt"<<endl;
-    
     cout<<endl;
     cout<<"Grau: "<<get_grau()<<endl;
     cout<<"Ordem: "<<get_ordem()<<endl;

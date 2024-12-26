@@ -21,10 +21,12 @@ class GrafoMatriz: public Grafo {
         ~GrafoMatriz();
         void carrega_grafo(const std::string &arquivo);
         void imprimir_grafo();
+        void imprimir_grafo_formato_txt(int vertice);
 
         bool eh_bipartido() const;
         int get_grau(int vertice) const;
         int get_ordem() const;
+        int get_NcomponentesConexas() const;
         bool eh_direcionado() const;
         bool vertice_ponderado() const;
         bool aresta_ponderada() const;
