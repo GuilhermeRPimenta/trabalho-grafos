@@ -50,10 +50,12 @@ void GrafoLista::carrega_grafo(const std::string &arquivo) {
             entrada >> pesoAresta;
         }
         
-        // Adiciona a aresta
+
+        // Adiciona a aresta (-1 para ajustar com info)
         vertices[origem-1].insereFinal(destino-1, pesoAresta);
 
-        // Adiciona a aresta inversa
+        // Adiciona a aresta inversa (-1 para ajustar com info)
+
         if (!direcionado) {
             vertices[destino-1].insereFinal(origem-1, pesoAresta);
         }
@@ -202,6 +204,7 @@ int GrafoLista::numero_componentes_conexas() const {
         bool* visitado = new bool[ordem];
         int topo = -1;
 
+
         // Preenche a pilha na ordem de inversa
         for (int i = 0; i < ordem; ++i)
             visitado[i] = false;
@@ -213,7 +216,7 @@ int GrafoLista::numero_componentes_conexas() const {
 
         GrafoLista grafoTransposto = transpor();
 
-        // Conta componentes fortemente conectadas
+
         for (int i = 0; i < ordem; ++i)
             visitado[i] = false;
 
@@ -250,17 +253,69 @@ int GrafoLista::numero_componentes_conexas() const {
 }
 
 
+// Método auxiliar para BFS
+bool GrafoLista::bfs_bipartido(int inicio, int* cor) const {
+    int* fila = new int[ordem];
+    int inicioFila = 0, fimFila = 0;
+
+    // vértice inicial adicionado a uma fila e colore com 0
+    fila[fimFila++] = inicio;
+    cor[inicio] = 0;
+
+    // processa os vértices da fila
+    while (inicioFila < fimFila) {
+        int atual = fila[inicioFila++];
+
+        // percorre todos os adjacentes ao vértice atual
+        No* noAtual = vertices[atual].getPrimeiro();
+        while (noAtual) {
+            int adj = noAtual->getInfo();
+            if (cor[adj] == -1) {
+                // adjacente ainda não foi visitado, colore com a cor oposta
+                cor[adj] = 1 - cor[atual];
+                fila[fimFila++] = adj;
+            } else if (cor[adj] == cor[atual]) {
+                // vértice adjacente tem a mesma cor
+                delete[] fila;
+                return false;
+            }
+            noAtual = noAtual->getProx();
+        }
+    }
+
+    delete[] fila;
+    return true;
+}
 
 bool GrafoLista::eh_bipartido() const {
-   
+    // -1: não visitado, 0: cor 0, 1: cor 1
+    int* cor = new int[ordem];
+    for (int i = 0; i < ordem; ++i) {
+        cor[i] = -1; // todos os vértices estão sem cor
+    }
 
+    // percorre todos os vértices (para lidar com grafos desconexos)
+    for (int i = 0; i < ordem; ++i) {
+        if (cor[i] == -1) { // o vértice ainda não foi visitado
+            if (!bfs_bipartido(i, cor)) {
+                delete[] cor;
+                return false; 
+            }
+        }
+    }
+
+    delete[] cor;
+    return true; 
 }
+
+
 
 
 
 bool GrafoLista::eh_arvore() const {
     return (get_grau() == ordem - 1 && !direcionado && eh_conexo());
 }
+
 
 
 void GrafoLista::imprime_grafoLista() const {

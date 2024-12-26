@@ -32,6 +32,8 @@ public:
     void dfs_ordem(int vertice, bool* visitado, int* pilha, int& topo) const;
     GrafoLista transpor() const;
 
+    bool bfs_bipartido(int inicio, int* cor) const;
+
     int get_grau() const;
     int get_ordem() const;
     bool eh_direcionado() const;
@@ -43,6 +45,7 @@ public:
     bool eh_arvore() const;
     bool possui_ponte() const;
     bool possui_articulacao() const;
+
     void imprime_grafoLista() const;
 };
 
