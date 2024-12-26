@@ -18,6 +18,22 @@ private:
 
     void inicializar_vertices();
 
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <ctime>
+#include <string>
+
+class GrafoLista {
+private:
+    ListaEncadeada* vertices; 
+    int ordem;
+    bool direcionado;
+    bool vertices_ponderados;
+    bool arestas_ponderadas;
+
+    void inicializar_vertices();
+
 public:
     GrafoLista();
     GrafoLista(int ordem, bool direcionado, bool vertices_ponderados, bool arestas_ponderadas);
@@ -32,6 +48,8 @@ public:
     void dfs_ordem(int vertice, bool* visitado, int* pilha, int& topo) const;
     GrafoLista transpor() const;
 
+    bool bfs_bipartido(int inicio, int* cor) const;
+
     int get_grau() const;
     int get_ordem() const;
     bool eh_direcionado() const;
@@ -43,6 +61,7 @@ public:
     bool eh_arvore() const;
     bool possui_ponte() const;
     bool possui_articulacao() const;
+
     void imprime_grafoLista() const;
 };
 

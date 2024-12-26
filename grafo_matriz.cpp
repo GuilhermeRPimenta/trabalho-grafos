@@ -7,6 +7,7 @@ GrafoMatriz::GrafoMatriz() {
     string arquivo = "grafo.txt";
     carrega_grafo(arquivo);
     imprimir_grafo();
+    cout << get_grau(2);
 }
 
 GrafoMatriz::~GrafoMatriz() {
@@ -82,7 +83,7 @@ void GrafoMatriz::carrega_grafo(const std::string &arquivo) {
     }
 }
 
-int GrafoMatriz::get_aresta(int i, int j) {
+int GrafoMatriz::get_aresta(int i, int j) const {
     // Suporte a grafos direcionados e não direcionados
     if (grafo_direcionado) {
         return matriz[i][j];
@@ -114,23 +115,29 @@ bool GrafoMatriz::eh_bipartido() const {
 } 
 
 int GrafoMatriz::get_grau(int vertice) const {
-    return vertice;
+    //Assumindo que o vértice é 1-indexado
+    int grau = 0;
+    for (int i = 0; i < n_vertices; i++) {
+        if (get_aresta(vertice-1, i) != 0)
+        grau++;
+    }
+    return grau;
 }
 
 int GrafoMatriz::get_ordem() const {
-    return 0;
+    return n_vertices;
 }
 
 bool GrafoMatriz::eh_direcionado() const {
-    return false;
+    return grafo_direcionado;
 }
 
 bool GrafoMatriz::vertice_ponderado() const {
-    return false;
+    return vertices_ponderado;
 }
 
 bool GrafoMatriz::aresta_ponderada() const {
-    return false;
+    return arestas_ponderado;
 }
 
 bool GrafoMatriz::eh_completo() const {
