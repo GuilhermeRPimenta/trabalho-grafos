@@ -320,6 +320,7 @@ bool GrafoLista::eh_arvore() const {
 
 void GrafoLista::imprime_grafoLista() const {
     cout<<"grafo.txt"<<endl;
+    
     cout<<endl;
     cout<<"Grau: "<<get_grau()<<endl;
     cout<<"Ordem: "<<get_ordem()<<endl;
