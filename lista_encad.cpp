@@ -1,45 +1,83 @@
-#include <iostream>
 #include "lista_encad.h"
+#include <iostream>
 
 using namespace std;
 
-lista_encad::lista_encad(){
-    primeiro = NULL;
-}
+ListaEncadeada::ListaEncadeada() : primeiro(nullptr) {}
 
-lista_encad::~lista_encad(){
-    no *p = primeiro;
-    while(p != NULL)
-    {
-        no *t = p->getProx();
+ListaEncadeada::~ListaEncadeada() {
+    No* p = primeiro;
+    while (p != nullptr) {
+        No* t = p->getProx();
         delete p;
         p = t;
     }
 }
 
-int lista_encad::get(int k){
-    if(k < 0){
-        cout << "Posicao invalida" << endl;
+int ListaEncadeada::get(int k) const {
+    if (k < 0) {
+        cout << "Posição inválida!" << endl;
         exit(1);
     }
     int i = 0;
-    for(no *p = primeiro; p != NULL; p = p->getProx(), i++)
-        if(i == k)
+    for (No* p = primeiro; p != nullptr; p = p->getProx(), i++) {
+        if (i == k)
             return p->getInfo();
-    cout << "Posicao invalida" << endl;
+    }
+    cout << "Posição inválida!" << endl;
     exit(1);
 }
 
-void lista_encad::insere_final(int val){
-    no *ultimo;
-    if(primeiro != NULL)
-        for(ultimo = primeiro; ultimo->getProx() != NULL; ultimo = ultimo->getProx())
-        {}
-    no *p = new no();
-    p->setInfo(val);
-    p->setProx(NULL);
-    if(primeiro == NULL)
+void ListaEncadeada::insereFinal(int val, float peso) {
+    No* ultimo = nullptr;
+    if (primeiro != nullptr) {
+        for (ultimo = primeiro; ultimo->getProx() != nullptr; ultimo = ultimo->getProx()) {}
+    }
+
+    No* p = new No(val, peso, nullptr);
+
+    if (primeiro == nullptr)
         primeiro = p;
     else
         ultimo->setProx(p);
+}
+
+void ListaEncadeada::imprimir() const {
+    for (No* p = primeiro; p != nullptr; p = p->getProx()) {
+        cout << p->getInfo() << " ";
+    }
+    cout << endl;
+}
+
+int ListaEncadeada::tamanho() const {
+    int count = 0;
+    No* temp = primeiro;
+    while (temp != nullptr) {
+        count++;
+        temp = temp->getProx();
+    }
+    return count;
+}
+
+int* ListaEncadeada::obter_elementos() const {
+    int qtd = tamanho(); 
+    int* elementos = new int[qtd]; 
+    int i = 0;
+
+    No* p = primeiro;
+    p->getProx();
+    while (p != nullptr) {
+        elementos[i++] = p->getInfo(); 
+        p = p->getProx();
+    }
+    
+    return elementos;  // array com os elementos
+}
+
+No* ListaEncadeada::getPrimeiro() {
+        return primeiro;
+}
+
+void ListaEncadeada::setPesoV(float peso) {
+    pesoV = peso;
 }

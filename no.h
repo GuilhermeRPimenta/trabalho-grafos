@@ -1,19 +1,27 @@
-#ifndef NO_H_INCLUDED
-#define NO_H_INCLUDED
+#ifndef No_H_INCLUDED
+#define No_H_INCLUDED
 
-class no
+class No
 {
   public:
-    no();
-    no(int val, no *p);
-    ~no();
+    //No();
+    No(int val, float peso, No* p = nullptr);
+    No(int val, No *p);
+    ~No();
+
     int getInfo();
-    no* getProx();
+    No* getProx();
+    float getPeso();
+
     void setInfo(int val);
-    void setProx(no *p);
+    void setProx(No *p);
+    void setPeso(float peso);
+
+    
   private:
     int info;
-    no *prox;
+    float peso;
+    No *prox;
 };
 
 #endif
