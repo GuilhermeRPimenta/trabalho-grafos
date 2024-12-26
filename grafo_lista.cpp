@@ -50,10 +50,12 @@ void GrafoLista::carrega_grafo(const std::string &arquivo) {
             entrada >> pesoAresta;
         }
         
+
         // Adiciona a aresta (-1 para ajustar com info)
         vertices[origem-1].insereFinal(destino-1, pesoAresta);
 
         // Adiciona a aresta inversa (-1 para ajustar com info)
+
         if (!direcionado) {
             vertices[destino-1].insereFinal(origem-1, pesoAresta);
         }
@@ -202,7 +204,8 @@ int GrafoLista::numero_componentes_conexas() const {
         bool* visitado = new bool[ordem];
         int topo = -1;
 
-        // Preenche a pilha na ordem inversa
+
+        // Preenche a pilha na ordem de inversa
         for (int i = 0; i < ordem; ++i)
             visitado[i] = false;
 
@@ -212,6 +215,7 @@ int GrafoLista::numero_componentes_conexas() const {
         }
 
         GrafoLista grafoTransposto = transpor();
+
 
         for (int i = 0; i < ordem; ++i)
             visitado[i] = false;
@@ -247,6 +251,7 @@ int GrafoLista::numero_componentes_conexas() const {
         return numComponentes;
     }
 }
+
 
 // Método auxiliar para BFS
 bool GrafoLista::bfs_bipartido(int inicio, int* cor) const {
@@ -306,9 +311,25 @@ bool GrafoLista::eh_bipartido() const {
 
 
 
+
 bool GrafoLista::eh_arvore() const {
     return (get_grau() == ordem - 1 && !direcionado && eh_conexo());
 }
 
 
 
+void GrafoLista::imprime_grafoLista() const {
+    cout<<"grafo.txt"<<endl;
+    cout<<endl;
+    cout<<"Grau: "<<get_grau()<<endl;
+    cout<<"Ordem: "<<get_ordem()<<endl;
+    cout<<"Direcionado: "<<eh_direcionado()<<endl;
+    cout<<"Componentes conexas: "<<numero_componentes_conexas()<<endl;
+    cout<<"Vertices ponderados: "<<vertice_ponderado()<<endl;
+    cout<<"Arestas ponderadas: "<<aresta_ponderada()<<endl;
+    cout<<"Completo: "<<eh_completo()<<endl;
+    cout<<"Bipartido: "<<eh_bipartido()<<endl;
+    cout<<"Arvore: "<<eh_arvore()<<endl;
+    cout<<"Aresta Ponte: "<<possui_ponte()<<endl;
+    cout<<"Vertice Articulação: "<<possui_articulacao()<<endl;
+}

@@ -45,6 +45,8 @@ public:
     bool eh_arvore() const;
     bool possui_ponte() const;
     bool possui_articulacao() const;
+
+    void imprime_grafoLista() const;
 };
 
 #endif
