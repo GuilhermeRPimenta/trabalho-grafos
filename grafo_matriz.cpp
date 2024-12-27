@@ -177,6 +177,27 @@ bool GrafoMatriz::possui_ponte() const {
     return false;
 }
 
+int GrafoMatriz::get_numero_vertices_conexos(int vertice){
+    bool* vet_vertices_visitados = new bool[n_vertices];
+    for(int i = 0; i < n_vertices; i++){
+        vet_vertices_visitados[i] = false;
+    }
+    int numero_vertices_conexos = aux_get_numero_vertices_conexos(vertice, vet_vertices_visitados);
+    delete[] vet_vertices_visitados;
+    return numero_vertices_conexos;
+}
+
+int GrafoMatriz::aux_get_numero_vertices_conexos(int vertice, bool* vet_vertices_visitados){
+    vet_vertices_visitados[vertice] = true;
+    int numero_vertices_visitados = 1;
+    for(int i = 0; i < n_vertices; i++){
+        if(!vet_vertices_visitados[i] && get_aresta(vertice, i) !=0){
+           numero_vertices_visitados += aux_get_numero_vertices_conexos(i, vet_vertices_visitados);
+        }
+    }
+    return numero_vertices_visitados;
+}
+
 void GrafoMatriz::imprimir_grafo_formato_txt(int vertice) {
     cout<<"grafo.txt"<<endl;
     cout<<endl;
