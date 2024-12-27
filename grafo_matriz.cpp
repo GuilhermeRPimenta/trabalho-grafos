@@ -166,7 +166,32 @@ bool GrafoMatriz::eh_completo() const {
 }
 
 bool GrafoMatriz::eh_arvore() const {
-    return false;
+    int numero_vertices_conexos = get_numero_vertices_conexos(0);
+    if(numero_vertices_conexos != n_vertices){
+        return false;
+    }
+
+    int numero_arestas = 0;
+    if(grafo_direcionado){
+        for(int i = 0; i < n_vertices; i++){
+            for(int j = 0; j < n_vertices; j++){
+                if(get_aresta(i,j) !=0){
+                    numero_arestas++;
+                }
+            }
+        }
+    }
+    else{
+        for(int i = 0; i< n_vertices; i++){
+            for(int j = i +1; j < n_vertices; j++){
+                if(get_aresta(i,j) != 0){
+                    numero_arestas++;
+                }
+            }
+        }
+    }
+    
+    return numero_arestas == n_vertices - 1;
 }
 
 bool GrafoMatriz::possui_articulacao() const {
@@ -177,7 +202,7 @@ bool GrafoMatriz::possui_ponte() const {
     return false;
 }
 
-int GrafoMatriz::get_numero_vertices_conexos(int vertice){
+int GrafoMatriz::get_numero_vertices_conexos(int vertice) const{
     bool* vet_vertices_visitados = new bool[n_vertices];
     for(int i = 0; i < n_vertices; i++){
         vet_vertices_visitados[i] = false;
@@ -187,7 +212,7 @@ int GrafoMatriz::get_numero_vertices_conexos(int vertice){
     return numero_vertices_conexos;
 }
 
-int GrafoMatriz::aux_get_numero_vertices_conexos(int vertice, bool* vet_vertices_visitados){
+int GrafoMatriz::aux_get_numero_vertices_conexos(int vertice, bool* vet_vertices_visitados) const{
     vet_vertices_visitados[vertice] = true;
     int numero_vertices_visitados = 1;
     for(int i = 0; i < n_vertices; i++){

@@ -38,8 +38,8 @@ class GrafoMatriz: public Grafo {
         int get_aresta(int i, int j) const;
         void set_aresta(int i, int j, int valor);
         void novo_grafo(int n_vertices, bool direcionado);
-        int get_numero_vertices_conexos(int vertice);
-        int aux_get_numero_vertices_conexos(int vertice, bool* vet_vertices_visitados);
+        int get_numero_vertices_conexos(int vertice) const;
+        int aux_get_numero_vertices_conexos(int vertice, bool* vet_vertices_visitados) const;
 };
 
 #endif
