@@ -141,7 +141,28 @@ bool GrafoMatriz::aresta_ponderada() const {
 }
 
 bool GrafoMatriz::eh_completo() const {
-    return false;
+    if(grafo_direcionado){
+        for(int i = 0; i<n_vertices; i++){
+            for(int j = 0; j<n_vertices; j++){
+                if(i == j){
+                    continue;
+                }
+                if(matriz[i][j] == 0){
+                    return false;
+                }
+            }
+        }
+    }
+    else{
+        for(int i = 0; i < n_vertices;i++){
+            for(int j = i + 1; j < n_vertices; j++){
+                if(get_aresta(i,j) == 0){
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
 }
 
 bool GrafoMatriz::eh_arvore() const {
