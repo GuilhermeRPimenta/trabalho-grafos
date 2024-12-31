@@ -5,6 +5,8 @@
 #include <sstream>
 #include <iostream>
 
+using namespace std;
+
 GrafoLista::GrafoLista()
     : vertices(nullptr), ordem(0), direcionado(false), vertices_ponderados(false), arestas_ponderadas(false) {}
 
@@ -311,26 +313,87 @@ bool GrafoLista::eh_bipartido() const {
 
 
 
-
-
 bool GrafoLista::eh_arvore() const {
     return (get_grau() == ordem - 1 && !direcionado && eh_conexo());
 }
 
 
+void GrafoLista::busca_em_profundidade(int no) {
+    numero_dfs[no] = menor_dfs[no] = contador_dfs++;
+    visitado[no] = PRETO;
 
-void GrafoLista::imprime_grafoLista() const {
-    cout<<"grafo.txt"<<endl;
-    cout<<endl;
-    cout<<"Grau: "<<get_grau()<<endl;
-    cout<<"Ordem: "<<get_ordem()<<endl;
-    cout<<"Direcionado: "<<eh_direcionado()<<endl;
-    cout<<"Componentes conexas: "<<numero_componentes_conexas()<<endl;
-    cout<<"Vertices ponderados: "<<vertice_ponderado()<<endl;
-    cout<<"Arestas ponderadas: "<<aresta_ponderada()<<endl;
-    cout<<"Completo: "<<eh_completo()<<endl;
-    cout<<"Bipartido: "<<eh_bipartido()<<endl;
-    cout<<"Arvore: "<<eh_arvore()<<endl;
-    cout<<"Aresta Ponte: "<<possui_ponte()<<endl;
-    cout<<"Vertice Articulação: "<<possui_articulacao()<<endl;
+    for (int i = inicio_adj[no]; i != NULO; i = prox_adj[i]) {
+        int vizinho = lista_adj[i];
+
+        if (visitado[vizinho] == BRANCO) {
+            pai[vizinho] = no;
+            busca_em_profundidade(vizinho);
+
+            menor_dfs[no] = min(menor_dfs[no], menor_dfs[vizinho]);
+
+            if (pai[no] != NULO && menor_dfs[vizinho] > numero_dfs[no]) {
+                existe_ponte = true;
+            }
+        } else if (vizinho != pai[no]) {
+            menor_dfs[no] = min(menor_dfs[no], numero_dfs[vizinho]);
+        }
+    }
+}
+
+
+bool GrafoLista::possui_ponte(int quantidade_nos) {
+    for (int i = 0; i < quantidade_nos; i++) {
+        if (visitado[i] == BRANCO) {
+            busca_em_profundidade(i);
+        }
+    }
+    return existe_ponte;
+}
+
+
+bool GrafoLista::dfs_ponto_articulacao(int inicial) {
+    numero_dfs[inicial] = menor_dfs[inicial] = contador_dfs++;
+    visitado[inicial] = PRETO;
+    int filhos = 0;
+    bool encontrou_articulacao = false;
+
+    for (int i = inicio[inicial]; i != -1; i = prox_aresta[i]) {
+        int vizinho = arestas[i];
+
+        if (visitado[vizinho] == BRANCO) {
+            filhos++;
+            pai[vizinho] = inicial;
+            if (dfs_ponto_articulacao(vizinho)) {
+                encontrou_articulacao = true;
+            }
+
+            menor_dfs[inicial] = min(menor_dfs[inicial], menor_dfs[vizinho]);
+
+            if (pai[inicial] == NULO && filhos > 1) {
+                ponto_articulacao[inicial] = true;
+                encontrou_articulacao = true;
+            }
+
+            if (pai[inicial] != NULO && menor_dfs[vizinho] >= numero_dfs[inicial]) {
+                ponto_articulacao[inicial] = true;
+                encontrou_articulacao = true;
+            }
+        } else if (vizinho != pai[inicial]) {
+            menor_dfs[inicial] = min(menor_dfs[inicial], numero_dfs[vizinho]);
+        }
+    }
+
+    return encontrou_articulacao;
+}
+
+
+bool GrafoLista::possui_articulacao(int n) {
+    for (int i = 0; i < n; i++) {
+        if (visitado[i] == BRANCO) {
+            if (dfs_ponto_articulacao(i)) {
+                return true; 
+            }
+        }
+    }
+    return false; 
 }
