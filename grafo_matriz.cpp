@@ -7,7 +7,7 @@ GrafoMatriz::GrafoMatriz() {
     string arquivo = "grafo2.txt";
     carrega_grafo(arquivo);
     imprimir_grafo();
-    cout << n_conexo();
+    cout << n_conexo() << endl;
 }
 
 GrafoMatriz::~GrafoMatriz() {
@@ -44,8 +44,9 @@ void GrafoMatriz::novo_grafo(int n, bool direcionado) {
         }
     } else {
         grafo_direcionado = false;
-        matriz_sem_direcao = new int[((n * (n-1))/2) + 1];
-        for (int i = 0; i <= (n * (n-1))/2; i++) {
+        int tam = ((n * (n-1))/2);
+        matriz_sem_direcao = new int[tam];
+        for (int i = 0; i < tam; i++) {
             matriz_sem_direcao[i] = 0;
         }
     }
@@ -89,10 +90,16 @@ int GrafoMatriz::get_aresta(int i, int j) const {
     if (grafo_direcionado) {
         return matriz[i][j];
     } else {
+        int n = n_vertices;
         if (i < j) {
-            return matriz_sem_direcao[(i * (i-1))/2 + j];
-        } else {
-            return matriz_sem_direcao[(j * (j-1))/2 + i];
+            int index = (n * (n - 1)) / 2 - ((n - i) * (n - i - 1)) / 2 + (j - i - 1);
+            return matriz_sem_direcao[index];
+        } else if (i==j) {
+            return 0;
+        }
+        else {
+            int index = (n * (n - 1)) / 2 - ((n - j) * (n - j - 1)) / 2 + (i - j - 1);
+            return matriz_sem_direcao[index];
         }
     }
 }
@@ -102,10 +109,13 @@ void GrafoMatriz::set_aresta(int i, int j, int val) {
     if (grafo_direcionado) {
         matriz[i][j] = val;
     } else {
+        int n = n_vertices;
         if (i < j) {
-            matriz_sem_direcao[(i * (i-1))/2 + j] = val;
+            int index = (n * (n - 1)) / 2 - ((n - i) * (n - i - 1)) / 2 + (j - i - 1);
+            matriz_sem_direcao[index] = val;
         } else {
-            matriz_sem_direcao[(j * (j-1))/2 + i] = val;
+            int index = (n * (n - 1)) / 2 - ((n - j) * (n - j - 1)) / 2 + (i - j - 1);
+            matriz_sem_direcao[index] = val;
         }
     }
 }
