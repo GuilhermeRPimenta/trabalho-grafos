@@ -34,6 +34,8 @@ class GrafoMatriz: public Grafo {
         bool eh_arvore() const;
         bool possui_articulacao() const;
         bool possui_ponte() const;
+
+        GrafoMatriz* get_copia() const;
     private:
         int get_aresta(int i, int j) const;
         void set_aresta(int i, int j, int valor);

@@ -7,7 +7,7 @@ GrafoMatriz::GrafoMatriz() {
     string arquivo = "grafo2.txt";
     carrega_grafo(arquivo);
     imprimir_grafo();
-    cout << n_conexo() << endl;
+    cout << possui_ponte() << endl;
 }
 
 GrafoMatriz::~GrafoMatriz() {
@@ -210,7 +210,44 @@ bool GrafoMatriz::possui_articulacao() const {
 }
 
 bool GrafoMatriz::possui_ponte() const {
+    /*Tomando em base a definição de ponte, ser uma aresta que quando
+    removida resulta em um numero maior de componentes conexos: */
+    if(n_vertices < 2){
+        return false;
+    }
+    int num_conexo = n_conexo();
+    GrafoMatriz *g = get_copia();
+    for (int i = 0; i < n_vertices; i++) {
+        for (int j = 0; j < n_vertices; j++) {
+            if (i==j) {
+                continue;
+            }
+            if (g->get_aresta(i,j) != 0) {
+                int aux = g->get_aresta(i,j);
+                g->set_aresta(i,j,0);
+                if (g->n_conexo() > num_conexo) {
+                    g->set_aresta(i,j,aux);
+                    return true;
+                }
+                g->set_aresta(i,j,aux);
+            }
+        }
+    }
     return false;
+}
+
+GrafoMatriz* GrafoMatriz::get_copia() const {
+    GrafoMatriz* copia = new GrafoMatriz();
+    copia->novo_grafo(n_vertices, grafo_direcionado);
+    for (int i = 0; i < n_vertices; i++) {
+        if (vertices_ponderado) {
+            copia->vertices[i] = vertices[i];
+        }
+        for (int j = 0; j < n_vertices; j++) {
+            copia->set_aresta(i, j, get_aresta(i, j));
+        }
+    }
+    return copia;
 }
 
 int GrafoMatriz::get_numero_vertices_conexos(int vertice) const{
