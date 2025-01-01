@@ -4,10 +4,7 @@ GrafoMatriz::GrafoMatriz() {
     /*
     Apenas para motivos de teste:
     */
-    string arquivo = "grafo2.txt";
-    carrega_grafo(arquivo);
-    imprimir_grafo();
-    cout << possui_ponte() << endl;
+    
 }
 
 GrafoMatriz::~GrafoMatriz() {
@@ -310,5 +307,9 @@ Para testes com o arquivo grafo.txt
 
 int main() {
     GrafoMatriz *g = new GrafoMatriz();
+    string arquivo = "grafo2.txt";
+    g->carrega_grafo(arquivo);
+    g->imprimir_grafo();
+    cout << g->possui_ponte() << endl;
     return 0;
 }
