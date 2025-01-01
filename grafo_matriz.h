@@ -34,7 +34,7 @@ class GrafoMatriz: public Grafo {
         bool eh_arvore() const;
         bool possui_articulacao() const;
         bool possui_ponte() const;
-        void novo_grafo();
+        void novo_grafo(const std::string &arquivo);
 
         GrafoMatriz* get_copia() const;
     private:
@@ -43,6 +43,7 @@ class GrafoMatriz: public Grafo {
         void inicia_grafo(int n_vertices, bool direcionado);
         int get_numero_vertices_conexos(int vertice) const;
         int aux_get_numero_vertices_conexos(int vertice, bool* vet_vertices_visitados) const;
+        int* criar_componente_conexa_aleatoria(int tam, int grauMax, bool completo, bool bipartido, bool arvore, bool aresta_ponte, bool vertice_articulacao);
 };
 
 #endif

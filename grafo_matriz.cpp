@@ -1,4 +1,9 @@
 #include "grafo_matriz.h"
+#include <ctime>
+#include <cstdlib>
+int gerar_numero_aleatorio(int min, int max) {
+    return min + rand() % ((max + 1) - min);
+}
 
 GrafoMatriz::GrafoMatriz() {
     matriz = nullptr;
@@ -54,6 +59,46 @@ void GrafoMatriz::inicia_grafo(int n, bool direcionado) {
     vertices = new int[n];
     n_vertices = n;
 }
+
+void GrafoMatriz::novo_grafo(const std::string &arquivo) {
+    ifstream arquivo_grafo(arquivo);
+    int grau; // Não tenho certeza o que seria grau no grafo
+    int comp_conexas;
+    bool completo;
+    bool bipartido;
+    bool arvore;
+    bool aresta_ponte;
+    bool vertice_articulacao;
+    if (arquivo_grafo.is_open()) {
+        arquivo_grafo >> grau >> n_vertices >> grafo_direcionado >> comp_conexas;
+        arquivo_grafo >> vertices_ponderado >> arestas_ponderado >> completo >> bipartido >> arvore;
+        arquivo_grafo >> aresta_ponte >> vertice_articulacao;
+        inicia_grafo(n_vertices, grafo_direcionado);
+        srand(time(0));
+
+        for (int i = 0; i<=n_vertices; i++) {
+            vertices[i] = gerar_numero_aleatorio(1, 10);
+        }
+
+        int tamanho_atual = 0;
+        int grauMax = grau;
+        for (int i = 1; i < comp_conexas; i++) {
+            int tam = gerar_numero_aleatorio(1, (n_vertices - tamanho_atual)/2);
+            int* componente = criar_componente_conexa_aleatoria(tam, grauMax, completo, bipartido, arvore, aresta_ponte, vertice_articulacao);
+            tamanho_atual += tam;
+        }
+
+        int tam = n_vertices - tamanho_atual;
+        int* componente = criar_componente_conexa_aleatoria(tam, grauMax, completo, bipartido, arvore, aresta_ponte, vertice_articulacao);
+        tamanho_atual += tam;
+    }
+}
+
+int* GrafoMatriz::criar_componente_conexa_aleatoria(int tam, int grauMax, bool completo, bool bipartido, bool arvore, bool aresta_ponte, bool vertice_articulacao) {
+    
+    return nullptr;
+}
+
 
 void GrafoMatriz::carrega_grafo(const std::string &arquivo) {
     ifstream arquivo_grafo(arquivo);
