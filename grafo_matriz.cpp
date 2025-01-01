@@ -7,7 +7,7 @@ GrafoMatriz::GrafoMatriz() {
     string arquivo = "grafo.txt";
     carrega_grafo(arquivo);
     imprimir_grafo();
-    cout << get_grau(2);
+    cout << n_conexo();
 }
 
 GrafoMatriz::~GrafoMatriz() {
@@ -223,7 +223,7 @@ int GrafoMatriz::aux_get_numero_vertices_conexos(int vertice, bool* vet_vertices
     return numero_vertices_visitados;
 }
 
-int GrafoMatriz::get_NcomponentesConexas() const {
+int GrafoMatriz::n_conexo() const {
     int numero_componentes_conexas = 0;
     bool* vet_vertices_visitados = new bool[n_vertices];
     for(int i = 0; i < n_vertices; i++){
@@ -245,7 +245,7 @@ void GrafoMatriz::imprimir_grafo_formato_txt(int vertice) {
     cout<<"Grau: "<<get_grau(vertice)<<endl;
     cout<<"Ordem: "<<get_ordem()<<endl;
     cout<<"Direcionado: "<<eh_direcionado()<<endl;
-    cout<<"Componentes conexas: "<<get_NcomponentesConexas()<<endl;
+    cout<<"Componentes conexas: "<<n_conexo()<<endl;
     cout<<"Vertices ponderados: "<<vertice_ponderado()<<endl;
     cout<<"Arestas ponderadas: "<<aresta_ponderada()<<endl;
     cout<<"Completo: "<<eh_completo()<<endl;
@@ -259,9 +259,8 @@ void GrafoMatriz::imprimir_grafo_formato_txt(int vertice) {
 /*
 Para testes com o arquivo grafo.txt
 */
-/*
+
 int main() {
     GrafoMatriz *g = new GrafoMatriz();
     return 0;
 }
-*/

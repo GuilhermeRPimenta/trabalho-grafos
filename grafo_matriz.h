@@ -26,7 +26,7 @@ class GrafoMatriz: public Grafo {
         bool eh_bipartido() const;
         int get_grau(int vertice) const;
         int get_ordem() const;
-        int get_NcomponentesConexas() const;
+        int n_conexo() const;
         bool eh_direcionado() const;
         bool vertice_ponderado() const;
         bool aresta_ponderada() const;
