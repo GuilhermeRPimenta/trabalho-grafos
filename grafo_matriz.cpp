@@ -223,6 +223,22 @@ int GrafoMatriz::aux_get_numero_vertices_conexos(int vertice, bool* vet_vertices
     return numero_vertices_visitados;
 }
 
+int GrafoMatriz::get_NcomponentesConexas() const {
+    int numero_componentes_conexas = 0;
+    bool* vet_vertices_visitados = new bool[n_vertices];
+    for(int i = 0; i < n_vertices; i++){
+        vet_vertices_visitados[i] = false;
+    }
+    for(int i = 0; i < n_vertices; i++){
+        if(!vet_vertices_visitados[i]){
+            aux_get_numero_vertices_conexos(i, vet_vertices_visitados);
+            numero_componentes_conexas++;
+        }
+    }
+    delete[] vet_vertices_visitados;
+    return numero_componentes_conexas;
+}
+
 void GrafoMatriz::imprimir_grafo_formato_txt(int vertice) {
     cout<<"grafo.txt"<<endl;
     cout<<endl;
