@@ -4,7 +4,7 @@ GrafoMatriz::GrafoMatriz() {
     /*
     Apenas para motivos de teste:
     */
-    string arquivo = "grafo.txt";
+    string arquivo = "grafo2.txt";
     carrega_grafo(arquivo);
     imprimir_grafo();
     cout << n_conexo();
@@ -44,8 +44,9 @@ void GrafoMatriz::novo_grafo(int n, bool direcionado) {
         }
     } else {
         grafo_direcionado = false;
-        for (int i = 0; i < n; i++) {
-            matriz_sem_direcao = new int[(n * (n-1))/2];
+        matriz_sem_direcao = new int[((n * (n-1))/2) + 1];
+        for (int i = 0; i <= (n * (n-1))/2; i++) {
+            matriz_sem_direcao[i] = 0;
         }
     }
 
