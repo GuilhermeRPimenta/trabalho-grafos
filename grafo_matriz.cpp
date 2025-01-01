@@ -122,7 +122,32 @@ void GrafoMatriz::set_aresta(int i, int j, int val) {
 
 
 bool GrafoMatriz::eh_bipartido() const {
-    return false;
+    /*
+      Usando método de cores, tentando colorir o grafo com apenas duas cores
+      se for impossível não é bipartido
+    */
+
+    int* vet_cores = new int[n_vertices];
+
+    for (int i = 0; i < n_vertices; i++) {
+        vet_cores[i] = -1;
+    }
+
+    vet_cores[0] = 1;
+
+    for (int i = 0; i < n_vertices; i++) {
+        for (int j = 0; j < n_vertices; j++) {
+            if (get_aresta(i,j) != 0 && vet_cores[j] == -1) {
+                vet_cores[j] = 1 - vet_cores[i];
+            } else if (get_aresta(i,j) != 0 && vet_cores[j] == vet_cores[i]) {
+                delete[] vet_cores;
+                return false;
+            }
+        }
+    }
+
+    delete[] vet_cores;
+    return true;
 } 
 
 int GrafoMatriz::get_grau(int vertice) const {
@@ -331,6 +356,6 @@ int main() {
     string arquivo = "grafo2.txt";
     g->carrega_grafo(arquivo);
     g->imprimir_grafo();
-    cout << g->possui_articulacao() << endl;
+    cout << g->eh_bipartido() << endl;
     return 0;
 }
