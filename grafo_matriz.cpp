@@ -1,10 +1,13 @@
 #include "grafo_matriz.h"
 
 GrafoMatriz::GrafoMatriz() {
-    /*
-    Apenas para motivos de teste:
-    */
-    
+    matriz = nullptr;
+    matriz_sem_direcao = nullptr;
+    vertices = nullptr;
+    n_vertices = 0;
+    grafo_direcionado = false;
+    arestas_ponderado = false;
+    vertices_ponderado = false;
 }
 
 GrafoMatriz::~GrafoMatriz() {
@@ -29,7 +32,7 @@ void GrafoMatriz::imprimir_grafo() {
     }
 }
 
-void GrafoMatriz::novo_grafo(int n, bool direcionado) {
+void GrafoMatriz::inicia_grafo(int n, bool direcionado) {
     matriz = new int*[n];
     if (direcionado) {
         grafo_direcionado = true;
@@ -59,7 +62,7 @@ void GrafoMatriz::carrega_grafo(const std::string &arquivo) {
         arquivo_grafo >> n_vertices >> grafo_direcionado >> vertices_ponderado >> arestas_ponderado;
         
         // Define dados básicos do grafo
-        novo_grafo(n_vertices, grafo_direcionado);
+        inicia_grafo(n_vertices, grafo_direcionado);
 
         // Lê peso dos vértices apenas se for ponderado
         if (vertices_ponderado) {
@@ -203,6 +206,24 @@ bool GrafoMatriz::eh_arvore() const {
 }
 
 bool GrafoMatriz::possui_articulacao() const {
+    /*Tomando em base a definição de articulação, ser um vértice que quando
+    removido resulta em um numero maior de componentes conexos: */
+    if(n_vertices < 2){
+        return false;
+    }
+
+    int num_conexo = n_conexo();
+    for (int i = 0; i < n_vertices; i++) {
+        GrafoMatriz *g = get_copia();
+        for (int j = 0; j < n_vertices; j++) {
+            g->set_aresta(i,j,0);
+            g->set_aresta(j,i,0);
+        }
+        //-1 porque o vertice i foi removido, e sempre seria contado como mais um componente conexo
+        if (g->n_conexo()-1 > num_conexo) {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -235,7 +256,7 @@ bool GrafoMatriz::possui_ponte() const {
 
 GrafoMatriz* GrafoMatriz::get_copia() const {
     GrafoMatriz* copia = new GrafoMatriz();
-    copia->novo_grafo(n_vertices, grafo_direcionado);
+    copia->inicia_grafo(n_vertices, grafo_direcionado);
     for (int i = 0; i < n_vertices; i++) {
         if (vertices_ponderado) {
             copia->vertices[i] = vertices[i];
@@ -310,6 +331,6 @@ int main() {
     string arquivo = "grafo2.txt";
     g->carrega_grafo(arquivo);
     g->imprimir_grafo();
-    cout << g->possui_ponte() << endl;
+    cout << g->possui_articulacao() << endl;
     return 0;
 }
