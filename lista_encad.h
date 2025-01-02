@@ -20,6 +20,7 @@ public:
     void imprimir() const;
 
     void setPesoV(float peso);
+    float getPesoV();
     int* obter_elementos() const; // elementos como  array
 
     void escrever(std::ofstream &saida, int origem) const;

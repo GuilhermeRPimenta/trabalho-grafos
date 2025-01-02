@@ -4,7 +4,8 @@
 #include <cstdlib>
 #include <cstring>
 
-void imprimir_dados_grafo(GrafoLista* grafo) {
+void imprimir_dados_grafo(GrafoLista *grafo)
+{
     std::cout << "Grau: " << grafo->get_grau() << std::endl;
     std::cout << "Ordem: " << grafo->get_ordem() << std::endl;
     std::cout << "Direcionado: " << (grafo->eh_direcionado() ? "Sim" : "Nao") << std::endl;
@@ -16,10 +17,10 @@ void imprimir_dados_grafo(GrafoLista* grafo) {
     std::cout << "Arvore: " << (grafo->eh_arvore() ? "Sim" : "Nao") << std::endl;
 }
 
-
-
-int main(int argc, char* argv[]) {
-    if (argc < 4) {
+int main(int argc, char *argv[])
+{
+    if (argc < 4)
+    {
         std::cerr << "Uso: main.out -d|-c -m|-l <arquivo_grafo> [<descricao>]" << std::endl;
         return 1;
     }
@@ -28,47 +29,63 @@ int main(int argc, char* argv[]) {
     std::string estrutura = argv[2];
     std::string arquivo_grafo = argv[3];
 
-    if (operacao == "-d") {
+    if (operacao == "-d")
+    {
         // Caso 1 e Caso 2: Carregar e descrever o grafo
-        if (estrutura == "-m") {
+        if (estrutura == "-m")
+        {
             // Carregar grafo com matriz de adjacência
-           
-        } else if (estrutura == "-l") {
+        }
+        else if (estrutura == "-l")
+        {
             // Carregar grafo com lista encadeada
             GrafoLista grafo;
             grafo.carrega_grafo(arquivo_grafo);
             imprimir_dados_grafo(&grafo);
-        } else {
+        }
+        else
+        {
             std::cerr << "Estrutura inválida: use -m para matriz ou -l para lista" << std::endl;
             return 1;
         }
-    } else if (operacao == "-c") {
-        
-        if (argc < 5) {
-            std::cerr << "Uso: main.out -c -m|-l <arquivo_descricao> <arquivo_grafo>" << std::endl;
+    }
+    else if (operacao == "-c")
+    {
+
+        if (argc < 5)
+        {
+            std::cerr << "Uso: main.out -c -m ou -l <arquivo_descricao> <arquivo_grafo>" << std::endl;
             return 1;
         }
 
-        std::string arquivo_descricao = argv[4];
+        std::string arquivo_descricao = argv[3];
+        std::string arquivo_grafo = argv[4];
 
-        if (estrutura == "-m") {
-            
-        } else if (estrutura == "-l") {
+        if (estrutura == "-m")
+        {
+        }
+        else if (estrutura == "-l")
+        {
             GrafoLista grafo;
             grafo.novo_grafo(arquivo_descricao);
 
             std::ofstream saida(arquivo_grafo);
-            if (!saida.is_open()) {
+            if (!saida.is_open())
+            {
                 std::cerr << "Erro ao abrir arquivo para salvar o grafo: " << arquivo_grafo << std::endl;
                 return 1;
             }
             grafo.salva_grafo(saida);
             saida.close();
-        } else {
+        }
+        else
+        {
             std::cerr << "Estrutura inválida: use -m para matriz ou -l para lista" << std::endl;
             return 1;
         }
-    } else {
+    }
+    else
+    {
         std::cerr << "Operação inválida: use -d para descrever ou -c para criar" << std::endl;
         return 1;
     }
