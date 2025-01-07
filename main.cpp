@@ -14,7 +14,6 @@ void imprimir_dados_grafo(GrafoLista *grafo)
     std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
     std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
     std::cout << "Bipartido: " << (grafo->eh_bipartido() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Arvore: nao foi, BUGOU SAPORRA" << std::endl;
     std::cout << "Arvore: " << (grafo->eh_arvore() ? "Sim" : "Nao") << std::endl;
 }
 
