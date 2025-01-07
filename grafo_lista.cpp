@@ -310,9 +310,6 @@ bool GrafoLista::eh_bipartido() const {
 }
 
 
-
-
-
 bool GrafoLista::eh_arvore() const {
     return (get_grau() == ordem - 1 && !direcionado && eh_conexo());
 }
@@ -320,17 +317,17 @@ bool GrafoLista::eh_arvore() const {
 
 
 void GrafoLista::imprime_grafoLista() const {
-    cout<<"grafo.txt"<<endl;
-    cout<<endl;
-    cout<<"Grau: "<<get_grau()<<endl;
-    cout<<"Ordem: "<<get_ordem()<<endl;
-    cout<<"Direcionado: "<<eh_direcionado()<<endl;
-    cout<<"Componentes conexas: "<<numero_componentes_conexas()<<endl;
-    cout<<"Vertices ponderados: "<<vertice_ponderado()<<endl;
-    cout<<"Arestas ponderadas: "<<aresta_ponderada()<<endl;
-    cout<<"Completo: "<<eh_completo()<<endl;
-    cout<<"Bipartido: "<<eh_bipartido()<<endl;
-    cout<<"Arvore: "<<eh_arvore()<<endl;
-    cout<<"Aresta Ponte: "<<possui_ponte()<<endl;
-    cout<<"Vertice Articulação: "<<possui_articulacao()<<endl;
+    std::cout<<"grafo.txt"<<std::endl;
+    std::cout<<std::endl;
+    std::cout<<"Grau: "<<get_grau()<<std::endl;
+    std::cout<<"Ordem: "<<get_ordem()<<std::endl;
+    std::cout<<"Direcionado: "<<eh_direcionado()<<std::endl;
+    std::cout<<"Componentes conexas: "<<numero_componentes_conexas()<<std::endl;
+    std::cout<<"Vertices ponderados: "<<vertice_ponderado()<<std::endl;
+    std::cout<<"Arestas ponderadas: "<<aresta_ponderada()<<std::endl;
+    std::cout<<"Completo: "<<eh_completo()<<std::endl;
+    std::cout<<"Bipartido: "<<eh_bipartido()<<std::endl;
+    std::cout<<"Arvore: "<<eh_arvore()<<std::endl;
+    std::cout<<"Aresta Ponte: "<<possui_ponte()<<std::endl;
+    std::cout<<"Vertice Articulação: "<<possui_articulacao()<<std::endl;
 }

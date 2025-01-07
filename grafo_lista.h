@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <string>
+#include "lista_encad.h"
 
 class GrafoLista {
 private:
