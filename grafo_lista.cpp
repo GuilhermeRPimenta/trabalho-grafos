@@ -480,6 +480,7 @@ bool GrafoLista::bfs_bipartido(int inicio, int *cor) const
 
 bool GrafoLista::eh_bipartido() const
 {
+    if(ordem == 1) return false;
     // -1: não visitado, 0: cor 0, 1: cor 1
     int *cor = new int[ordem];
     for (int i = 0; i < ordem; ++i)
@@ -507,7 +508,7 @@ bool GrafoLista::eh_bipartido() const
 bool GrafoLista::eh_arvore() const
 {
     // Verifica se o grafo é conexo
-    if (!eh_conexo())
+    if (numero_componentes_conexas() != 1)
     {
         return false;
     }
@@ -518,9 +519,118 @@ bool GrafoLista::eh_arvore() const
     {
         num_arestas += vertices[i].tamanho();
     }
+    if (direcionado)
+        num_arestas = num_arestas / 2;
 
     // Retorna true se o número de arestas for exatamente ordem - 1
-    return num_arestas == ordem - 1;
+    return (num_arestas == ordem - 1);
+}
+
+bool GrafoLista::possui_articulacao() const {
+    // Verificar conectividade inicial
+    if (numero_componentes_conexas() > 1) {
+        return false; // Se já não é conexo, não faz sentido buscar pontes
+    }
+    if(ordem == 1) return false;
+
+    // Para cada vértice do grafo
+    for (int u = 0; u < ordem; u++) {
+        // Salvar o estado original das conexões
+        ListaEncadeada conexoes_originais = vertices[u];
+
+        // Remover todas as arestas conectadas ao vértice u
+        for (No* atual = vertices[u].getPrimeiro(); atual != nullptr; atual = atual->getProx()) {
+            int v = atual->getInfo();
+            vertices[v].remove(u);
+        }
+        vertices[u] = ListaEncadeada(); // Limpa todas as arestas do vértice u
+
+        // Verificar se o grafo continua conexo
+        bool* visitado = new bool[ordem];
+        for (int i = 0; i < ordem; i++) {
+            visitado[i] = false;
+        }
+
+        // Escolher um vértice inicial diferente de `u`
+        int inicio = (u == 0) ? 1 : 0;
+        dfs(inicio, visitado);
+
+        bool conexo = true;
+        for (int i = 0; i < ordem; i++) {
+            if (i != u && !visitado[i]) {
+                conexo = false;
+                break;
+            }
+        }
+        
+
+        delete[] visitado;
+
+        // Restaurar as conexões originais do vértice u
+        vertices[u] = conexoes_originais;
+        for (No* atual = vertices[u].getPrimeiro(); atual != nullptr; atual = atual->getProx()) {
+            int v = atual->getInfo();
+            vertices[v].insereFinal(u);
+        }
+
+        // Se a remoção do vértice u desconectou o grafo, ele é uma articulação
+        if (!conexo) {
+            return true;
+        }
+    }
+
+    return false; // Nenhum vértice de articulação encontrado
+}
+
+
+bool GrafoLista::possui_ponte() const {
+    // Verificar conectividade inicial
+    if (numero_componentes_conexas() > 1) {
+        return false; // Se já não é conexo, não faz sentido buscar pontes
+    }
+
+    // Para cada vértice, iterar sobre suas arestas
+    for (int u = 0; u < ordem; u++) {
+        No* atual = vertices[u].getPrimeiro();
+        while (atual != nullptr) {
+            int v = atual->getInfo();
+
+            // Remover aresta (u, v)
+            vertices[u].remove(v);
+            vertices[v].remove(u);
+
+            // Verificar se o grafo continua conexo
+            bool* visitado = new bool[ordem];
+            for (int i = 0; i < ordem; i++) {
+                visitado[i] = false;
+            }
+
+            dfs(0, visitado); // Realizar DFS a partir do vértice 0
+
+            bool conexo = true;
+            for (int i = 0; i < ordem; i++) {
+                if (!visitado[i]) {
+                    conexo = false;
+                    break;
+                }
+            }
+
+            delete[] visitado;
+
+            // Restaurar aresta (u, v)
+            vertices[u].insereFinal(v);
+            vertices[v].insereFinal(u);
+
+            // Se o grafo deixou de ser conexo, a aresta é uma ponte
+            if (!conexo) {
+                return true;
+            }
+
+            atual = atual->getProx();
+        }
+    }
+
+    return false; // Nenhuma ponte encontrada
 }
 
 
