@@ -17,13 +17,7 @@ private:
     bool arestas_ponderadas;
 
     void inicializar_vertices(int tam);
-
-    void criar_grafo_completo();
-    void criar_grafo_bipartido();
-    void criar_aresta_ponte();
-    void criar_vertice_articulado();
-    void criar_arvore();
-    void criar_arestas_restantes(int grau, int componentesConexas);
+    bool existe_aresta(int u, int v);
 
 public:
     GrafoLista();
@@ -48,7 +42,6 @@ public:
     bool aresta_ponderada() const;
     bool eh_completo() const;
     bool eh_bipartido() const;
-    bool eh_conexo() const;
     bool eh_arvore() const;
     bool possui_ponte() const;
     bool possui_articulacao() const;
