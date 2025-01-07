@@ -1,5 +1,6 @@
 #include "lista_encad.h"
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -80,4 +81,24 @@ No* ListaEncadeada::getPrimeiro() {
 
 void ListaEncadeada::setPesoV(float peso) {
     pesoV = peso;
+}
+
+float ListaEncadeada::getPesoV() {
+    return pesoV;
+}
+
+void ListaEncadeada::escrever(std::ofstream &saida, int origem) const {
+    No* atual = primeiro;
+    while (atual != nullptr) {
+        int destino = atual->getInfo();
+        float peso = atual->getPeso();
+        
+        // Verifica se a aresta é ponderada ou não
+        if (pesoV > 1.0) {  
+            saida << origem+1 << " " << destino+1 << " " << peso << std::endl;
+        } else {
+            saida << origem+1 << " " << destino+1 << std::endl;
+        }
+        atual = atual->getProx();
+    }
 }
