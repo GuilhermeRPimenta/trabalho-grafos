@@ -5,7 +5,6 @@
 #include <sstream>
 #include <set>
 
-
 GrafoLista::GrafoLista()
     : vertices(nullptr), ordem(0), direcionado(false), vertices_ponderados(false), arestas_ponderadas(false) {}
 
@@ -62,7 +61,7 @@ void GrafoLista::carrega_grafo(const std::string &arquivo)
             entrada >> pesoAresta;
         }
         // Adiciona a aresta (-1 para ajustar com info)
-        vertices[origem-1].insereFinal(destino-1, pesoAresta);
+        vertices[origem - 1].insereFinal(destino - 1, pesoAresta);
     }
 
     entrada.close();
@@ -72,9 +71,11 @@ void GrafoLista::carrega_grafo(const std::string &arquivo)
               << std::endl;
 }
 
-void GrafoLista::novo_grafo(const std::string& descricao) {
+void GrafoLista::novo_grafo(const std::string &descricao)
+{
     std::ifstream entrada(descricao);
-    if (!entrada.is_open()) {
+    if (!entrada.is_open())
+    {
         std::cerr << "Erro ao abrir o arquivo de descrição: " << descricao << std::endl;
         return;
     }
@@ -82,7 +83,6 @@ void GrafoLista::novo_grafo(const std::string& descricao) {
     // Dados de entrada
     int grau, componentesConexas, completo, bipartido, arvore, ponte, articulacao;
     entrada >> grau >> ordem >> direcionado >> componentesConexas >> vertices_ponderados >> arestas_ponderadas >> completo >> bipartido >> arvore >> ponte >> articulacao;
-
 
     std::cout << "\nDados lidos do arquivo de descricao:\n"
               << " grau: " << grau << "\n"
@@ -97,65 +97,85 @@ void GrafoLista::novo_grafo(const std::string& descricao) {
               << " ponte: " << ponte << "\n"
               << " articulacao: " << articulacao << "\n";
 
-
-    if (componentesConexas > ordem) {
+    if (componentesConexas > ordem)
+    {
         std::cerr << "Erro: O numero de componentes conexas nao pode ser maior que a ordem." << std::endl;
         return;
     }
 
-    if (grau > ordem && !direcionado) {
+    if (grau > ordem && !direcionado)
+    {
         std::cerr << "Erro: O grau e maior ou igual a ordem, impossivel criar o grafo nao direcionado." << std::endl;
         return;
     }
 
     inicializar_vertices(ordem);
     // Configuração inicial dos pesos dos vértices
-    for (int i = 0; i < ordem; i++) { 
+    for (int i = 0; i < ordem; i++)
+    {
         vertices[i].setPesoV(vertices_ponderados ? rand() % 10 + 1 : 1.0); // Peso do vértice
     }
 
-    if (completo) {
+    if (completo)
+    {
         // Gerar um grafo completo
-        for (int i = 0; i < ordem; i++) {
-            for (int j = 0; j < ordem; j++) {
-                if (i != j) {
+        for (int i = 0; i < ordem; i++)
+        {
+            for (int j = 0; j < ordem; j++)
+            {
+                if (i != j)
+                {
                     float pesoAresta = arestas_ponderadas ? (rand() % 10 + 1) / 2.0 : 1.0;
                     vertices[i].insereFinal(j, pesoAresta);
-                    if (!direcionado) {
+                    if (!direcionado)
+                    {
                         vertices[j].insereFinal(i, pesoAresta);
                     }
                 }
             }
         }
-    } else if (bipartido) {
+    }
+    else if (bipartido)
+    {
         // Gerar um grafo bipartido
         int metade = ordem / 2;
-        for (int i = 0; i < metade; i++) {
-            for (int j = metade; j < ordem; j++) {
+        for (int i = 0; i < metade; i++)
+        {
+            for (int j = metade; j < ordem; j++)
+            {
                 float pesoAresta = arestas_ponderadas ? (rand() % 10 + 1) / 2.0 : 1.0;
                 vertices[i].insereFinal(j, pesoAresta);
-                if (!direcionado) {
+                if (!direcionado)
+                {
                     vertices[j].insereFinal(i, pesoAresta);
                 }
             }
         }
-    } else if (arvore) {
+    }
+    else if (arvore)
+    {
         // Gerar uma árvore (conexão mínima sem ciclos)
-        for (int i = 1; i < ordem; i++) {
+        for (int i = 1; i < ordem; i++)
+        {
             int pai = rand() % i; // Escolhe um vértice já existente como pai
             float pesoAresta = arestas_ponderadas ? (rand() % 10 + 1) / 2.0 : 1.0;
             vertices[pai].insereFinal(i, pesoAresta);
-            if (!direcionado) {
+            if (!direcionado)
+            {
                 vertices[i].insereFinal(pai, pesoAresta);
             }
         }
-    } else {
+    }
+    else
+    {
         // Gerar grafo geral com componentes conexas
         int componenteAtual = 0;
         int verticesPorComponente = ordem / componentesConexas;
 
-        for (int i = 0; i < ordem; i++) {
-            if (i / verticesPorComponente > componenteAtual && componenteAtual < componentesConexas - 1) {
+        for (int i = 0; i < ordem; i++)
+        {
+            if (i / verticesPorComponente > componenteAtual && componenteAtual < componentesConexas - 1)
+            {
                 componenteAtual++;
             }
         }
@@ -164,13 +184,16 @@ void GrafoLista::novo_grafo(const std::string& descricao) {
         int verticePrincipal = rand() % ordem;
         int grauAtual = 0;
 
-        while (grauAtual < grau) {
+        while (grauAtual < grau)
+        {
             int destino = rand() % ordem;
-            if (destino != verticePrincipal) {
+            if (destino != verticePrincipal)
+            {
                 float pesoAresta = arestas_ponderadas ? (rand() % 10 + 1) / 2.0 : 1.0;
 
                 vertices[verticePrincipal].insereFinal(destino, pesoAresta);
-                if (!direcionado) {
+                if (!direcionado)
+                {
                     vertices[destino].insereFinal(verticePrincipal, pesoAresta);
                 }
 
@@ -179,13 +202,17 @@ void GrafoLista::novo_grafo(const std::string& descricao) {
         }
 
         // Adicionar arestas para componentes restantes
-        for (int i = 0; i < ordem; i++) {
-            for (int j = 0; j < ordem; j++) {
-                if (i != j && vertices[i].tamanho() < grau && vertices[j].tamanho() < grau) {
+        for (int i = 0; i < ordem; i++)
+        {
+            for (int j = 0; j < ordem; j++)
+            {
+                if (i != j && vertices[i].tamanho() < grau && vertices[j].tamanho() < grau)
+                {
                     float pesoAresta = arestas_ponderadas ? (rand() % 10 + 1) / 2.0 : 1.0;
 
                     vertices[i].insereFinal(j, pesoAresta);
-                    if (!direcionado) {
+                    if (!direcionado)
+                    {
                         vertices[j].insereFinal(i, pesoAresta);
                     }
                 }
@@ -205,7 +232,7 @@ void GrafoLista::salva_grafo(std::ofstream &saida) const
         {
             saida << vertices[i].getPesoV() << " ";
         }
-        saida<<std::endl;
+        saida << std::endl;
     }
 
     for (int i = 0; i < ordem; ++i)
@@ -218,31 +245,15 @@ int GrafoLista::get_grau() const
 {
     int max_grau = 0;
 
-    // Contando os graus de saída e encontrando o grau máximo
+    // Contando os graus de saída
     for (int i = 0; i < ordem; ++i)
     {
-        int grau_atual = vertices[i].tamanho(); // Grau de saída do vértice i
-
-        // Contando o grau de entrada para o vértice i
-        for (int j = 0; j < ordem; ++j)
-        {
-            if (i != j)
-            {
-                for (auto it = vertices[j].getPrimeiro(); it != NULL; it = it->getProx())
-                {
-                    if (it->getInfo() == i)
-                    {
-                        grau_atual++;
-                        break;
-                    }
-                }
-            }
-        }
+        int grau_saida = vertices[i].tamanho(); // Grau de saída do vértice i
 
         // Atualizando o grau máximo
-        if (grau_atual > max_grau)
+        if (grau_saida > max_grau)
         {
-            max_grau = grau_atual;
+            max_grau = grau_saida;
         }
     }
 
@@ -494,5 +505,19 @@ bool GrafoLista::eh_bipartido() const
 
 bool GrafoLista::eh_arvore() const
 {
-    return (get_grau() == ordem - 1 && !direcionado && eh_conexo());
+    // Verifica se o grafo é conexo
+    if (!eh_conexo())
+    {
+        return false;
+    }
+
+    // Verifica se o grafo tem exatamente ordem - 1 arestas
+    int num_arestas = 0;
+    for (int i = 0; i < ordem; ++i)
+    {
+        num_arestas += vertices[i].tamanho();
+    }
+
+    // Retorna true se o número de arestas for exatamente ordem - 1
+    return num_arestas == ordem - 1;
 }
