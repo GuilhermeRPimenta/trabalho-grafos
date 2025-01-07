@@ -514,21 +514,3 @@ bool GrafoLista::existe_aresta(int u, int v)
     return false; // Se não encontrar o vértice 'v', a aresta não existe
 }
 
-
-
-
-void GrafoLista::imprime_grafoLista() const {
-    std::cout<<"grafo.txt"<<std::endl;
-    std::cout<<std::endl;
-    std::cout<<"Grau: "<<get_grau()<<std::endl;
-    std::cout<<"Ordem: "<<get_ordem()<<std::endl;
-    std::cout<<"Direcionado: "<<eh_direcionado()<<std::endl;
-    std::cout<<"Componentes conexas: "<<numero_componentes_conexas()<<std::endl;
-    std::cout<<"Vertices ponderados: "<<vertice_ponderado()<<std::endl;
-    std::cout<<"Arestas ponderadas: "<<aresta_ponderada()<<std::endl;
-    std::cout<<"Completo: "<<eh_completo()<<std::endl;
-    std::cout<<"Bipartido: "<<eh_bipartido()<<std::endl;
-    std::cout<<"Arvore: "<<eh_arvore()<<std::endl;
-    std::cout<<"Aresta Ponte: "<<possui_ponte()<<std::endl;
-    std::cout<<"Vertice Articulação: "<<possui_articulacao()<<std::endl;
-}
