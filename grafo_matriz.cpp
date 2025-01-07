@@ -1,13 +1,18 @@
 #include "grafo_matriz.h"
+#include <ctime>
+#include <cstdlib>
+int gerar_numero_aleatorio(int min, int max) {
+    return min + rand() % ((max + 1) - min);
+}
 
 GrafoMatriz::GrafoMatriz() {
-    /*
-    Apenas para motivos de teste:
-    */
-    string arquivo = "grafo.txt";
-    carrega_grafo(arquivo);
-    imprimir_grafo();
-    cout << get_grau(2);
+    matriz = nullptr;
+    matriz_sem_direcao = nullptr;
+    vertices = nullptr;
+    n_vertices = 0;
+    grafo_direcionado = false;
+    arestas_ponderado = false;
+    vertices_ponderado = false;
 }
 
 GrafoMatriz::~GrafoMatriz() {
@@ -32,7 +37,7 @@ void GrafoMatriz::imprimir_grafo() {
     }
 }
 
-void GrafoMatriz::novo_grafo(int n, bool direcionado) {
+void GrafoMatriz::inicia_grafo(int n, bool direcionado) {
     matriz = new int*[n];
     if (direcionado) {
         grafo_direcionado = true;
@@ -44,14 +49,145 @@ void GrafoMatriz::novo_grafo(int n, bool direcionado) {
         }
     } else {
         grafo_direcionado = false;
-        for (int i = 0; i < n; i++) {
-            matriz_sem_direcao = new int[(n * (n-1))/2];
+        int tam = ((n * (n-1))/2);
+        matriz_sem_direcao = new int[tam];
+        for (int i = 0; i < tam; i++) {
+            matriz_sem_direcao[i] = 0;
         }
     }
 
     vertices = new int[n];
     n_vertices = n;
 }
+
+void GrafoMatriz::novo_grafo(const std::string &arquivo) {
+    ifstream arquivo_grafo(arquivo);
+    int grau; // Não tenho certeza o que seria grau no grafo
+    int comp_conexas;
+    bool completo;
+    bool bipartido;
+    bool arvore;
+    bool aresta_ponte;
+    bool vertice_articulacao;
+    if (arquivo_grafo.is_open()) {
+        arquivo_grafo >> grau >> n_vertices >> grafo_direcionado >> comp_conexas;
+        arquivo_grafo >> vertices_ponderado >> arestas_ponderado >> completo >> bipartido >> arvore;
+        arquivo_grafo >> aresta_ponte >> vertice_articulacao;
+        inicia_grafo(n_vertices, grafo_direcionado);
+        srand(time(0));
+
+        if (vertices_ponderado) {
+            for (int i = 0; i<n_vertices; i++) {
+                vertices[i] = gerar_numero_aleatorio(1,10);
+            }
+        }
+        
+        /* Se for completo, assume-se apenas um componente conexo, não bipartido/arvore e etc. */
+        if (completo) {
+            for (int i = 0; i<n_vertices; i++) {
+                for (int j = 0; j<n_vertices; j++) {
+                    if (i!=j) {
+                        if (arestas_ponderado) {
+                            set_aresta(i,j,gerar_numero_aleatorio(1,10));
+                        } else {
+                            set_aresta(i,j,1);
+                        }
+                    }
+                }
+            }
+            return;
+        }
+        /*
+           Se não é árvore ou bipartido:
+           Tenta dividir componentes em partes iguais
+        */
+        
+        int tamComp = n_vertices/comp_conexas;
+        /* no caso de possuir aresta_ponte, devemos ter certeza que sobra um componente conexo pra conectar no outro */
+        if (vertice_articulacao && !aresta_ponte) {
+            grau--;
+            comp_conexas++;
+            tamComp = n_vertices/comp_conexas;
+        }
+        else if (aresta_ponte) {
+            /* diminui grau para garantir que não ultrapassem o maximo */
+            grau--;
+            tamComp = n_vertices/(comp_conexas+1);
+            comp_conexas++;
+        }
+        int verticeAtual = 0;
+        for (int i = 0; i < comp_conexas; i++) {
+            int tam = tamComp;
+            if (i==0) {
+                /* estranho, mas evita casos de terem componentes conexas de tamanho 2 no início ou final
+                   o que causa vertices de ariculacao indesejados
+                */
+                tam += (n_vertices % comp_conexas)/2+(n_vertices % comp_conexas)%2;
+            }
+            if (vertice_articulacao) {
+                if (i==1) {
+                    tam += (n_vertices % comp_conexas)/2;
+                }
+            }
+            else if (i==comp_conexas-1) {
+                tam += (n_vertices % comp_conexas)/2;
+            }
+            
+            int grauComp = 0;
+            /* para quando todos os componentes chegam ao grau máximo e temos uma componente cíclica */
+            while (grauComp < grau && grauComp < tam-1) {
+                for (int j = verticeAtual; j < tam + verticeAtual; j++) {
+                    int proxVizinho = j+1;
+
+                    if (proxVizinho >= tam+verticeAtual) {
+                            proxVizinho = verticeAtual;
+                        }
+
+                    while (get_aresta(j, proxVizinho) != 0) {
+                        proxVizinho++;
+                        if (proxVizinho >= tam+verticeAtual) {
+                            proxVizinho = verticeAtual;
+                        }
+                        if (proxVizinho == j)
+                            break;
+                    }
+
+                    if (proxVizinho == j) {
+                        continue;
+                    }
+
+                    if (arestas_ponderado) {
+                        set_aresta(j,proxVizinho,gerar_numero_aleatorio(1,10));
+                    } else {
+                        set_aresta(j,proxVizinho,1);
+                    }
+                }
+
+                grauComp = get_grau(verticeAtual+1);
+            }
+            verticeAtual+=tam;
+        }
+        if(aresta_ponte) {
+            int ultimo = n_vertices-1;
+            set_aresta(0,ultimo, 1);
+            if (arestas_ponderado)
+                set_aresta(0,ultimo, gerar_numero_aleatorio(1, 10));
+        } else if (vertice_articulacao) {
+            int ultimo = n_vertices-1;
+            set_aresta(0,ultimo, 1);
+            set_aresta(0, ultimo-1, 1);
+            if (arestas_ponderado) {
+                set_aresta(0,ultimo, gerar_numero_aleatorio(1, 10));
+                set_aresta(0,ultimo-1, gerar_numero_aleatorio(1, 10));
+            }
+        }
+    }
+}
+
+int* GrafoMatriz::criar_componente_conexa_aleatoria(int tam, int grauMax, bool completo, bool bipartido, bool arvore, bool aresta_ponte, bool vertice_articulacao) {
+    return nullptr;
+}
+
 
 void GrafoMatriz::carrega_grafo(const std::string &arquivo) {
     ifstream arquivo_grafo(arquivo);
@@ -60,7 +196,7 @@ void GrafoMatriz::carrega_grafo(const std::string &arquivo) {
         arquivo_grafo >> n_vertices >> grafo_direcionado >> vertices_ponderado >> arestas_ponderado;
         
         // Define dados básicos do grafo
-        novo_grafo(n_vertices, grafo_direcionado);
+        inicia_grafo(n_vertices, grafo_direcionado);
 
         // Lê peso dos vértices apenas se for ponderado
         if (vertices_ponderado) {
@@ -88,10 +224,16 @@ int GrafoMatriz::get_aresta(int i, int j) const {
     if (grafo_direcionado) {
         return matriz[i][j];
     } else {
+        int n = n_vertices;
         if (i < j) {
-            return matriz_sem_direcao[(i * (i-1))/2 + j];
-        } else {
-            return matriz_sem_direcao[(j * (j-1))/2 + i];
+            int index = (n * (n - 1)) / 2 - ((n - i) * (n - i - 1)) / 2 + (j - i - 1);
+            return matriz_sem_direcao[index];
+        } else if (i==j) {
+            return 0;
+        }
+        else {
+            int index = (n * (n - 1)) / 2 - ((n - j) * (n - j - 1)) / 2 + (i - j - 1);
+            return matriz_sem_direcao[index];
         }
     }
 }
@@ -101,17 +243,45 @@ void GrafoMatriz::set_aresta(int i, int j, int val) {
     if (grafo_direcionado) {
         matriz[i][j] = val;
     } else {
+        int n = n_vertices;
         if (i < j) {
-            matriz_sem_direcao[(i * (i-1))/2 + j] = val;
+            int index = (n * (n - 1)) / 2 - ((n - i) * (n - i - 1)) / 2 + (j - i - 1);
+            matriz_sem_direcao[index] = val;
         } else {
-            matriz_sem_direcao[(j * (j-1))/2 + i] = val;
+            int index = (n * (n - 1)) / 2 - ((n - j) * (n - j - 1)) / 2 + (i - j - 1);
+            matriz_sem_direcao[index] = val;
         }
     }
 }
 
 
 bool GrafoMatriz::eh_bipartido() const {
-    return false;
+    /*
+      Usando método de cores, tentando colorir o grafo com apenas duas cores
+      se for impossível não é bipartido
+    */
+
+    int* vet_cores = new int[n_vertices];
+
+    for (int i = 0; i < n_vertices; i++) {
+        vet_cores[i] = -1;
+    }
+
+    vet_cores[0] = 1;
+
+    for (int i = 0; i < n_vertices; i++) {
+        for (int j = 0; j < n_vertices; j++) {
+            if (get_aresta(i,j) != 0 && vet_cores[j] == -1) {
+                vet_cores[j] = 1 - vet_cores[i];
+            } else if (get_aresta(i,j) != 0 && vet_cores[j] == vet_cores[i]) {
+                delete[] vet_cores;
+                return false;
+            }
+        }
+    }
+
+    delete[] vet_cores;
+    return true;
 } 
 
 int GrafoMatriz::get_grau(int vertice) const {
@@ -195,11 +365,66 @@ bool GrafoMatriz::eh_arvore() const {
 }
 
 bool GrafoMatriz::possui_articulacao() const {
+    /*Tomando em base a definição de articulação, ser um vértice que quando
+    removido resulta em um numero maior de componentes conexos: */
+    if(n_vertices < 2){
+        return false;
+    }
+
+    int num_conexo = n_conexo();
+    for (int i = 0; i < n_vertices; i++) {
+        GrafoMatriz *g = get_copia();
+        for (int j = 0; j < n_vertices; j++) {
+            g->set_aresta(i,j,0);
+            g->set_aresta(j,i,0);
+        }
+        //-1 porque o vertice i foi removido, e sempre seria contado como mais um componente conexo
+        if (g->n_conexo()-1 > num_conexo) {
+            return true;
+        }
+    }
     return false;
 }
 
 bool GrafoMatriz::possui_ponte() const {
+    /*Tomando em base a definição de ponte, ser uma aresta que quando
+    removida resulta em um numero maior de componentes conexos: */
+    if(n_vertices < 2){
+        return false;
+    }
+    int num_conexo = n_conexo();
+    GrafoMatriz *g = get_copia();
+    for (int i = 0; i < n_vertices; i++) {
+        for (int j = 0; j < n_vertices; j++) {
+            if (i==j) {
+                continue;
+            }
+            if (g->get_aresta(i,j) != 0) {
+                int aux = g->get_aresta(i,j);
+                g->set_aresta(i,j,0);
+                if (g->n_conexo() > num_conexo) {
+                    g->set_aresta(i,j,aux);
+                    return true;
+                }
+                g->set_aresta(i,j,aux);
+            }
+        }
+    }
     return false;
+}
+
+GrafoMatriz* GrafoMatriz::get_copia() const {
+    GrafoMatriz* copia = new GrafoMatriz();
+    copia->inicia_grafo(n_vertices, grafo_direcionado);
+    for (int i = 0; i < n_vertices; i++) {
+        if (vertices_ponderado) {
+            copia->vertices[i] = vertices[i];
+        }
+        for (int j = 0; j < n_vertices; j++) {
+            copia->set_aresta(i, j, get_aresta(i, j));
+        }
+    }
+    return copia;
 }
 
 int GrafoMatriz::get_numero_vertices_conexos(int vertice) const{
@@ -223,13 +448,29 @@ int GrafoMatriz::aux_get_numero_vertices_conexos(int vertice, bool* vet_vertices
     return numero_vertices_visitados;
 }
 
+int GrafoMatriz::n_conexo() const {
+    int numero_componentes_conexas = 0;
+    bool* vet_vertices_visitados = new bool[n_vertices];
+    for(int i = 0; i < n_vertices; i++){
+        vet_vertices_visitados[i] = false;
+    }
+    for(int i = 0; i < n_vertices; i++){
+        if(!vet_vertices_visitados[i]){
+            aux_get_numero_vertices_conexos(i, vet_vertices_visitados);
+            numero_componentes_conexas++;
+        }
+    }
+    delete[] vet_vertices_visitados;
+    return numero_componentes_conexas;
+}
+
 void GrafoMatriz::imprimir_grafo_formato_txt(int vertice) {
     cout<<"grafo.txt"<<endl;
     cout<<endl;
     cout<<"Grau: "<<get_grau(vertice)<<endl;
     cout<<"Ordem: "<<get_ordem()<<endl;
     cout<<"Direcionado: "<<eh_direcionado()<<endl;
-    cout<<"Componentes conexas: "<<get_NcomponentesConexas()<<endl;
+    cout<<"Componentes conexas: "<<n_conexo()<<endl;
     cout<<"Vertices ponderados: "<<vertice_ponderado()<<endl;
     cout<<"Arestas ponderadas: "<<aresta_ponderada()<<endl;
     cout<<"Completo: "<<eh_completo()<<endl;
@@ -243,9 +484,12 @@ void GrafoMatriz::imprimir_grafo_formato_txt(int vertice) {
 /*
 Para testes com o arquivo grafo.txt
 */
-/*
+
 int main() {
     GrafoMatriz *g = new GrafoMatriz();
+    string arquivo = "descricao.txt";
+    g->novo_grafo(arquivo);
+    g->imprimir_grafo();
+    g->imprimir_grafo_formato_txt(1);
     return 0;
 }
-*/

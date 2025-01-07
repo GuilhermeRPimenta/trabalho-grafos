@@ -26,7 +26,7 @@ class GrafoMatriz: public Grafo {
         bool eh_bipartido() const;
         int get_grau(int vertice) const;
         int get_ordem() const;
-        int get_NcomponentesConexas() const;
+        int n_conexo() const;
         bool eh_direcionado() const;
         bool vertice_ponderado() const;
         bool aresta_ponderada() const;
@@ -34,12 +34,16 @@ class GrafoMatriz: public Grafo {
         bool eh_arvore() const;
         bool possui_articulacao() const;
         bool possui_ponte() const;
+        void novo_grafo(const std::string &arquivo);
+
+        GrafoMatriz* get_copia() const;
     private:
         int get_aresta(int i, int j) const;
         void set_aresta(int i, int j, int valor);
-        void novo_grafo(int n_vertices, bool direcionado);
+        void inicia_grafo(int n_vertices, bool direcionado);
         int get_numero_vertices_conexos(int vertice) const;
         int aux_get_numero_vertices_conexos(int vertice, bool* vet_vertices_visitados) const;
+        int* criar_componente_conexa_aleatoria(int tam, int grauMax, bool completo, bool bipartido, bool arvore, bool aresta_ponte, bool vertice_articulacao);
 };
 
 #endif
