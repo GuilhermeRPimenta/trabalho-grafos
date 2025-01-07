@@ -22,7 +22,6 @@
     "format": "cpp",
     "fstream": "cpp",
     "initializer_list": "cpp",
-    "iomanip": "cpp",
     "ios": "cpp",
     "iosfwd": "cpp",
     "istream": "cpp",
@@ -66,5 +65,6 @@
     "numeric": "cpp",
     "random": "cpp",
     "set": "cpp"
+
   }
 }
