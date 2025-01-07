@@ -23,6 +23,7 @@ public:
     float getPesoV();
     int* obter_elementos() const; // elementos como  array
     void remove(int val);
+    void limpar();
 
     void escrever(std::ofstream &saida, int origem) const;
 

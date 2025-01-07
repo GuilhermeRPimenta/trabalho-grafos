@@ -138,3 +138,14 @@ void ListaEncadeada::remove(int val) {
     anterior->setProx(atual->getProx());
     delete atual;
 }
+
+void ListaEncadeada::limpar()
+{
+    No* p = primeiro;
+    while (p != nullptr) {
+        No* t = p->getProx();
+        delete p;
+        p = t;
+    }
+    primeiro = nullptr;
+}

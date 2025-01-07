@@ -535,23 +535,24 @@ bool GrafoLista::possui_articulacao() const {
 
     // Para cada vértice do grafo
     for (int u = 0; u < ordem; u++) {
-        // Salvar o estado original das conexões
-        ListaEncadeada conexoes_originais = vertices[u];
+        // Armazenar os vizinhos de u em um array dinâmico
+        int grau = vertices[u].tamanho(); // Supondo que getGrau() retorna o número de conexões
+        int* conexoes_originais = new int[grau]; // Array para armazenar os vizinhos
+        int idx = 0;
+
+        for (No* atual = vertices[u].getPrimeiro(); atual != nullptr; atual = atual->getProx()) {
+            conexoes_originais[idx++] = atual->getInfo();
+        }
 
         // Remover todas as arestas conectadas ao vértice u
-        for (No* atual = vertices[u].getPrimeiro(); atual != nullptr; atual = atual->getProx()) {
-            int v = atual->getInfo();
-            vertices[v].remove(u);
+        for (int i = 0; i < grau; i++) {
+            int v = conexoes_originais[i];
+            vertices[v].remove(u); // Remove a referência a u nos vértices adjacentes
         }
-        vertices[u] = ListaEncadeada(); // Limpa todas as arestas do vértice u
+        vertices[u].limpar(); // Remove todas as arestas do vértice u
 
-        // Verificar se o grafo continua conexo
-        bool* visitado = new bool[ordem];
-        for (int i = 0; i < ordem; i++) {
-            visitado[i] = false;
-        }
-
-        // Escolher um vértice inicial diferente de `u`
+        // Verificar conectividade
+        bool* visitado = new bool[ordem]();
         int inicio = (u == 0) ? 1 : 0;
         dfs(inicio, visitado);
 
@@ -562,24 +563,21 @@ bool GrafoLista::possui_articulacao() const {
                 break;
             }
         }
-        
-
         delete[] visitado;
 
-        // Restaurar as conexões originais do vértice u
-        vertices[u] = conexoes_originais;
-        for (No* atual = vertices[u].getPrimeiro(); atual != nullptr; atual = atual->getProx()) {
-            int v = atual->getInfo();
-            vertices[v].insereFinal(u);
+        // Restaurar as conexões originais
+        for (int i = 0; i < grau; i++) {
+            int v = conexoes_originais[i];
+            vertices[v].insereFinal(u); // Restaura u nas listas adjacentes
+            vertices[u].insereFinal(v); // Restaura v nas listas adjacentes de u
         }
 
-        // Se a remoção do vértice u desconectou o grafo, ele é uma articulação
+        delete[] conexoes_originais; // Liberar memória
         if (!conexo) {
-            return true;
+            return true; // Encontrou articulação
         }
     }
-
-    return false; // Nenhum vértice de articulação encontrado
+    return false;
 }
 
 
