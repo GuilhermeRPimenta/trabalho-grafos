@@ -3,7 +3,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <set>
 
 
 GrafoLista::GrafoLista()
@@ -101,20 +100,23 @@ void GrafoLista::novo_grafo(const std::string &descricao)
     if (componentesConexas > ordem)
     {
         std::cerr << "Erro: O numero de componentes conexas nao pode ser maior que a ordem." << std::endl;
-        return;
+        exit(1);
     }
 
-    if (grau > ordem && !direcionado)
+    if (grau > ordem - 1)
     {
         std::cerr << "Erro: O grau e maior ou igual a ordem, impossivel criar o grafo nao direcionado." << std::endl;
-        return;
+        exit(1);
     }
 
     inicializar_vertices(ordem);
     // Configuração inicial dos pesos dos vértices
-    for (int i = 0; i < ordem; i++)
-    {
-        vertices[i].setPesoV(vertices_ponderados ? rand() % 10 + 1 : 1.0); // Peso do vértice
+    if (vertices_ponderados) {
+        for (int i = 0; i < ordem; i++)
+        {
+            vertices[i].setPesoV(vertices_ponderados ? rand() % 10 + 1 : 1.0); // Peso do vértice
+        }
+        
     }
 
     if (completo)
@@ -128,21 +130,31 @@ void GrafoLista::novo_grafo(const std::string &descricao)
                 {
                     float pesoAresta = arestas_ponderadas ? (rand() % 10 + 1) / 2.0 : 1.0;
                     vertices[i].insereFinal(j, pesoAresta);
-                    if (!direcionado)
-                    {
-                        vertices[j].insereFinal(i, pesoAresta);
-                    }
                 }
             }
+        }
+        if (bipartido && ordem != 2) {
+            std::cerr << "Erro: Impossível criar um grafo completo e bipartido com ordem diferente de 2" << std::endl;
+            exit(1);
+        }
+        
+        if (numero_componentes_conexas() != 1) {
+            std::cerr << "Erro: Impossível criar um grafo completo com " << componentesConexas << " componentes conexas" << std::endl;
+            exit(1);
+        }
+
+        if (grau != ordem - 1) {
+            std::cerr << "Erro: Impossível criar um grafo completo com grau " << grau << "diferente do vértice que tem maior grau" << std::endl;
+            exit(1);
         }
     }
     else if (bipartido)
     {
         // Gerar um grafo bipartido
-        int metade = ordem / 2;
-        for (int i = 0; i < metade; i++)
+        int divisor = ordem - grau;
+        for (int i = 0; i < divisor; i++)
         {
-            for (int j = metade; j < ordem; j++)
+            for (int j = divisor; j < ordem; j++)
             {
                 float pesoAresta = arestas_ponderadas ? (rand() % 10 + 1) / 2.0 : 1.0;
                 vertices[i].insereFinal(j, pesoAresta);
@@ -151,6 +163,11 @@ void GrafoLista::novo_grafo(const std::string &descricao)
                     vertices[j].insereFinal(i, pesoAresta);
                 }
             }
+        }
+
+        if (grau > ordem - 1) {
+            std::cerr << "Erro: Impossível criar um grafo bipartido com grau maior que a ordem" << std::endl;
+            exit(1);
         }
     }
     else if (arvore)
