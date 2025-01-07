@@ -76,26 +76,115 @@ void GrafoMatriz::novo_grafo(const std::string &arquivo) {
         inicia_grafo(n_vertices, grafo_direcionado);
         srand(time(0));
 
-        for (int i = 0; i<=n_vertices; i++) {
-            vertices[i] = gerar_numero_aleatorio(1, 10);
+        if (vertices_ponderado) {
+            for (int i = 0; i<n_vertices; i++) {
+                vertices[i] = gerar_numero_aleatorio(1,10);
+            }
         }
-
-        int tamanho_atual = 0;
-        int grauMax = grau;
-        for (int i = 1; i < comp_conexas; i++) {
-            int tam = gerar_numero_aleatorio(1, (n_vertices - tamanho_atual)/2);
-            int* componente = criar_componente_conexa_aleatoria(tam, grauMax, completo, bipartido, arvore, aresta_ponte, vertice_articulacao);
-            tamanho_atual += tam;
+        
+        /* Se for completo, assume-se apenas um componente conexo, não bipartido/arvore e etc. */
+        if (completo) {
+            for (int i = 0; i<n_vertices; i++) {
+                for (int j = 0; j<n_vertices; j++) {
+                    if (i!=j) {
+                        if (arestas_ponderado) {
+                            set_aresta(i,j,gerar_numero_aleatorio(1,10));
+                        } else {
+                            set_aresta(i,j,1);
+                        }
+                    }
+                }
+            }
+            return;
         }
+        /*
+           Se não é árvore ou bipartido:
+           Tenta dividir componentes em partes iguais
+        */
+        
+        int tamComp = n_vertices/comp_conexas;
+        /* no caso de possuir aresta_ponte, devemos ter certeza que sobra um componente conexo pra conectar no outro */
+        if (vertice_articulacao && !aresta_ponte) {
+            grau--;
+            comp_conexas++;
+            tamComp = n_vertices/comp_conexas;
+        }
+        else if (aresta_ponte) {
+            /* diminui grau para garantir que não ultrapassem o maximo */
+            grau--;
+            tamComp = n_vertices/(comp_conexas+1);
+            comp_conexas++;
+        }
+        int verticeAtual = 0;
+        for (int i = 0; i < comp_conexas; i++) {
+            int tam = tamComp;
+            if (i==0) {
+                /* estranho, mas evita casos de terem componentes conexas de tamanho 2 no início ou final
+                   o que causa vertices de ariculacao indesejados
+                */
+                tam += (n_vertices % comp_conexas)/2+(n_vertices % comp_conexas)%2;
+            }
+            if (vertice_articulacao) {
+                if (i==1) {
+                    tam += (n_vertices % comp_conexas)/2;
+                }
+            }
+            else if (i==comp_conexas-1) {
+                tam += (n_vertices % comp_conexas)/2;
+            }
+            
+            int grauComp = 0;
+            /* para quando todos os componentes chegam ao grau máximo e temos uma componente cíclica */
+            while (grauComp < grau && grauComp < tam-1) {
+                for (int j = verticeAtual; j < tam + verticeAtual; j++) {
+                    int proxVizinho = j+1;
 
-        int tam = n_vertices - tamanho_atual;
-        int* componente = criar_componente_conexa_aleatoria(tam, grauMax, completo, bipartido, arvore, aresta_ponte, vertice_articulacao);
-        tamanho_atual += tam;
+                    if (proxVizinho >= tam+verticeAtual) {
+                            proxVizinho = verticeAtual;
+                        }
+
+                    while (get_aresta(j, proxVizinho) != 0) {
+                        proxVizinho++;
+                        if (proxVizinho >= tam+verticeAtual) {
+                            proxVizinho = verticeAtual;
+                        }
+                        if (proxVizinho == j)
+                            break;
+                    }
+
+                    if (proxVizinho == j) {
+                        continue;
+                    }
+
+                    if (arestas_ponderado) {
+                        set_aresta(j,proxVizinho,gerar_numero_aleatorio(1,10));
+                    } else {
+                        set_aresta(j,proxVizinho,1);
+                    }
+                }
+
+                grauComp = get_grau(verticeAtual+1);
+            }
+            verticeAtual+=tam;
+        }
+        if(aresta_ponte) {
+            int ultimo = n_vertices-1;
+            set_aresta(0,ultimo, 1);
+            if (arestas_ponderado)
+                set_aresta(0,ultimo, gerar_numero_aleatorio(1, 10));
+        } else if (vertice_articulacao) {
+            int ultimo = n_vertices-1;
+            set_aresta(0,ultimo, 1);
+            set_aresta(0, ultimo-1, 1);
+            if (arestas_ponderado) {
+                set_aresta(0,ultimo, gerar_numero_aleatorio(1, 10));
+                set_aresta(0,ultimo-1, gerar_numero_aleatorio(1, 10));
+            }
+        }
     }
 }
 
 int* GrafoMatriz::criar_componente_conexa_aleatoria(int tam, int grauMax, bool completo, bool bipartido, bool arvore, bool aresta_ponte, bool vertice_articulacao) {
-    
     return nullptr;
 }
 
@@ -398,9 +487,9 @@ Para testes com o arquivo grafo.txt
 
 int main() {
     GrafoMatriz *g = new GrafoMatriz();
-    string arquivo = "grafo2.txt";
-    g->carrega_grafo(arquivo);
+    string arquivo = "descricao.txt";
+    g->novo_grafo(arquivo);
     g->imprimir_grafo();
-    cout << g->eh_bipartido() << endl;
+    g->imprimir_grafo_formato_txt(1);
     return 0;
 }
