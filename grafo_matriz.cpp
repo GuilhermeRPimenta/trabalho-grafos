@@ -532,7 +532,7 @@ bool GrafoMatriz::possui_ponte() const {
 int GrafoMatriz::get_grau() const {
     int maiorGrau = 0;
     for (int i = 0; i<n_vertices; i++) {
-        int grau = get_grau_vertice(i);
+        int grau = get_grau_vertice(i+1);
         if (grau > maiorGrau) {
             maiorGrau = grau;
         }
