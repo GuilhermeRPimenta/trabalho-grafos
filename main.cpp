@@ -1,6 +1,5 @@
-#include "grafo_lista.h"
-#include "grafo_matriz.h"
-#include "grafo.h"
+#include "grafo_lista.cpp"
+#include "grafo_matriz.cpp"
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -70,6 +69,17 @@ int main(int argc, char *argv[])
 
         if (estrutura == "-m")
         {
+            GrafoMatriz grafo;
+            grafo.novo_grafo(arquivo_descricao);
+
+            std::ofstream saida(arquivo_grafo);
+            if (!saida.is_open())
+            {
+                std::cerr << "Erro ao abrir arquivo para salvar o grafo: " << arquivo_grafo << std::endl;
+                return 1;
+            }
+            grafo.salva_grafo(saida);
+            saida.close();
         }
         else if (estrutura == "-l")
         {

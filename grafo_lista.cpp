@@ -1,5 +1,5 @@
 #include "grafo_lista.h"
-#include "lista_encad.h"
+#include "lista_encad.cpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>

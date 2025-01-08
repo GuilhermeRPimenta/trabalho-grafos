@@ -2,7 +2,7 @@
 #define LISTA_ENCADEADA_H
 
 #include <iostream>
-#include "no.h"
+#include "no.cpp"
 
 class ListaEncadeada {
 private:

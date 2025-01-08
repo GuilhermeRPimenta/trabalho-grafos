@@ -532,7 +532,7 @@ bool GrafoMatriz::possui_ponte() const {
 int GrafoMatriz::get_grau() const {
     int maiorGrau = 0;
     for (int i = 0; i<n_vertices; i++) {
-        int grau = get_grau_vertice(i);
+        int grau = get_grau_vertice(i+1);
         if (grau > maiorGrau) {
             maiorGrau = grau;
         }
@@ -592,6 +592,35 @@ int GrafoMatriz::n_conexo() const {
     }
     delete[] vet_vertices_visitados;
     return numero_componentes_conexas;
+}
+
+void GrafoMatriz::salva_grafo(std::ofstream &saida) const
+{
+    saida << n_vertices << " " << eh_direcionado() << " "
+          << vertices_ponderado << " " << arestas_ponderado << std::endl;
+
+    if (vertices_ponderado)
+    {
+        for (int i = 0; i < n_vertices; ++i)
+        {
+            saida << vertices[i] << " ";
+        }
+        saida << std::endl;
+    }
+
+    for (int i = 0; i < n_vertices; ++i)
+    {
+        for (int j = 0; j < n_vertices; ++j)
+        {
+            if (get_aresta(i,j) != 0) {
+                saida << i+1 << " " << j+1 << " ";
+                if (arestas_ponderado) {
+                    saida << get_aresta(i, j);
+                }
+                saida << std::endl;
+            }
+        }
+    }
 }
 
 void GrafoMatriz::imprimir_grafo_formato_txt(int vertice) {
