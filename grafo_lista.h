@@ -7,9 +7,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <string>
-#include "lista_encad.h"
 
-class GrafoLista {
+class GrafoLista : public Grafo {
 private:
     ListaEncadeada* vertices; 
     int ordem;
@@ -18,7 +17,13 @@ private:
     bool arestas_ponderadas;
 
     void inicializar_vertices(int tam);
-    bool existe_aresta(int u, int v);
+
+    void criar_grafo_completo();
+    void criar_grafo_bipartido();
+    void criar_aresta_ponte();
+    void criar_vertice_articulado();
+    void criar_arvore();
+    void criar_arestas_restantes(int grau, int componentesConexas);
 
 public:
     GrafoLista();
@@ -29,7 +34,7 @@ public:
     void salva_grafo(std::ofstream &saida) const;
     void novo_grafo(const std::string &descricao);
 
-    int numero_componentes_conexas() const;
+    int n_conexo() const;
     void dfs(int vertice, bool* visitado) const;
     void dfs_ordem(int vertice, bool* visitado, int* pilha, int& topo) const;
     GrafoLista transpor() const;
@@ -43,9 +48,11 @@ public:
     bool aresta_ponderada() const;
     bool eh_completo() const;
     bool eh_bipartido() const;
+    bool eh_conexo() const;
     bool eh_arvore() const;
     bool possui_ponte() const;
     bool possui_articulacao() const;
+    void dfs_ignorando_vertice(int atual, int ignorado, bool* visitado) const;
 
 
     void imprime_grafoLista() const;

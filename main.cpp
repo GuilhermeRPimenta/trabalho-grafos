@@ -1,20 +1,23 @@
 #include "grafo_lista.h"
+#include "grafo_matriz.h"
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
 #include <cstring>
 
-void imprimir_dados_grafo(GrafoLista *grafo)
+void imprimir_dados_grafo(Grafo *grafo)
 {
     std::cout << "Grau: " << grafo->get_grau() << std::endl;
     std::cout << "Ordem: " << grafo->get_ordem() << std::endl;
     std::cout << "Direcionado: " << (grafo->eh_direcionado() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Componentes conexas: " << (grafo->numero_componentes_conexas()) << std::endl;
+    std::cout << "Componentes conexas: " << (grafo->n_conexo()) << std::endl;
     std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
     std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
     std::cout << "Bipartido: " << (grafo->eh_bipartido() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arvore: " << (grafo->eh_arvore() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Ponte: " << (grafo->possui_ponte() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Articulacao: " << (grafo->possui_articulacao() ? "Sim" : "Nao") << std::endl;
 }
 
 int main(int argc, char *argv[])
@@ -35,6 +38,9 @@ int main(int argc, char *argv[])
         if (estrutura == "-m")
         {
             // Carregar grafo com matriz de adjacência
+            GrafoMatriz grafoMatriz;
+            grafoMatriz.carrega_grafo(arquivo_grafo);
+            imprimir_dados_grafo(&grafoMatriz);
         }
         else if (estrutura == "-l")
         {
@@ -63,6 +69,17 @@ int main(int argc, char *argv[])
 
         if (estrutura == "-m")
         {
+            GrafoMatriz grafo;
+            grafo.novo_grafo(arquivo_descricao);
+
+            std::ofstream saida(arquivo_grafo);
+            if (!saida.is_open())
+            {
+                std::cerr << "Erro ao abrir arquivo para salvar o grafo: " << arquivo_grafo << std::endl;
+                return 1;
+            }
+            grafo.salva_grafo(saida);
+            saida.close();
         }
         else if (estrutura == "-l")
         {

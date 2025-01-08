@@ -4,27 +4,29 @@
 #include <iostream>
 #include "no.h"
 
-class ListaEncadeada {
+class ListaEncadeada
+{
 private:
-    No* primeiro;
+    No *primeiro;
     float pesoV;
 
 public:
     ListaEncadeada();
     ~ListaEncadeada();
 
-    void insereFinal(int val, float peso = 1.0); 
+    void insereFinal(int val, float peso = 1.0);
     int get(int k) const;
-    No* getPrimeiro();
+    No *getPrimeiro();
     int tamanho() const;
     void imprimir() const;
 
     void setPesoV(float peso);
     float getPesoV();
-    int* obter_elementos() const; // elementos como  array
+    int *obter_elementos() const; // elementos como  array
+    void remove(int val);
+    void limpar();
 
     void escrever(std::ofstream &saida, int origem) const;
-
 };
 
-#endif 
+#endif

@@ -105,19 +105,18 @@ void GrafoLista::novo_grafo(const std::string &descricao)
 
     if (grau > ordem - 1)
     {
-        std::cerr << "Erro: O grau e maior ou igual a ordem, impossivel criar o grafo." << std::endl;
+        std::cerr << "Erro: O grau e maior ou igual a ordem, impossivel criar o grafo nao direcionado." << std::endl;
         exit(1);
     }
 
     inicializar_vertices(ordem);
-
     // Configuração inicial dos pesos dos vértices
-    if (vertices_ponderados)
-    {
+    if (vertices_ponderados) {
         for (int i = 0; i < ordem; i++)
         {
             vertices[i].setPesoV(vertices_ponderados ? rand() % 10 + 1 : 1.0); // Peso do vértice
         }
+        
     }
 
     if (completo)
@@ -134,30 +133,25 @@ void GrafoLista::novo_grafo(const std::string &descricao)
                 }
             }
         }
-        if (bipartido && ordem != 2)
-        {
+        if (bipartido && ordem != 2) {
             std::cerr << "Erro: Impossível criar um grafo completo e bipartido com ordem diferente de 2" << std::endl;
             exit(1);
         }
-
-        if (numero_componentes_conexas() != 1)
-        {
+        
+        if (n_conexo() != 1) {
             std::cerr << "Erro: Impossível criar um grafo completo com " << componentesConexas << " componentes conexas" << std::endl;
             exit(1);
         }
 
-        if (grau != ordem - 1)
-        {
+        if (grau != ordem - 1) {
             std::cerr << "Erro: Impossível criar um grafo completo com grau " << grau << "diferente do vértice que tem maior grau" << std::endl;
             exit(1);
         }
     }
     else if (bipartido)
     {
-        int divisor;
-
-        divisor = ordem - grau;
-
+        // Gerar um grafo bipartido
+        int divisor = ordem - grau;
         for (int i = 0; i < divisor; i++)
         {
             for (int j = divisor; j < ordem; j++)
@@ -171,63 +165,75 @@ void GrafoLista::novo_grafo(const std::string &descricao)
             }
         }
 
-        if (grau > ordem - 1)
-        {
+        if (grau > ordem - 1) {
             std::cerr << "Erro: Impossível criar um grafo bipartido com grau maior que a ordem" << std::endl;
-            exit(1);
-        }
-        if (numero_componentes_conexas() != componentesConexas)
-        {
-            std::cerr << "Erro: Impossivel criar um grafo bipartido com " << componentesConexas << " componentes conexas, tem (" << numero_componentes_conexas() << ")" << std::endl;
             exit(1);
         }
     }
     else if (arvore)
     {
-        if (componentesConexas != 1)
+        // Gerar uma árvore (conexão mínima sem ciclos)
+        for (int i = 1; i < ordem; i++)
         {
-            std::cerr << "Erro: Impossível criar uma arvore, numero de componentes conexas tem que ser 1" << std::endl;
-            exit(1);
-        }
-        if (ponte || articulacao)
-        {
-            std::cerr << "Erro: Impossível criar uma arvore, com vertice articulacao ou ponte" << std::endl;
-            exit(1);
-        }
-        if ((grau == 2 && !direcionado) || (grau == 1 && direcionado))
-        {
-            for (int i = 1; i < ordem; i++)
+            int pai = rand() % i; // Escolhe um vértice já existente como pai
+            float pesoAresta = arestas_ponderadas ? (rand() % 10 + 1) / 2.0 : 1.0;
+            vertices[pai].insereFinal(i, pesoAresta);
+            if (!direcionado)
             {
-                int pai = i - 1; // Pai determinístico: vértice anterior
-                float pesoAresta = arestas_ponderadas ? (rand() % 10 + 1) / 2.0 : 1.0;
-                vertices[pai].insereFinal(i, pesoAresta); // Conectar o vértice pai com o próximo vértice
+                vertices[i].insereFinal(pai, pesoAresta);
+            }
+        }
+    }
+    else
+    {
+        // Gerar grafo geral com componentes conexas
+        int componenteAtual = 0;
+        int verticesPorComponente = ordem / componentesConexas;
 
-                if (!direcionado)
-                {
-                    vertices[i].insereFinal(pai, pesoAresta); // Adicionar aresta inversa para grafos não direcionados
-                }
+        for (int i = 0; i < ordem; i++)
+        {
+            if (i / verticesPorComponente > componenteAtual && componenteAtual < componentesConexas - 1)
+            {
+                componenteAtual++;
             }
         }
-        else
+
+        // Garantir um vértice com o grau especificado
+        int verticePrincipal = rand() % ordem;
+        int grauAtual = 0;
+
+        while (grauAtual < grau)
         {
-            int pai = 0;
-            for (int i = 1; i < ordem; i++)
+            int destino = rand() % ordem;
+            if (destino != verticePrincipal)
             {
                 float pesoAresta = arestas_ponderadas ? (rand() % 10 + 1) / 2.0 : 1.0;
-                vertices[pai].insereFinal(i, pesoAresta);
+
+                vertices[verticePrincipal].insereFinal(destino, pesoAresta);
                 if (!direcionado)
                 {
-                    vertices[i].insereFinal(pai, pesoAresta);
+                    vertices[destino].insereFinal(verticePrincipal, pesoAresta);
                 }
-                if (grau == vertices[pai].tamanho())
-                {
-                    pai = i + 1;
-                }
+
+                grauAtual++;
             }
-            if (grau != get_grau())
+        }
+
+        // Adicionar arestas para componentes restantes
+        for (int i = 0; i < ordem; i++)
+        {
+            for (int j = 0; j < ordem; j++)
             {
-                std::cerr << "Erro: Impossível criar uma arvore com " << grau << " graus" << std::endl;
-                exit(1);
+                if (i != j && vertices[i].tamanho() < grau && vertices[j].tamanho() < grau)
+                {
+                    float pesoAresta = arestas_ponderadas ? (rand() % 10 + 1) / 2.0 : 1.0;
+
+                    vertices[i].insereFinal(j, pesoAresta);
+                    if (!direcionado)
+                    {
+                        vertices[j].insereFinal(i, pesoAresta);
+                    }
+                }
             }
         }
     }
@@ -302,6 +308,44 @@ bool GrafoLista::eh_completo() const
     return get_grau() == max_arestas;
 }
 
+bool GrafoLista::eh_conexo() const
+{
+    bool *visitado = new bool[ordem];
+    for (int i = 0; i < ordem; ++i)
+    {
+        visitado[i] = false;
+    }
+
+    int *fila = new int[ordem];
+    int inicio = 0, fim = 0;
+
+    fila[fim++] = 0;
+    visitado[0] = true;
+    int visitados = 1;
+
+    while (inicio < fim)
+    {
+        int atual = fila[inicio++];
+        auto *elementos = vertices[atual].obter_elementos();
+        int num_elementos = vertices[atual].tamanho();
+
+        for (int i = 0; i < num_elementos; ++i)
+        {
+            int vizinho = elementos[i];
+            if (!visitado[i])
+            { // Se o vizinho não foi visitado
+                visitado[i] = true;
+                fila[fim++] = vizinho;
+                visitados++;
+            }
+        }
+    }
+
+    delete[] visitado;
+    delete[] fila;
+    return visitados == ordem; // Verifica se todos os vértices foram visitados
+}
+
 void GrafoLista::dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo) const
 {
     visitado[vertice] = true;
@@ -350,7 +394,7 @@ GrafoLista GrafoLista::transpor() const
     return transposto;
 }
 
-int GrafoLista::numero_componentes_conexas() const
+int GrafoLista::n_conexo() const
 {
     if (eh_direcionado())
     {
@@ -453,6 +497,7 @@ bool GrafoLista::bfs_bipartido(int inicio, int *cor) const
 
 bool GrafoLista::eh_bipartido() const
 {
+    if(ordem == 1) return false;
     // -1: não visitado, 0: cor 0, 1: cor 1
     int *cor = new int[ordem];
     for (int i = 0; i < ordem; ++i)
@@ -480,7 +525,7 @@ bool GrafoLista::eh_bipartido() const
 bool GrafoLista::eh_arvore() const
 {
     // Verifica se o grafo é conexo
-    if (numero_componentes_conexas() != 1)
+    if (n_conexo() != 1)
     {
         return false;
     }
@@ -498,19 +543,107 @@ bool GrafoLista::eh_arvore() const
     return (num_arestas == ordem - 1);
 }
 
-bool GrafoLista::existe_aresta(int u, int v)
-{
-    No *adj = vertices[u].getPrimeiro(); // Obtém a lista de adjacências de 'u'
-
-    // Percorre a lista de adjacência de 'u' para verificar se 'v' está presente
-    while (adj != nullptr)
-    {
-        if (adj->getInfo() == v) // Se encontrar o vértice 'v', a aresta já existe
-        {
-            return true;
-        }
-        adj = adj->getProx(); // Move para o próximo vértice na lista de adjacência
+bool GrafoLista::possui_articulacao() const {
+    // Verificar conectividade inicial
+    if (n_conexo() > 1) {
+        return false; // Se já não é conexo, não faz sentido buscar pontes
     }
-    return false; // Se não encontrar o vértice 'v', a aresta não existe
+    if(ordem == 1) return false;
+
+    // Para cada vértice do grafo
+    for (int u = 0; u < ordem; u++) {
+        // Armazenar os vizinhos de u em um array dinâmico
+        int grau = vertices[u].tamanho(); // Supondo que getGrau() retorna o número de conexões
+        int* conexoes_originais = new int[grau]; // Array para armazenar os vizinhos
+        int idx = 0;
+
+        for (No* atual = vertices[u].getPrimeiro(); atual != nullptr; atual = atual->getProx()) {
+            conexoes_originais[idx++] = atual->getInfo();
+        }
+
+        // Remover todas as arestas conectadas ao vértice u
+        for (int i = 0; i < grau; i++) {
+            int v = conexoes_originais[i];
+            vertices[v].remove(u); // Remove a referência a u nos vértices adjacentes
+        }
+        vertices[u].limpar(); // Remove todas as arestas do vértice u
+
+        // Verificar conectividade
+        bool* visitado = new bool[ordem]();
+        int inicio = (u == 0) ? 1 : 0;
+        dfs(inicio, visitado);
+
+        bool conexo = true;
+        for (int i = 0; i < ordem; i++) {
+            if (i != u && !visitado[i]) {
+                conexo = false;
+                break;
+            }
+        }
+        delete[] visitado;
+
+        // Restaurar as conexões originais
+        for (int i = 0; i < grau; i++) {
+            int v = conexoes_originais[i];
+            vertices[v].insereFinal(u); // Restaura u nas listas adjacentes
+            vertices[u].insereFinal(v); // Restaura v nas listas adjacentes de u
+        }
+
+        delete[] conexoes_originais; // Liberar memória
+        if (!conexo) {
+            return true; // Encontrou articulação
+        }
+    }
+    return false;
 }
 
+
+bool GrafoLista::possui_ponte() const {
+    // Verificar conectividade inicial
+    if (n_conexo() > 1) {
+        return false; // Se já não é conexo, não faz sentido buscar pontes
+    }
+
+    // Para cada vértice, iterar sobre suas arestas
+    for (int u = 0; u < ordem; u++) {
+        No* atual = vertices[u].getPrimeiro();
+        while (atual != nullptr) {
+            int v = atual->getInfo();
+
+            // Remover aresta (u, v)
+            vertices[u].remove(v);
+            vertices[v].remove(u);
+
+            // Verificar se o grafo continua conexo
+            bool* visitado = new bool[ordem];
+            for (int i = 0; i < ordem; i++) {
+                visitado[i] = false;
+            }
+
+            dfs(0, visitado); // Realizar DFS a partir do vértice 0
+
+            bool conexo = true;
+            for (int i = 0; i < ordem; i++) {
+                if (!visitado[i]) {
+                    conexo = false;
+                    break;
+                }
+            }
+
+            delete[] visitado;
+
+            // Restaurar aresta (u, v)
+            vertices[u].insereFinal(v);
+            vertices[v].insereFinal(u);
+
+            // Se o grafo deixou de ser conexo, a aresta é uma ponte
+            if (!conexo) {
+                return true;
+            }
+
+            atual = atual->getProx();
+        }
+    }
+
+    return false; // Nenhuma ponte encontrada
+}
