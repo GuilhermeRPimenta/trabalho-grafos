@@ -20,7 +20,7 @@ class GrafoMatriz: public Grafo {
         GrafoMatriz();
         ~GrafoMatriz();
         void carrega_grafo(const std::string &arquivo);
-        void imprimir_grafo();
+        void imprimir_grafo() const;
         void imprimir_grafo_formato_txt(int vertice);
 
         bool eh_bipartido() const;

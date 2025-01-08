@@ -24,7 +24,7 @@ GrafoMatriz::~GrafoMatriz() {
     delete[] vertices;
 }
 
-void GrafoMatriz::imprimir_grafo() {
+void GrafoMatriz::imprimir_grafo() const {
     /*
     Imprime grafo em formato de matriz de adjacência
     não importa se direcionado ou não mostrará a matriz inteira
@@ -148,7 +148,7 @@ void GrafoMatriz::novo_grafo(const std::string &arquivo) {
             grau--;
             tamComp = n_vertices/(comp_conexas+1);
             comp_conexas++;
-        }
+        
         int verticeAtual = 0;
         for (int i = 0; i < comp_conexas; i++) {
             int tam = tamComp;
@@ -196,11 +196,80 @@ void GrafoMatriz::novo_grafo(const std::string &arquivo) {
             }
             verticeAtual+=tam;
         }
-        if(aresta_ponte) {
-            int ultimo = n_vertices-1;
-            set_aresta(0,ultimo, 1);
-            if (arestas_ponderado)
-                set_aresta(0,ultimo, gerar_numero_aleatorio(1, 10));
+        int ultimo = n_vertices-1;
+        set_aresta(0,ultimo, 1);
+        if (arestas_ponderado)
+            set_aresta(0,ultimo, gerar_numero_aleatorio(1, 10));
+        return;
+        }
+        
+        /*
+        Caso de ter vértice de articulação, mas não aresta ponte, bem estranho e difícil de ocorrer
+        
+        Precisa ter no mínimo 5 vértices e 1 componente conexo,
+        tendo que dividir corretamente caso haja mais que um.
+        */
+
+        if (vertice_articulacao) {
+            if (n_vertices < 5 && comp_conexas >= 1) {
+                cout << "Impossível criar grafo com vértice de articulação sem aresta ponte" << endl;
+                return;
+            }
+
+            int tamanho_maior = n_vertices - comp_conexas + 1;
+            
+            /* reservando os primeiros 3 e tendo o mínimo grau possível */
+            
+            for (int i = 0; i < 3; i++) {
+                if (i==2) {
+                    if (arestas_ponderado) {
+                        set_aresta(i, 0, gerar_numero_aleatorio(1,10));
+                    } else {
+                        set_aresta(i, 0, 1);
+                    }
+                } else {
+                    if (arestas_ponderado) {
+                        set_aresta(i, i+1, gerar_numero_aleatorio(1,10));
+                    } else {
+                        set_aresta(i, i+1, 1);
+                    }
+                }
+            }
+
+            /* os restantes do grupo principal se juntam em um único componente */
+            for (int i = 3; i < tamanho_maior; i++) {
+                if (i==tamanho_maior-1) {
+                    if (arestas_ponderado) {
+                        set_aresta(i, 3, gerar_numero_aleatorio(1,10));
+                    } else {
+                        set_aresta(i, 3, 1);
+                    }
+                } else {
+                    if (arestas_ponderado) {
+                        set_aresta(i, i+1, gerar_numero_aleatorio(1,10));
+                    } else {
+                        set_aresta(i, i+1, 1);
+                    }
+                }
+            }
+
+            /* os restantes são componentes isolados */
+
+            /* agora o primeiro vértice conecta com vértices do segundo grupo
+               até chegar no grau maximo */
+
+            for (int i = 3; i < tamanho_maior; i++) {
+                if (grau == get_grau(1)) {
+                    break;
+                }
+                if (arestas_ponderado) {
+                    set_aresta(0, i, gerar_numero_aleatorio(1,10));
+                } else {
+                    set_aresta(0, i, 1);
+                }
+            }
+
+            return;
         }
     }
 }
