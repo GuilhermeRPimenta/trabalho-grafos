@@ -101,14 +101,41 @@ void GrafoMatriz::novo_grafo(const std::string &arquivo) {
         /* Uma árvore tem sempre apenas um componente conexo e um 
            grafo bipartido com apenas uma componente pode ser uma árvore  */
 
-        if (arvore || (bipartido && comp_conexas == 1)) {
+        if (arvore || (bipartido && comp_conexas == 1 && n_vertices >= 2)) {
             criar_arvore(0, n_vertices);
             return;
         }
 
+        if (bipartido) {
+            int tamComp = n_vertices/comp_conexas;
+            int indice = 0;
+            for (int i = 0; i < comp_conexas; i++) {
+                int tam = tamComp;
+                if (i==0) {
+                    tam += (n_vertices % comp_conexas)/2+(n_vertices % comp_conexas)%2;
+                }
 
+                if (i==comp_conexas-1) {
+                    tam += (n_vertices % comp_conexas)/2;
+                }
 
+                for (int j = indice; j < tam + indice; j++) {
+                    int k = 1;
+                    while(get_grau(j+1) < grau && k <= tam) {
+                        if (arestas_ponderado) {
+                            set_aresta(j, j+k, gerar_numero_aleatorio(1,10));
+                        } else {
+                            set_aresta(j,j+k,1);
+                        }
+                        k++;
+                    }
+                    j = j+k-1;
+                }
 
+                indice+=tam;
+            }
+            return;
+        }
         /*
            Se não é árvore ou bipartido:
            Tenta dividir componentes em partes iguais
