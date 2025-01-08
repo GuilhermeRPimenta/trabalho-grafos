@@ -9,7 +9,7 @@
 #include <string>
 #include "lista_encad.h"
 
-class GrafoLista {
+class GrafoLista : public Grafo {
 private:
     ListaEncadeada* vertices; 
     int ordem;
@@ -35,7 +35,7 @@ public:
     void salva_grafo(std::ofstream &saida) const;
     void novo_grafo(const std::string &descricao);
 
-    int numero_componentes_conexas() const;
+    int n_conexo() const;
     void dfs(int vertice, bool* visitado) const;
     void dfs_ordem(int vertice, bool* visitado, int* pilha, int& topo) const;
     GrafoLista transpor() const;

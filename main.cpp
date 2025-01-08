@@ -1,15 +1,17 @@
 #include "grafo_lista.h"
+#include "grafo_matriz.h"
+#include "grafo.h"
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
 #include <cstring>
 
-void imprimir_dados_grafo(GrafoLista *grafo)
+void imprimir_dados_grafo(Grafo *grafo)
 {
     std::cout << "Grau: " << grafo->get_grau() << std::endl;
     std::cout << "Ordem: " << grafo->get_ordem() << std::endl;
     std::cout << "Direcionado: " << (grafo->eh_direcionado() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Componentes conexas: " << (grafo->numero_componentes_conexas()) << std::endl;
+    std::cout << "Componentes conexas: " << (grafo->n_conexo()) << std::endl;
     std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
     std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
@@ -37,6 +39,9 @@ int main(int argc, char *argv[])
         if (estrutura == "-m")
         {
             // Carregar grafo com matriz de adjacência
+            GrafoMatriz grafoMatriz;
+            grafoMatriz.carrega_grafo(arquivo_grafo);
+            imprimir_dados_grafo(&grafoMatriz);
         }
         else if (estrutura == "-l")
         {

@@ -138,7 +138,7 @@ void GrafoLista::novo_grafo(const std::string &descricao)
             exit(1);
         }
         
-        if (numero_componentes_conexas() != 1) {
+        if (n_conexo() != 1) {
             std::cerr << "Erro: Impossível criar um grafo completo com " << componentesConexas << " componentes conexas" << std::endl;
             exit(1);
         }
@@ -394,7 +394,7 @@ GrafoLista GrafoLista::transpor() const
     return transposto;
 }
 
-int GrafoLista::numero_componentes_conexas() const
+int GrafoLista::n_conexo() const
 {
     if (eh_direcionado())
     {
@@ -525,7 +525,7 @@ bool GrafoLista::eh_bipartido() const
 bool GrafoLista::eh_arvore() const
 {
     // Verifica se o grafo é conexo
-    if (numero_componentes_conexas() != 1)
+    if (n_conexo() != 1)
     {
         return false;
     }
@@ -545,7 +545,7 @@ bool GrafoLista::eh_arvore() const
 
 bool GrafoLista::possui_articulacao() const {
     // Verificar conectividade inicial
-    if (numero_componentes_conexas() > 1) {
+    if (n_conexo() > 1) {
         return false; // Se já não é conexo, não faz sentido buscar pontes
     }
     if(ordem == 1) return false;
@@ -600,7 +600,7 @@ bool GrafoLista::possui_articulacao() const {
 
 bool GrafoLista::possui_ponte() const {
     // Verificar conectividade inicial
-    if (numero_componentes_conexas() > 1) {
+    if (n_conexo() > 1) {
         return false; // Se já não é conexo, não faz sentido buscar pontes
     }
 
@@ -657,7 +657,7 @@ void GrafoLista::imprime_grafoLista() const {
     std::cout<<"Grau: "<<get_grau()<<std::endl;
     std::cout<<"Ordem: "<<get_ordem()<<std::endl;
     std::cout<<"Direcionado: "<<eh_direcionado()<<std::endl;
-    std::cout<<"Componentes conexas: "<<numero_componentes_conexas()<<std::endl;
+    std::cout<<"Componentes conexas: "<<n_conexo()<<std::endl;
     std::cout<<"Vertices ponderados: "<<vertice_ponderado()<<std::endl;
     std::cout<<"Arestas ponderadas: "<<aresta_ponderada()<<std::endl;
     std::cout<<"Completo: "<<eh_completo()<<std::endl;
