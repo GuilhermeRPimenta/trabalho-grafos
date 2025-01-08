@@ -331,6 +331,9 @@ void GrafoMatriz::carrega_grafo(const std::string &arquivo) {
 
 int GrafoMatriz::get_aresta(int i, int j) const {
     // Suporte a grafos direcionados e não direcionados
+    if (i == j) {
+        return 0;
+    }
     if (grafo_direcionado) {
         return matriz[i][j];
     } else {
@@ -349,6 +352,9 @@ int GrafoMatriz::get_aresta(int i, int j) const {
 }
 
 void GrafoMatriz::set_aresta(int i, int j, int val) {
+    if (i == j) {
+        return;
+    }
     //Supote a grafos direcionados e não direcionados
     if (grafo_direcionado) {
         matriz[i][j] = val;
@@ -531,6 +537,9 @@ GrafoMatriz* GrafoMatriz::get_copia() const {
             copia->vertices[i] = vertices[i];
         }
         for (int j = 0; j < n_vertices; j++) {
+            if (i==j) {
+                continue;
+            }
             copia->set_aresta(i, j, get_aresta(i, j));
         }
     }
