@@ -97,6 +97,18 @@ void GrafoMatriz::novo_grafo(const std::string &arquivo) {
             }
             return;
         }
+
+        /* Uma árvore tem sempre apenas um componente conexo e um 
+           grafo bipartido com apenas uma componente pode ser uma árvore  */
+
+        if (arvore || (bipartido && comp_conexas == 1)) {
+            criar_arvore(0, n_vertices);
+            return;
+        }
+
+
+
+
         /*
            Se não é árvore ou bipartido:
            Tenta dividir componentes em partes iguais
@@ -104,12 +116,7 @@ void GrafoMatriz::novo_grafo(const std::string &arquivo) {
         
         int tamComp = n_vertices/comp_conexas;
         /* no caso de possuir aresta_ponte, devemos ter certeza que sobra um componente conexo pra conectar no outro */
-        if (vertice_articulacao && !aresta_ponte) {
-            grau--;
-            comp_conexas++;
-            tamComp = n_vertices/comp_conexas;
-        }
-        else if (aresta_ponte) {
+        if (aresta_ponte) {
             /* diminui grau para garantir que não ultrapassem o maximo */
             grau--;
             tamComp = n_vertices/(comp_conexas+1);
@@ -124,12 +131,7 @@ void GrafoMatriz::novo_grafo(const std::string &arquivo) {
                 */
                 tam += (n_vertices % comp_conexas)/2+(n_vertices % comp_conexas)%2;
             }
-            if (vertice_articulacao) {
-                if (i==1) {
-                    tam += (n_vertices % comp_conexas)/2;
-                }
-            }
-            else if (i==comp_conexas-1) {
+            if (i==comp_conexas-1) {
                 tam += (n_vertices % comp_conexas)/2;
             }
             
@@ -172,20 +174,32 @@ void GrafoMatriz::novo_grafo(const std::string &arquivo) {
             set_aresta(0,ultimo, 1);
             if (arestas_ponderado)
                 set_aresta(0,ultimo, gerar_numero_aleatorio(1, 10));
-        } else if (vertice_articulacao) {
-            int ultimo = n_vertices-1;
-            set_aresta(0,ultimo, 1);
-            set_aresta(0, ultimo-1, 1);
-            if (arestas_ponderado) {
-                set_aresta(0,ultimo, gerar_numero_aleatorio(1, 10));
-                set_aresta(0,ultimo-1, gerar_numero_aleatorio(1, 10));
-            }
         }
     }
 }
 
-int* GrafoMatriz::criar_componente_conexa_aleatoria(int tam, int grauMax, bool completo, bool bipartido, bool arvore, bool aresta_ponte, bool vertice_articulacao) {
-    return nullptr;
+void GrafoMatriz::criar_arvore(int i, int tam) {
+    if (2*i+1 >= tam) {
+        return;
+    }
+    
+    if (arestas_ponderado) {
+        set_aresta(i, 2*i+1, gerar_numero_aleatorio(1,10));
+    } else {
+        set_aresta(i, 2*i+1, 1);
+    }
+
+    if (2*i+2 >= tam) {
+        return;
+    }
+
+    if (arestas_ponderado) {
+        set_aresta(i, 2*i+2, gerar_numero_aleatorio(1,10));
+    } else {
+        set_aresta(i, 2*i+2, 1);
+    }
+    criar_arvore(2*i+1, tam);
+    criar_arvore(2*i+2, tam);
 }
 
 
