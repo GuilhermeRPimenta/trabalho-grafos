@@ -137,13 +137,15 @@ void GrafoLista::novo_grafo(const std::string &descricao)
             std::cerr << "Erro: Impossível criar um grafo completo e bipartido com ordem diferente de 2" << std::endl;
             exit(1);
         }
-        
-        if (n_conexo() != 1) {
+
+        if (numero_componentes_conexas() != 1)
+        {
             std::cerr << "Erro: Impossível criar um grafo completo com " << componentesConexas << " componentes conexas" << std::endl;
             exit(1);
         }
 
-        if (grau != ordem - 1) {
+        if (grau != ordem - 1)
+        {
             std::cerr << "Erro: Impossível criar um grafo completo com grau " << grau << "diferente do vértice que tem maior grau" << std::endl;
             exit(1);
         }
