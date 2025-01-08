@@ -6,7 +6,7 @@ class Grafo {
 public:
     virtual ~Grafo() {}
     virtual bool eh_bipartido() const = 0;
-    virtual int get_grau(int vertice) const = 0;
+    virtual int get_grau() const = 0;
     virtual int get_ordem() const = 0;
     virtual bool eh_direcionado() const = 0;
     virtual bool vertice_ponderado() const = 0;

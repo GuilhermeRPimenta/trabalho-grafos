@@ -24,7 +24,8 @@ class GrafoMatriz: public Grafo {
         void imprimir_grafo_formato_txt(int vertice);
 
         bool eh_bipartido() const;
-        int get_grau(int vertice) const;
+        int get_grau_vertice(int vertice) const;
+        int get_grau() const;
         int get_ordem() const;
         int n_conexo() const;
         bool eh_direcionado() const;

@@ -121,7 +121,7 @@ void GrafoMatriz::novo_grafo(const std::string &arquivo) {
 
                 for (int j = indice; j < tam + indice; j++) {
                     int k = 0;
-                    while(get_grau(j+1) < grau && j+k <= tam) {
+                    while(get_grau_vertice(j+1) < grau && j+k <= tam) {
                         k++;
                         if (arestas_ponderado) {
                             set_aresta(j, j+k, gerar_numero_aleatorio(1,10));
@@ -192,7 +192,7 @@ void GrafoMatriz::novo_grafo(const std::string &arquivo) {
                     }
                 }
 
-                grauComp = get_grau(verticeAtual+1);
+                grauComp = get_grau_vertice(verticeAtual+1);
             }
             verticeAtual+=tam;
         }
@@ -259,7 +259,7 @@ void GrafoMatriz::novo_grafo(const std::string &arquivo) {
                até chegar no grau maximo */
 
             for (int i = 3; i < tamanho_maior; i++) {
-                if (grau == get_grau(1)) {
+                if (grau == get_grau_vertice(1)) {
                     break;
                 }
                 if (arestas_ponderado) {
@@ -400,7 +400,7 @@ bool GrafoMatriz::eh_bipartido() const {
     return true;
 } 
 
-int GrafoMatriz::get_grau(int vertice) const {
+int GrafoMatriz::get_grau_vertice(int vertice) const {
     //Assumindo que o vértice é 1-indexado
     int grau = 0;
     for (int i = 0; i < n_vertices; i++) {
@@ -529,6 +529,10 @@ bool GrafoMatriz::possui_ponte() const {
     return false;
 }
 
+int GrafoMatriz::get_grau() const {
+    return 1;
+}
+
 GrafoMatriz* GrafoMatriz::get_copia() const {
     GrafoMatriz* copia = new GrafoMatriz();
     copia->inicia_grafo(n_vertices, grafo_direcionado);
@@ -586,7 +590,7 @@ int GrafoMatriz::n_conexo() const {
 void GrafoMatriz::imprimir_grafo_formato_txt(int vertice) {
     cout<<"grafo.txt"<<endl;
     cout<<endl;
-    cout<<"Grau: "<<get_grau(vertice)<<endl;
+    cout<<"Grau: "<<get_grau_vertice(vertice)<<endl;
     cout<<"Ordem: "<<get_ordem()<<endl;
     cout<<"Direcionado: "<<eh_direcionado()<<endl;
     cout<<"Componentes conexas: "<<n_conexo()<<endl;
