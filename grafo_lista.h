@@ -48,7 +48,6 @@ public:
     bool aresta_ponderada() const;
     bool eh_completo() const;
     bool eh_bipartido() const;
-    bool eh_conexo() const;
     bool eh_arvore() const;
     bool possui_ponte() const;
     bool possui_articulacao() const;

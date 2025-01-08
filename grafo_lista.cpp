@@ -310,44 +310,6 @@ bool GrafoLista::eh_completo() const
     return get_grau() == max_arestas;
 }
 
-bool GrafoLista::eh_conexo() const
-{
-    bool *visitado = new bool[ordem];
-    for (int i = 0; i < ordem; ++i)
-    {
-        visitado[i] = false;
-    }
-
-    int *fila = new int[ordem];
-    int inicio = 0, fim = 0;
-
-    fila[fim++] = 0;
-    visitado[0] = true;
-    int visitados = 1;
-
-    while (inicio < fim)
-    {
-        int atual = fila[inicio++];
-        auto *elementos = vertices[atual].obter_elementos();
-        int num_elementos = vertices[atual].tamanho();
-
-        for (int i = 0; i < num_elementos; ++i)
-        {
-            int vizinho = elementos[i];
-            if (!visitado[i])
-            { // Se o vizinho não foi visitado
-                visitado[i] = true;
-                fila[fim++] = vizinho;
-                visitados++;
-            }
-        }
-    }
-
-    delete[] visitado;
-    delete[] fila;
-    return visitados == ordem; // Verifica se todos os vértices foram visitados
-}
-
 void GrafoLista::dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo) const
 {
     visitado[vertice] = true;
@@ -598,7 +560,6 @@ bool GrafoLista::possui_articulacao() const {
     }
     return false;
 }
-
 
 bool GrafoLista::possui_ponte() const {
     // Verificar conectividade inicial
