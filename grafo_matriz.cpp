@@ -615,6 +615,7 @@ void GrafoMatriz::imprimir_grafo_formato_txt(int vertice) {
 Para testes com o arquivo grafo.txt
 */
 
+/*
 int main() {
     GrafoMatriz *g = new GrafoMatriz();
     string arquivo = "descricao.txt";
@@ -623,3 +624,4 @@ int main() {
     g->imprimir_grafo_formato_txt(1);
     return 0;
 }
+*/
