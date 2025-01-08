@@ -1,5 +1,5 @@
 #include "grafo_lista.h"
-#include "lista_encad.cpp"
+#include "lista_encad.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -137,13 +137,15 @@ void GrafoLista::novo_grafo(const std::string &descricao)
             std::cerr << "Erro: Impossível criar um grafo completo e bipartido com ordem diferente de 2" << std::endl;
             exit(1);
         }
-        
-        if (n_conexo() != 1) {
+
+        if (n_conexo() != 1)
+        {
             std::cerr << "Erro: Impossível criar um grafo completo com " << componentesConexas << " componentes conexas" << std::endl;
             exit(1);
         }
 
-        if (grau != ordem - 1) {
+        if (grau != ordem - 1)
+        {
             std::cerr << "Erro: Impossível criar um grafo completo com grau " << grau << "diferente do vértice que tem maior grau" << std::endl;
             exit(1);
         }
@@ -306,44 +308,6 @@ bool GrafoLista::eh_completo() const
         max_arestas *= 2;
     }
     return get_grau() == max_arestas;
-}
-
-bool GrafoLista::eh_conexo() const
-{
-    bool *visitado = new bool[ordem];
-    for (int i = 0; i < ordem; ++i)
-    {
-        visitado[i] = false;
-    }
-
-    int *fila = new int[ordem];
-    int inicio = 0, fim = 0;
-
-    fila[fim++] = 0;
-    visitado[0] = true;
-    int visitados = 1;
-
-    while (inicio < fim)
-    {
-        int atual = fila[inicio++];
-        auto *elementos = vertices[atual].obter_elementos();
-        int num_elementos = vertices[atual].tamanho();
-
-        for (int i = 0; i < num_elementos; ++i)
-        {
-            int vizinho = elementos[i];
-            if (!visitado[i])
-            { // Se o vizinho não foi visitado
-                visitado[i] = true;
-                fila[fim++] = vizinho;
-                visitados++;
-            }
-        }
-    }
-
-    delete[] visitado;
-    delete[] fila;
-    return visitados == ordem; // Verifica se todos os vértices foram visitados
 }
 
 void GrafoLista::dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo) const
@@ -597,7 +561,6 @@ bool GrafoLista::possui_articulacao() const {
     return false;
 }
 
-
 bool GrafoLista::possui_ponte() const {
     // Verificar conectividade inicial
     if (n_conexo() > 1) {
@@ -646,23 +609,4 @@ bool GrafoLista::possui_ponte() const {
     }
 
     return false; // Nenhuma ponte encontrada
-}
-
-
-
-
-void GrafoLista::imprime_grafoLista() const {
-    std::cout<<"grafo.txt"<<std::endl;
-    std::cout<<std::endl;
-    std::cout<<"Grau: "<<get_grau()<<std::endl;
-    std::cout<<"Ordem: "<<get_ordem()<<std::endl;
-    std::cout<<"Direcionado: "<<eh_direcionado()<<std::endl;
-    std::cout<<"Componentes conexas: "<<n_conexo()<<std::endl;
-    std::cout<<"Vertices ponderados: "<<vertice_ponderado()<<std::endl;
-    std::cout<<"Arestas ponderadas: "<<aresta_ponderada()<<std::endl;
-    std::cout<<"Completo: "<<eh_completo()<<std::endl;
-    std::cout<<"Bipartido: "<<eh_bipartido()<<std::endl;
-    std::cout<<"Arvore: "<<eh_arvore()<<std::endl;
-    std::cout<<"Aresta Ponte: "<<possui_ponte()<<std::endl;
-    std::cout<<"Vertice Articulação: "<<possui_articulacao()<<std::endl;
 }

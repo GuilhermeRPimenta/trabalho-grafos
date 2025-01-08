@@ -1,5 +1,5 @@
-#include "grafo_lista.cpp"
-#include "grafo_matriz.cpp"
+#include "grafo_lista.h"
+#include "grafo_matriz.h"
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
