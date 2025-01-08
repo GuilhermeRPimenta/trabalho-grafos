@@ -36,7 +36,7 @@ class GrafoMatriz: public Grafo {
         bool possui_articulacao() const;
         bool possui_ponte() const;
         void novo_grafo(const std::string &arquivo);
-
+        void salva_grafo(std::ofstream &saida) const;
         GrafoMatriz* get_copia() const;
     private:
         int get_aresta(int i, int j) const;

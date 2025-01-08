@@ -594,6 +594,35 @@ int GrafoMatriz::n_conexo() const {
     return numero_componentes_conexas;
 }
 
+void GrafoMatriz::salva_grafo(std::ofstream &saida) const
+{
+    saida << n_vertices << " " << eh_direcionado() << " "
+          << vertices_ponderado << " " << arestas_ponderado << std::endl;
+
+    if (vertices_ponderado)
+    {
+        for (int i = 0; i < n_vertices; ++i)
+        {
+            saida << vertices[i] << " ";
+        }
+        saida << std::endl;
+    }
+
+    for (int i = 0; i < n_vertices; ++i)
+    {
+        for (int j = 0; j < n_vertices; ++j)
+        {
+            if (get_aresta(i,j) != 0) {
+                saida << i+1 << " " << j+1 << " ";
+                if (arestas_ponderado) {
+                    saida << get_aresta(i, j);
+                }
+                saida << std::endl;
+            }
+        }
+    }
+}
+
 void GrafoMatriz::imprimir_grafo_formato_txt(int vertice) {
     cout<<"grafo.txt"<<endl;
     cout<<endl;
