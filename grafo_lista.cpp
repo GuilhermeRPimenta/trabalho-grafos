@@ -138,7 +138,7 @@ void GrafoLista::novo_grafo(const std::string &descricao)
             exit(1);
         }
 
-        if (numero_componentes_conexas() != 1)
+        if (n_conexo() != 1)
         {
             std::cerr << "Erro: Impossível criar um grafo completo com " << componentesConexas << " componentes conexas" << std::endl;
             exit(1);
