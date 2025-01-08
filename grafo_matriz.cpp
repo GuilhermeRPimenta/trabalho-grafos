@@ -597,7 +597,7 @@ int GrafoMatriz::n_conexo() const {
 void GrafoMatriz::imprimir_grafo_formato_txt(int vertice) {
     cout<<"grafo.txt"<<endl;
     cout<<endl;
-    cout<<"Grau: "<<get_grau_vertice(vertice)<<endl;
+    cout<<"Grau: "<<get_grau()<<endl;
     cout<<"Ordem: "<<get_ordem()<<endl;
     cout<<"Direcionado: "<<eh_direcionado()<<endl;
     cout<<"Componentes conexas: "<<n_conexo()<<endl;
