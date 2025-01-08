@@ -1,9 +1,11 @@
 #include "lista_encad.h"
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
 ListaEncadeada::ListaEncadeada() : primeiro(nullptr) {}
+
 
 ListaEncadeada::~ListaEncadeada() {
     No* p = primeiro;
@@ -80,4 +82,70 @@ No* ListaEncadeada::getPrimeiro() {
 
 void ListaEncadeada::setPesoV(float peso) {
     pesoV = peso;
+}
+
+float ListaEncadeada::getPesoV() {
+    return pesoV;
+}
+
+void ListaEncadeada::escrever(std::ofstream &saida, int origem) const {
+    No* atual = primeiro;
+    while (atual != nullptr) {
+        int destino = atual->getInfo();
+        float peso = atual->getPeso();
+        
+        // Verifica se a aresta é ponderada ou não
+        if (pesoV > 1.0) {  
+            saida << origem+1 << " " << destino+1 << " " << peso << std::endl;
+        } else {
+            saida << origem+1 << " " << destino+1 << std::endl;
+        }
+        atual = atual->getProx();
+    }
+}
+
+void ListaEncadeada::remove(int val) {
+    // Caso a lista esteja vazia
+    if (primeiro == nullptr) {
+        cout << "Erro: A lista está vazia! Não é possível remover elementos." << endl;
+        return;
+    }
+
+    // Caso o valor esteja no primeiro nó
+    if (primeiro->getInfo() == val) {
+        No* temp = primeiro;
+        primeiro = primeiro->getProx();
+        delete temp;
+        return;
+    }
+
+    // Percorrer a lista para encontrar o nó a ser removido
+    No* atual = primeiro;
+    No* anterior = nullptr;
+
+    while (atual != nullptr && atual->getInfo() != val) {
+        anterior = atual;
+        atual = atual->getProx();
+    }
+
+    // Caso o valor não seja encontrado
+    if (atual == nullptr) {
+        cout << "Erro: Elemento " << val << " não encontrado na lista." << endl;
+        return;
+    }
+
+    // Remover o nó
+    anterior->setProx(atual->getProx());
+    delete atual;
+}
+
+void ListaEncadeada::limpar()
+{
+    No* p = primeiro;
+    while (p != nullptr) {
+        No* t = p->getProx();
+        delete p;
+        p = t;
+    }
+    primeiro = nullptr;
 }

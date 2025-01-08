@@ -22,7 +22,6 @@
     "format": "cpp",
     "fstream": "cpp",
     "initializer_list": "cpp",
-    "iomanip": "cpp",
     "ios": "cpp",
     "iosfwd": "cpp",
     "istream": "cpp",
@@ -54,6 +53,18 @@
     "xtr1common": "cpp",
     "xutility": "cpp",
     "algorithm": "cpp",
-    "optional": "cpp"
+    "optional": "cpp",
+    "array": "cpp",
+    "cstdarg": "cpp",
+    "cwctype": "cpp",
+    "deque": "cpp",
+    "unordered_map": "cpp",
+    "vector": "cpp",
+    "functional": "cpp",
+    "memory_resource": "cpp",
+    "numeric": "cpp",
+    "random": "cpp",
+    "set": "cpp",
+    "xtree": "cpp"
   }
 }
