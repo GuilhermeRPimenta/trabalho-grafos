@@ -27,7 +27,7 @@ void GrafoLista::inicializar_vertices(int tam)
     vertices = new ListaEncadeada[tam]; // N numeros de LL (mesmo nr de nos)
 }
 
-void GrafoLista::carrega_grafo(const std::string &arquivo)
+void GrafoLista::carrega_grafo(const std::string &arquivo) 
 {
     std::ifstream entrada(arquivo);
     if (!entrada.is_open())
@@ -261,7 +261,7 @@ void GrafoLista::salva_grafo(std::ofstream &saida) const
     }
 }
 
-int GrafoLista::get_grau() const
+int GrafoLista::get_grau() const 
 {
     int max_grau = 0;
 
