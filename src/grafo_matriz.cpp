@@ -1,4 +1,5 @@
 #include "../include/grafo_matriz.h"
+#include "../include/grafo.h"
 #include <ctime>
 #include <cstdlib>
 int gerar_numero_aleatorio(int min, int max) {
@@ -37,7 +38,7 @@ void GrafoMatriz::imprimir_grafo() const {
     }
 }
 
-void GrafoMatriz::inicia_grafo(int n, bool direcionado) {
+void GrafoMatriz::inicializar_vertices(int n) {
     matriz = new int*[n];
     if (direcionado) {
         grafo_direcionado = true;
@@ -297,7 +298,6 @@ void GrafoMatriz::criar_arvore(int i, int tam) {
     criar_arvore(2*i+1, tam);
     criar_arvore(2*i+2, tam);
 }
-
 
 void GrafoMatriz::carrega_grafo(const std::string &arquivo) {
 

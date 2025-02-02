@@ -1,5 +1,5 @@
 #include "include/grafo_lista.h"
-#include "include/grafo_matriz.h"
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -14,11 +14,13 @@ void imprimir_dados_grafo(Grafo *grafo)
     std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
     std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
+    /*
     std::cout << "Bipartido sem Forca Bruta: " << (grafo->eh_bipartido_sem_bruta() ? "Sim" : "Nao") << std::endl;
     std::cout << "Bipartido com Forca Bruta: " << (grafo->eh_bipartido() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arvore: " << (grafo->eh_arvore() ? "Sim" : "Nao") << std::endl;
     std::cout << "Ponte: " << (grafo->possui_ponte() ? "Sim" : "Nao") << std::endl;
     std::cout << "Articulacao: " << (grafo->possui_articulacao() ? "Sim" : "Nao") << std::endl;
+    */
 }
 
 int main(int argc, char *argv[])
@@ -38,10 +40,7 @@ int main(int argc, char *argv[])
         // Caso 1 e Caso 2: Carregar e descrever o grafo
         if (estrutura == "-m")
         {
-            // Carregar grafo com matriz de adjacência
-            GrafoMatriz grafoMatriz;
-            grafoMatriz.carrega_grafo(arquivo_grafo);
-            imprimir_dados_grafo(&grafoMatriz);
+            
         }
         else if (estrutura == "-l")
         {
@@ -71,17 +70,7 @@ int main(int argc, char *argv[])
 
         if (estrutura == "-m")
         {
-            GrafoMatriz grafo;
-            grafo.novo_grafo(arquivo_descricao);
-
-            std::ofstream saida(caminho_completo);
-            if (!saida.is_open())
-            {
-                std::cerr << "Erro ao abrir arquivo para salvar o grafo: " << arquivo_grafo << std::endl;
-                return 1;
-            }
-            grafo.salva_grafo(saida);
-            saida.close();
+            
         }
         else if (estrutura == "-l")
         {

@@ -45,7 +45,7 @@ class GrafoMatriz: public Grafo {
     private:
         int get_aresta(int i, int j) const;
         void set_aresta(int i, int j, int valor);
-        void inicia_grafo(int n_vertices, bool direcionado);
+        void inicializar_vertices(int n_vertices) override;
         int get_numero_vertices_conexos(int vertice) const;
         int aux_get_numero_vertices_conexos(int vertice, bool* vet_vertices_visitados) const;
         void criar_arvore(int i, int tam);

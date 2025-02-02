@@ -1,17 +1,26 @@
 #include "../include/grafo_lista.h"
 #include "../include/lista_encad.h"
+#include "../include/grafo.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <cmath>
 
-
 GrafoLista::GrafoLista()
-    : vertices(nullptr), ordem(0), direcionado(false), vertices_ponderados(false), arestas_ponderadas(false) {}
+{
+    this->direcionado = false;
+    this->vertices = nullptr;
+    this->ordem = 0;
+    this->arestas_ponderadas = false;
+    this->vertices_ponderados = false;
+}
 
 GrafoLista::GrafoLista(int ordem, bool direcionado, bool vertices_ponderados, bool arestas_ponderadas)
-    : ordem(ordem), direcionado(direcionado), vertices_ponderados(vertices_ponderados), arestas_ponderadas(arestas_ponderadas)
 {
+    this->direcionado = direcionado;
+    this->ordem = ordem;
+    this->arestas_ponderadas = arestas_ponderadas;
+    this->vertices_ponderados = vertices_ponderados;
     inicializar_vertices(ordem);
 }
 
@@ -28,54 +37,19 @@ void GrafoLista::inicializar_vertices(int tam)
     vertices = new ListaEncadeada[tam]; // N numeros de LL (mesmo nr de nos)
 }
 
-void GrafoLista::carrega_grafo(const std::string &arquivo) 
+void GrafoLista::setPesoV(float peso)
 {
-    std::string caminho_completo = "./entradas/" + arquivo; 
-    std::ifstream entrada(caminho_completo);
-    if (!entrada.is_open())
-    {
-        std::cerr << "Erro ao abrir o arquivo: " << arquivo << std::endl;
-        return;
-    }
+    vertices->setPesoV(peso);
+}
 
-    // Lê ordem, direcionado, vertices ponderados e arestas ponderadas
-    entrada >> ordem >> direcionado >> vertices_ponderados >> arestas_ponderadas;
-    inicializar_vertices(ordem);
-
-    // Lê os pesos dos vértices (se vértices forem ponderados
-    if (vertices_ponderados)
-    {
-        for (int i = 0; i < ordem; ++i)
-        {
-            float peso;
-            entrada >> peso;
-            vertices[i].setPesoV(peso); // IDs começam em 1
-        }
-    }
-
-    // Lê as arestas
-    int origem, destino;
-    float pesoAresta = 1.0; // Peso padrão
-    while (entrada >> origem >> destino)
-    {
-        if (arestas_ponderadas)
-        {
-            entrada >> pesoAresta;
-        }
-        // Adiciona a aresta (-1 para ajustar com info)
-        vertices[origem - 1].insereFinal(destino - 1, pesoAresta);
-    }
-
-    entrada.close();
-
-    std::cout << "Grafo carregado com sucesso!" << std::endl;
-    std::cout << "Ordem: " << ordem << " | Direcionado: " << (direcionado ? "Sim" : "Não") << std::endl
-              << std::endl;
+void GrafoLista::setAresta(int origem, float pesoAresta, int destino)
+{
+    vertices[origem - 1].insereFinal(destino - 1, pesoAresta);
 }
 
 void GrafoLista::novo_grafo(const std::string &descricao)
 {
-    std::string caminho_completo = "./entradas/" + descricao;  // Ajuste para o diretório atual
+    std::string caminho_completo = "./entradas/" + descricao; // Ajuste para o diretório atual
     std::ifstream entrada(caminho_completo);
     if (!entrada.is_open())
     {
@@ -114,12 +88,12 @@ void GrafoLista::novo_grafo(const std::string &descricao)
 
     inicializar_vertices(ordem);
     // Configuração inicial dos pesos dos vértices
-    if (vertices_ponderados) {
+    if (vertices_ponderados)
+    {
         for (int i = 0; i < ordem; i++)
         {
             vertices[i].setPesoV(vertices_ponderados ? rand() % 10 + 1 : 1.0); // Peso do vértice
         }
-        
     }
 
     if (completo)
@@ -136,7 +110,8 @@ void GrafoLista::novo_grafo(const std::string &descricao)
                 }
             }
         }
-        if (bipartido && ordem != 2) {
+        if (bipartido && ordem != 2)
+        {
             std::cerr << "Erro: Impossível criar um grafo completo e bipartido com ordem diferente de 2" << std::endl;
             exit(1);
         }
@@ -170,7 +145,8 @@ void GrafoLista::novo_grafo(const std::string &descricao)
             }
         }
 
-        if (grau > ordem - 1) {
+        if (grau > ordem - 1)
+        {
             std::cerr << "Erro: Impossível criar um grafo bipartido com grau maior que a ordem" << std::endl;
             exit(1);
         }
@@ -264,56 +240,12 @@ void GrafoLista::salva_grafo(std::ofstream &saida) const
     }
 }
 
-int GrafoLista::get_grau() const 
+int GrafoLista::getGrauV(int indice)
 {
-    int max_grau = 0;
-
-    // Contando os graus de saída
-    for (int i = 0; i < ordem; ++i)
-    {
-        int grau_saida = vertices[i].tamanho(); // Grau de saída do vértice i
-
-        // Atualizando o grau máximo
-        if (grau_saida > max_grau)
-        {
-            max_grau = grau_saida;
-        }
-    }
-
-    return max_grau;
+    return vertices[indice].tamanho();
 }
 
-int GrafoLista::get_ordem() const
-{
-    return ordem;
-}
-
-bool GrafoLista::eh_direcionado() const
-{
-    return direcionado;
-}
-
-bool GrafoLista::vertice_ponderado() const
-{
-    return vertices_ponderados;
-}
-
-bool GrafoLista::aresta_ponderada() const
-{
-    return arestas_ponderadas;
-}
-
-bool GrafoLista::eh_completo() const
-{
-    int max_arestas = ordem * (ordem - 1) / 2;
-    if (direcionado)
-    {
-        max_arestas *= 2;
-    }
-    return get_grau() == max_arestas;
-}
-
-void GrafoLista::dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo) const
+void GrafoLista::dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo)
 {
     visitado[vertice] = true;
     No *noAtual = vertices[vertice].getPrimeiro();
@@ -329,7 +261,7 @@ void GrafoLista::dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo) c
     pilha[++topo] = vertice;
 }
 
-void GrafoLista::dfs(int vertice, bool *visitado) const
+void GrafoLista::dfs(int vertice, bool *visitado)
 {
     visitado[vertice] = true;
     No *noAtual = vertices[vertice].getPrimeiro();
@@ -344,7 +276,7 @@ void GrafoLista::dfs(int vertice, bool *visitado) const
     }
 }
 
-GrafoLista GrafoLista::transpor() const
+int GrafoLista::conta_transposto(bool *visitado, int *pilha, int &topo)
 {
     GrafoLista transposto(ordem, true, vertices_ponderados, arestas_ponderadas);
     for (int i = 0; i < ordem; ++i)
@@ -358,71 +290,24 @@ GrafoLista GrafoLista::transpor() const
             noAtual = noAtual->getProx();
         }
     }
-    return transposto;
+
+    for (int i = 0; i < ordem; ++i)
+        visitado[i] = false;
+
+    int numComponentes = 0;
+    while (topo >= 0)
+    {
+        int v = pilha[topo--];
+        if (!visitado[v])
+        {
+            transposto.dfs(v, visitado);
+            ++numComponentes;
+        }
+    }
+    return numComponentes;
 }
 
-int GrafoLista::n_conexo() const
-{
-    if (eh_direcionado())
-    {
-        // Algoritmo de Kosaraju para grafos direcionados
-        int *pilha = new int[ordem];
-        bool *visitado = new bool[ordem];
-        int topo = -1;
-
-        // Preenche a pilha na ordem inversa
-        for (int i = 0; i < ordem; ++i)
-            visitado[i] = false;
-
-        for (int i = 0; i < ordem; ++i)
-        {
-            if (!visitado[i])
-                dfs_ordem(i, visitado, pilha, topo);
-        }
-
-        GrafoLista grafoTransposto = transpor();
-
-        for (int i = 0; i < ordem; ++i)
-            visitado[i] = false;
-
-        int numComponentes = 0;
-        while (topo >= 0)
-        {
-            int v = pilha[topo--];
-            if (!visitado[v])
-            {
-                grafoTransposto.dfs(v, visitado);
-                ++numComponentes;
-            }
-        }
-
-        delete[] pilha;
-        delete[] visitado;
-
-        return numComponentes;
-    }
-    else
-    {
-        // Algoritmo grafos não direcionados
-        bool *visitado = new bool[ordem];
-        for (int i = 0; i < ordem; ++i)
-            visitado[i] = false;
-
-        int numComponentes = 0;
-        for (int i = 0; i < ordem; ++i)
-        {
-            if (!visitado[i])
-            {
-                dfs(i, visitado);
-                ++numComponentes;
-            }
-        }
-
-        delete[] visitado;
-        return numComponentes;
-    }
-}
-
+/*
 bool GrafoLista::bfs_bipartido(int inicio, int *cor) const
 {
     int *fila = new int[ordem];
@@ -614,7 +499,6 @@ bool GrafoLista::possui_ponte() const {
     return false; // Nenhuma ponte encontrada
 }
 
-
 bool GrafoLista::eh_bipartido() const{
     int total_combinacoes = (1 << ordem);  // 2^ordem
     bool conjunto1[ordem], conjunto2[ordem];
@@ -645,3 +529,5 @@ bool GrafoLista::particao_valida(const bool conjunto1[], const bool conjunto2[])
     }
     return true;
 }
+
+*/

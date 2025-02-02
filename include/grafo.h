@@ -5,20 +5,45 @@
 class Grafo {
 public:
     virtual ~Grafo() {}
+    virtual int get_grau();
+    virtual int get_ordem();
+    virtual bool eh_direcionado();
+    virtual bool vertice_ponderado();
+    virtual bool aresta_ponderada();
+    virtual bool eh_completo();
+    virtual int n_conexo();
+    
+    virtual void carrega_grafo(const std::string& arquivo);
+
+    /*
     virtual bool eh_bipartido() const = 0;
-    virtual int get_grau() const = 0;
-    virtual int get_ordem() const = 0;
-    virtual bool eh_direcionado() const = 0;
-    virtual bool vertice_ponderado() const = 0;
-    virtual bool aresta_ponderada() const = 0;
-    virtual bool eh_completo() const = 0;
     virtual bool eh_arvore() const = 0;
-    virtual int n_conexo() const = 0;
     virtual bool possui_articulacao() const = 0;
     virtual bool possui_ponte() const = 0;
-    virtual void carrega_grafo(const std::string& arquivo) = 0;
-    
     virtual bool eh_bipartido_sem_bruta() const = 0;
+    */
+
+    virtual void inicializar_vertices(int ordem) = 0;
+    
+
+    virtual void setPesoV(float peso) = 0;
+    virtual void setAresta(int origem, float pesoAresta, int destino) = 0;
+
+    virtual int  getGrauV(int indice) = 0;
+
+
+protected:
+    int ordem;
+    bool direcionado;
+    bool vertices_ponderados;
+    bool arestas_ponderadas;
+
+    virtual void dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo) = 0;
+    virtual void dfs(int vertice, bool *visitado) = 0;
+
+    virtual int conta_transposto(bool *visitado, int *pilha, int &topo) = 0;
+
+    
 
 };
 
