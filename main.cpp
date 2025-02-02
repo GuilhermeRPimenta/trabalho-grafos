@@ -1,5 +1,5 @@
-#include "grafo_lista.h"
-#include "grafo_matriz.h"
+#include "include/grafo_lista.h"
+#include "include/grafo_matriz.h"
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -14,7 +14,8 @@ void imprimir_dados_grafo(Grafo *grafo)
     std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
     std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Bipartido: " << (grafo->eh_bipartido() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Bipartido sem Forca Bruta: " << (grafo->eh_bipartido_sem_bruta() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Bipartido com Forca Bruta: " << (grafo->eh_bipartido() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arvore: " << (grafo->eh_arvore() ? "Sim" : "Nao") << std::endl;
     std::cout << "Ponte: " << (grafo->possui_ponte() ? "Sim" : "Nao") << std::endl;
     std::cout << "Articulacao: " << (grafo->possui_articulacao() ? "Sim" : "Nao") << std::endl;
@@ -66,13 +67,14 @@ int main(int argc, char *argv[])
 
         std::string arquivo_descricao = argv[3];
         std::string arquivo_grafo = argv[4];
+        std::string caminho_completo = "./entradas/" + arquivo_grafo;
 
         if (estrutura == "-m")
         {
             GrafoMatriz grafo;
             grafo.novo_grafo(arquivo_descricao);
 
-            std::ofstream saida(arquivo_grafo);
+            std::ofstream saida(caminho_completo);
             if (!saida.is_open())
             {
                 std::cerr << "Erro ao abrir arquivo para salvar o grafo: " << arquivo_grafo << std::endl;
@@ -86,7 +88,7 @@ int main(int argc, char *argv[])
             GrafoLista grafo;
             grafo.novo_grafo(arquivo_descricao);
 
-            std::ofstream saida(arquivo_grafo);
+            std::ofstream saida(caminho_completo);
             if (!saida.is_open())
             {
                 std::cerr << "Erro ao abrir arquivo para salvar o grafo: " << arquivo_grafo << std::endl;
