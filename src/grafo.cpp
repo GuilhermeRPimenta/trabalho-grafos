@@ -27,7 +27,7 @@ void Grafo::carrega_grafo(const std::string &arquivo)
         {
             float peso;
             entrada >> peso;
-            setPesoV(peso); // IDs começam em 1
+            setPesoV(peso, i); // IDs começam em 1
         }
     }
 
@@ -54,7 +54,6 @@ void Grafo::carrega_grafo(const std::string &arquivo)
 int Grafo::get_grau()
 {
     int max_grau = 0;
-
     for (int i = 0; i < ordem; i++)
     {
         int grau_saida = getGrauV(i);

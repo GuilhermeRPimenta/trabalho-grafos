@@ -1,5 +1,5 @@
 #include "include/grafo_lista.h"
-
+#include "include/grafo_matriz.h"
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -40,7 +40,11 @@ int main(int argc, char *argv[])
         // Caso 1 e Caso 2: Carregar e descrever o grafo
         if (estrutura == "-m")
         {
-            
+            // Carregar grafo com matriz de adjacência
+            GrafoMatriz grafo;
+            grafo.carrega_grafo(arquivo_grafo);
+            cout << "PRINT" << endl;
+            imprimir_dados_grafo(&grafo);
         }
         else if (estrutura == "-l")
         {
@@ -70,7 +74,17 @@ int main(int argc, char *argv[])
 
         if (estrutura == "-m")
         {
-            
+           GrafoMatriz grafo;
+            grafo.novo_grafo(arquivo_descricao);
+
+            std::ofstream saida(caminho_completo);
+            if (!saida.is_open())
+            {
+                std::cerr << "Erro ao abrir arquivo para salvar o grafo: " << arquivo_grafo << std::endl;
+                return 1;
+            }
+            grafo.salva_grafo(saida);
+            saida.close() ;
         }
         else if (estrutura == "-l")
         {

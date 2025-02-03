@@ -26,7 +26,7 @@ public:
     virtual void inicializar_vertices(int ordem) = 0;
     
 
-    virtual void setPesoV(float peso) = 0;
+    virtual void setPesoV(float peso, int vertice) = 0;
     virtual void setAresta(int origem, float pesoAresta, int destino) = 0;
 
     virtual int  getGrauV(int indice) = 0;

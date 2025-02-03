@@ -16,7 +16,7 @@ private:
     void inicializar_vertices(int tam) override;
 
 
-    void setPesoV(float peso) override;
+    void setPesoV(float peso, int vertice) override;
     void setAresta(int origem, float pesoAresta, int destino) override;
     int getGrauV(int indice) override;
 

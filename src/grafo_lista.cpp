@@ -37,9 +37,10 @@ void GrafoLista::inicializar_vertices(int tam)
     vertices = new ListaEncadeada[tam]; // N numeros de LL (mesmo nr de nos)
 }
 
-void GrafoLista::setPesoV(float peso)
+void GrafoLista::setPesoV(float peso, int vertice)
 {
-    vertices->setPesoV(peso);
+
+    vertices[vertice].setPesoV(peso);
 }
 
 void GrafoLista::setAresta(int origem, float pesoAresta, int destino)

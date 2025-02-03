@@ -9,46 +9,25 @@ using namespace std;
 
 class GrafoMatriz: public Grafo {
     public:
-        int **matriz;
-        int *matriz_sem_direcao;
+        float **matriz;
+        float *matriz_sem_direcao;
         int *vertices;
-        int n_vertices;
-        bool grafo_direcionado;
-        bool arestas_ponderado;
-        bool vertices_ponderado;
 
         GrafoMatriz();
+        GrafoMatriz(int ordem, bool direcionado, bool vertices_ponderados, bool arestas_ponderadas);
         ~GrafoMatriz();
-        void carrega_grafo(const std::string &arquivo);
-        void imprimir_grafo() const;
-        void imprimir_grafo_formato_txt(int vertice);
-
-        bool eh_bipartido() const;
-        int get_grau_vertice(int vertice) const;
-        int get_grau() const;
-        int get_ordem() const;
-        int n_conexo() const;
-        bool eh_direcionado() const;
-        bool vertice_ponderado() const;
-        bool aresta_ponderada() const;
-        bool eh_completo() const;
-        bool eh_arvore() const;
-        bool possui_articulacao() const;
-        bool possui_ponte() const;
-        void novo_grafo(const std::string &arquivo);
+        void setPesoV(float peso, int vertice) override;
+        int getGrauV(int vertice) override;
         void salva_grafo(std::ofstream &saida) const;
-        GrafoMatriz* get_copia() const;
-
-        // METODO NOVO PARA SALVAR ALGORITMO SEM FORÇA BRUTA
-        bool eh_bipartido_sem_bruta() const override; 
+        void novo_grafo(const std::string &arquivo);
 
     private:
         int get_aresta(int i, int j) const;
-        void set_aresta(int i, int j, int valor);
-        void inicializar_vertices(int n_vertices) override;
-        int get_numero_vertices_conexos(int vertice) const;
-        int aux_get_numero_vertices_conexos(int vertice, bool* vet_vertices_visitados) const;
-        void criar_arvore(int i, int tam);
+        void setAresta(int i,float valor, int j ) override;
+        void inicializar_vertices(int ordem) override;
+        void dfs(int vertice, bool* visitado) override;
+        void dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo) override;
+        int conta_transposto(bool *visitado, int *pilha, int &topo) override;
 };
 
 #endif
