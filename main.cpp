@@ -43,7 +43,6 @@ int main(int argc, char *argv[])
             // Carregar grafo com matriz de adjacência
             GrafoMatriz grafo;
             grafo.carrega_grafo(arquivo_grafo);
-            cout << "PRINT" << endl;
             imprimir_dados_grafo(&grafo);
         }
         else if (estrutura == "-l")
