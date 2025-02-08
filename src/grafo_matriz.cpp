@@ -11,6 +11,7 @@ GrafoMatriz::GrafoMatriz()
 {
     matriz = nullptr;
     matriz_sem_direcao = nullptr;
+    dim_matriz = 10;
     vertices = nullptr;
     ordem = 0;
     direcionado = false;
@@ -502,4 +503,7 @@ void GrafoMatriz::salva_grafo(std::ofstream &saida) const
             }
         }
     }
+}
+
+void GrafoMatriz::novo_no(int peso = 0) {
 }
