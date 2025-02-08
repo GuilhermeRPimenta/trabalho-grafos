@@ -22,7 +22,6 @@ GrafoMatriz::GrafoMatriz()
 GrafoMatriz::GrafoMatriz(int ordem, bool direcionado, bool vertices_ponderados, bool arestas_ponderadas)
 {
     this->direcionado = direcionado;
-    this->ordem = ordem;
     this->arestas_ponderadas = arestas_ponderadas;
     this->vertices_ponderados = vertices_ponderados;
     inicializar_vertices(ordem);
@@ -30,6 +29,14 @@ GrafoMatriz::GrafoMatriz(int ordem, bool direcionado, bool vertices_ponderados, 
 
 GrafoMatriz::~GrafoMatriz()
 {
+    /*
+    for (int i = 0; i<dim_matriz; i++) {
+        for (int j = 0; j<dim_matriz; j++) {
+            cout << get_aresta(i,j) << " ";
+        }
+        cout << endl;
+    }
+    */
 
     if (direcionado)
     {
@@ -49,13 +56,18 @@ GrafoMatriz::~GrafoMatriz()
 
 void GrafoMatriz::inicializar_vertices(int ordem)
 {
-    matriz = new float *[ordem];
+    // Sempre começa com tamanho 10
+    dim_matriz = 10;
+    this->ordem = 0;
+
+    // Incialização das Matrizes de Adjacência
     if (direcionado)
     {
-        for (int i = 0; i < ordem; i++)
+        matriz = new float *[dim_matriz];
+        for (int i = 0; i < dim_matriz; i++)
         {
-            matriz[i] = new float[ordem];
-            for (int j = 0; j < ordem; j++)
+            matriz[i] = new float[dim_matriz];
+            for (int j = 0; j < dim_matriz; j++)
             {
                 matriz[i][j] = 0;
             }
@@ -63,7 +75,7 @@ void GrafoMatriz::inicializar_vertices(int ordem)
     }
     else
     {
-        int tam = ((ordem * (ordem - 1)) / 2);
+        int tam = ((dim_matriz * (dim_matriz - 1)) / 2);
         matriz_sem_direcao = new float[tam];
         for (int i = 0; i < tam; i++)
         {
@@ -71,13 +83,15 @@ void GrafoMatriz::inicializar_vertices(int ordem)
         }
     }
 
-    vertices = new int[ordem];
-    this->ordem = ordem;
+    vertices = new int[dim_matriz];
+    for(int i = 0; i < ordem; i++) {
+        novo_no();
+    }
 }
 
 void GrafoMatriz::setPesoV(float peso, int vertice)
 {
-    vertices[vertice] = peso;
+    vertices[vertice-1] = peso;
 }
 
 void GrafoMatriz::novo_grafo(const std::string &arquivo)
@@ -505,10 +519,6 @@ void GrafoMatriz::salva_grafo(std::ofstream &saida) const
     }
 }
 
-void GrafoMatriz::novo_no(int peso) {
-}
-
-
 void GrafoMatriz::deleta_no(int no){
     int indexNo =  no - 1;
     if(indexNo < 0 || indexNo >= ordem){
@@ -562,3 +572,57 @@ void GrafoMatriz::deleta_no(int no){
         cout << "=========================" << endl;
     }   
 }*/
+void GrafoMatriz::aumentar_matriz() {
+    int nova_dim = dim_matriz * 2;
+    if (direcionado) {
+        float** nova_matriz = new float*[nova_dim];
+        for (int i = 0; i < nova_dim; i++) {
+            nova_matriz[i] = new float[nova_dim];
+            for (int j = 0; j < nova_dim; j++) {
+                if (i < dim_matriz && j < dim_matriz) {
+                    nova_matriz[i][j] = matriz[i][j];
+                } else {
+                    nova_matriz[i][j] = 0;
+                }
+            }
+        }
+        for (int i = 0; i < dim_matriz; i++) {
+            delete[] matriz[i];
+        }
+        delete[] matriz;
+        matriz = nova_matriz;
+    } else {
+        int tam = (nova_dim * (nova_dim - 1)) / 2;
+        float* nova_matriz_sem_direcao = new float[tam];
+        for (int i = 0; i < tam; i++) {
+            if (i < (dim_matriz * (dim_matriz - 1)) / 2) {
+                nova_matriz_sem_direcao[i] = matriz_sem_direcao[i];
+            } else {
+                nova_matriz_sem_direcao[i] = 0;
+            }
+        }
+        delete[] matriz_sem_direcao;
+        matriz_sem_direcao = nova_matriz_sem_direcao;
+    }
+
+    int* novos_vertices = new int[nova_dim];
+    for (int i = 0; i < nova_dim; i++) {
+        if (i < dim_matriz) {
+            novos_vertices[i] = vertices[i];
+        } else {
+            novos_vertices[i] = 0;
+        }
+    }
+    delete[] vertices;
+    vertices = novos_vertices;
+
+    dim_matriz = nova_dim;
+}
+
+void GrafoMatriz::novo_no(int peso) {
+    if (ordem == dim_matriz) {
+        aumentar_matriz();
+    }
+    vertices[ordem] = peso;
+    ordem++;
+}
