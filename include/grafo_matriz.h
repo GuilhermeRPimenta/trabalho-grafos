@@ -26,6 +26,7 @@ class GrafoMatriz: public Grafo {
     private:
         int dim_matriz;
 
+        void aumentar_matriz();
         int get_aresta(int i, int j) const;
         void setAresta(int i,float valor, int j ) override;
         void inicializar_vertices(int ordem) override;
