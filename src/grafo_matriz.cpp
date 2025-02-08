@@ -84,14 +84,15 @@ void GrafoMatriz::inicializar_vertices(int ordem)
     }
 
     vertices = new int[dim_matriz];
-    for(int i = 0; i < ordem; i++) {
+    for (int i = 0; i < ordem; i++)
+    {
         novo_no();
     }
 }
 
 void GrafoMatriz::setPesoV(float peso, int vertice)
 {
-    vertices[vertice-1] = peso;
+    vertices[vertice - 1] = peso;
 }
 
 void GrafoMatriz::novo_grafo(const std::string &arquivo)
@@ -519,32 +520,46 @@ void GrafoMatriz::salva_grafo(std::ofstream &saida) const
     }
 }
 
-void GrafoMatriz::aumentar_matriz() {
+void GrafoMatriz::aumentar_matriz()
+{
     int nova_dim = dim_matriz * 2;
-    if (direcionado) {
-        float** nova_matriz = new float*[nova_dim];
-        for (int i = 0; i < nova_dim; i++) {
+    if (direcionado)
+    {
+        float **nova_matriz = new float *[nova_dim];
+        for (int i = 0; i < nova_dim; i++)
+        {
             nova_matriz[i] = new float[nova_dim];
-            for (int j = 0; j < nova_dim; j++) {
-                if (i < dim_matriz && j < dim_matriz) {
+            for (int j = 0; j < nova_dim; j++)
+            {
+                if (i < dim_matriz && j < dim_matriz)
+                {
                     nova_matriz[i][j] = matriz[i][j];
-                } else {
+                }
+                else
+                {
                     nova_matriz[i][j] = 0;
                 }
             }
         }
-        for (int i = 0; i < dim_matriz; i++) {
+        for (int i = 0; i < dim_matriz; i++)
+        {
             delete[] matriz[i];
         }
         delete[] matriz;
         matriz = nova_matriz;
-    } else {
+    }
+    else
+    {
         int tam = (nova_dim * (nova_dim - 1)) / 2;
-        float* nova_matriz_sem_direcao = new float[tam];
-        for (int i = 0; i < tam; i++) {
-            if (i < (dim_matriz * (dim_matriz - 1)) / 2) {
+        float *nova_matriz_sem_direcao = new float[tam];
+        for (int i = 0; i < tam; i++)
+        {
+            if (i < (dim_matriz * (dim_matriz - 1)) / 2)
+            {
                 nova_matriz_sem_direcao[i] = matriz_sem_direcao[i];
-            } else {
+            }
+            else
+            {
                 nova_matriz_sem_direcao[i] = 0;
             }
         }
@@ -552,11 +567,15 @@ void GrafoMatriz::aumentar_matriz() {
         matriz_sem_direcao = nova_matriz_sem_direcao;
     }
 
-    int* novos_vertices = new int[nova_dim];
-    for (int i = 0; i < nova_dim; i++) {
-        if (i < dim_matriz) {
+    int *novos_vertices = new int[nova_dim];
+    for (int i = 0; i < nova_dim; i++)
+    {
+        if (i < dim_matriz)
+        {
             novos_vertices[i] = vertices[i];
-        } else {
+        }
+        else
+        {
             novos_vertices[i] = 0;
         }
     }
@@ -566,10 +585,28 @@ void GrafoMatriz::aumentar_matriz() {
     dim_matriz = nova_dim;
 }
 
-void GrafoMatriz::novo_no(int peso) {
-    if (ordem == dim_matriz) {
+void GrafoMatriz::novo_no(int peso)
+{
+    if (ordem == dim_matriz)
+    {
         aumentar_matriz();
     }
-    vertices[ordem] = peso;
+    if (vertices_ponderados)
+        vertices[ordem] = peso;
     ordem++;
+}
+
+void GrafoMatriz::nova_aresta(int v1, int v2, int peso = 1)
+{
+    // Assumindo 1-indexado
+    v1 = v1-1;
+    v2 = v2-1;
+    setAresta(v1, v2, peso);
+}
+
+void GrafoMatriz::deleta_aresta(int v1, int v2) {
+    // Assumindo 1-indexado
+    v1 = v1-1;
+    v2 = v2-1;
+    setAresta(v1, v2, 0);
 }

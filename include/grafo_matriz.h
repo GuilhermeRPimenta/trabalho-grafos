@@ -22,6 +22,8 @@ class GrafoMatriz: public Grafo {
         void novo_grafo(const std::string &arquivo);
 
         void novo_no(int peso = 0);
+        void nova_aresta(int v1, int v2, int peso = 1);
+        void deleta_aresta(int v1, int v2);
 
     private:
         int dim_matriz;
