@@ -29,6 +29,14 @@ GrafoMatriz::GrafoMatriz(int ordem, bool direcionado, bool vertices_ponderados, 
 
 GrafoMatriz::~GrafoMatriz()
 {
+    /*
+    for (int i = 0; i<dim_matriz; i++) {
+        for (int j = 0; j<dim_matriz; j++) {
+            cout << get_aresta(i,j) << " ";
+        }
+        cout << endl;
+    }
+    */
 
     if (direcionado)
     {
@@ -50,6 +58,7 @@ void GrafoMatriz::inicializar_vertices(int ordem)
 {
     // Sempre começa com tamanho 10
     dim_matriz = 10;
+    this->ordem = 0;
 
     // Incialização das Matrizes de Adjacência
     if (direcionado)
@@ -82,7 +91,7 @@ void GrafoMatriz::inicializar_vertices(int ordem)
 
 void GrafoMatriz::setPesoV(float peso, int vertice)
 {
-    vertices[vertice] = peso;
+    vertices[vertice-1] = peso;
 }
 
 void GrafoMatriz::novo_grafo(const std::string &arquivo)
