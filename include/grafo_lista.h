@@ -32,25 +32,10 @@ public:
     void dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo) override;
     int  conta_transposto(bool *visitado, int *pilha, int &topo) override;
 
-    /*
-    bool bfs_bipartido(int inicio, int *cor) const;
+    void nova_aresta(int origem, float pesoAresta, int destino);
 
-    bool eh_bipartido() const override;
-    bool eh_arvore() const override;
-    bool possui_ponte() const override;
-    bool possui_articulacao() const override;
+    void deleta_aresta(int origem, int destino);
 
-    // METODO NOVO PARA SALVAR ALGORITMO SEM FORÇA BRUTA
-    bool eh_bipartido_sem_bruta() const override;
-
-    // AUXILIAR FORÇA BRUTA EH BIPARTIDO
-    bool particao_valida(const bool conjunto1[], const bool conjunto2[]) const;
-
-    void dfs_ignorando_vertice(int atual, int ignorado, bool *visitado) const;
-
-    */
-
-    void imprime_grafoLista() const;
 };
 
 #endif

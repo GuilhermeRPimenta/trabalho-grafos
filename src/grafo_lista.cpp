@@ -6,6 +6,7 @@
 #include <sstream>
 #include <cmath>
 
+
 GrafoLista::GrafoLista()
 {
     this->direcionado = false;
@@ -46,6 +47,16 @@ void GrafoLista::setPesoV(float peso, int vertice)
 void GrafoLista::setAresta(int origem, float pesoAresta, int destino)
 {
     vertices[origem - 1].insereFinal(destino - 1, pesoAresta);
+}
+
+void GrafoLista::nova_aresta(int origem, float pesoAresta, int destino)
+{
+    setAresta(origem, pesoAresta, destino);
+}
+
+void GrafoLista::deleta_aresta(int origem, int destino)
+{
+    vertices[origem].remove(destino);
 }
 
 void GrafoLista::novo_grafo(const std::string &descricao)
@@ -307,228 +318,3 @@ int GrafoLista::conta_transposto(bool *visitado, int *pilha, int &topo)
     }
     return numComponentes;
 }
-
-/*
-bool GrafoLista::bfs_bipartido(int inicio, int *cor) const
-{
-    int *fila = new int[ordem];
-    int inicioFila = 0, fimFila = 0;
-
-    // vértice inicial adicionado a uma fila e colore com 0
-    fila[fimFila++] = inicio;
-    cor[inicio] = 0;
-
-    // processa os vértices da fila
-    while (inicioFila < fimFila)
-    {
-        int atual = fila[inicioFila++];
-
-        // percorre todos os adjacentes ao vértice atual
-        No *noAtual = vertices[atual].getPrimeiro();
-        while (noAtual)
-        {
-            int adj = noAtual->getInfo();
-            if (cor[adj] == -1)
-            {
-                // adjacente ainda não foi visitado, colore com a cor oposta
-                cor[adj] = 1 - cor[atual];
-                fila[fimFila++] = adj;
-            }
-            else if (cor[adj] == cor[atual])
-            {
-                // vértice adjacente tem a mesma cor
-                delete[] fila;
-                return false;
-            }
-            noAtual = noAtual->getProx();
-        }
-    }
-
-    delete[] fila;
-    return true;
-}
-
-bool GrafoLista::eh_bipartido_sem_bruta() const
-{
-    if(ordem == 1) return false;
-    // -1: não visitado, 0: cor 0, 1: cor 1
-    int *cor = new int[ordem];
-    for (int i = 0; i < ordem; ++i)
-    {
-        cor[i] = -1; // todos os vértices estão sem cor
-    }
-
-    // percorre todos os vértices (para lidar com grafos desconexos)
-    for (int i = 0; i < ordem; ++i)
-    {
-        if (cor[i] == -1)
-        { // o vértice ainda não foi visitado
-            if (!bfs_bipartido(i, cor))
-            {
-                delete[] cor;
-                return false;
-            }
-        }
-    }
-
-    delete[] cor;
-    return true;
-}
-
-bool GrafoLista::eh_arvore() const
-{
-    // Verifica se o grafo é conexo
-    if (n_conexo() != 1)
-    {
-        return false;
-    }
-
-    // Verifica se o grafo tem exatamente ordem - 1 arestas
-    int num_arestas = 0;
-    for (int i = 0; i < ordem; ++i)
-    {
-        num_arestas += vertices[i].tamanho();
-    }
-    if (direcionado)
-        num_arestas = num_arestas / 2;
-
-    // Retorna true se o número de arestas for exatamente ordem - 1
-    return (num_arestas == ordem - 1);
-}
-
-bool GrafoLista::possui_articulacao() const {
-    // Verificar conectividade inicial
-    if (n_conexo() > 1) {
-        return false; // Se já não é conexo, não faz sentido buscar pontes
-    }
-    if(ordem == 1) return false;
-
-    // Para cada vértice do grafo
-    for (int u = 0; u < ordem; u++) {
-        // Armazenar os vizinhos de u em um array dinâmico
-        int grau = vertices[u].tamanho(); // Supondo que getGrau() retorna o número de conexões
-        int* conexoes_originais = new int[grau]; // Array para armazenar os vizinhos
-        int idx = 0;
-
-        for (No* atual = vertices[u].getPrimeiro(); atual != nullptr; atual = atual->getProx()) {
-            conexoes_originais[idx++] = atual->getInfo();
-        }
-
-        // Remover todas as arestas conectadas ao vértice u
-        for (int i = 0; i < grau; i++) {
-            int v = conexoes_originais[i];
-            vertices[v].remove(u); // Remove a referência a u nos vértices adjacentes
-        }
-        vertices[u].limpar(); // Remove todas as arestas do vértice u
-
-        // Verificar conectividade
-        bool* visitado = new bool[ordem]();
-        int inicio = (u == 0) ? 1 : 0;
-        dfs(inicio, visitado);
-
-        bool conexo = true;
-        for (int i = 0; i < ordem; i++) {
-            if (i != u && !visitado[i]) {
-                conexo = false;
-                break;
-            }
-        }
-        delete[] visitado;
-
-        // Restaurar as conexões originais
-        for (int i = 0; i < grau; i++) {
-            int v = conexoes_originais[i];
-            vertices[v].insereFinal(u); // Restaura u nas listas adjacentes
-            vertices[u].insereFinal(v); // Restaura v nas listas adjacentes de u
-        }
-
-        delete[] conexoes_originais; // Liberar memória
-        if (!conexo) {
-            return true; // Encontrou articulação
-        }
-    }
-    return false;
-}
-
-bool GrafoLista::possui_ponte() const {
-    // Verificar conectividade inicial
-    if (n_conexo() > 1) {
-        return false; // Se já não é conexo, não faz sentido buscar pontes
-    }
-
-    // Para cada vértice, iterar sobre suas arestas
-    for (int u = 0; u < ordem; u++) {
-        No* atual = vertices[u].getPrimeiro();
-        while (atual != nullptr) {
-            int v = atual->getInfo();
-
-            // Remover aresta (u, v)
-            vertices[u].remove(v);
-            vertices[v].remove(u);
-
-            // Verificar se o grafo continua conexo
-            bool* visitado = new bool[ordem];
-            for (int i = 0; i < ordem; i++) {
-                visitado[i] = false;
-            }
-
-            dfs(0, visitado); // Realizar DFS a partir do vértice 0
-
-            bool conexo = true;
-            for (int i = 0; i < ordem; i++) {
-                if (!visitado[i]) {
-                    conexo = false;
-                    break;
-                }
-            }
-
-            delete[] visitado;
-
-            // Restaurar aresta (u, v)
-            vertices[u].insereFinal(v);
-            vertices[v].insereFinal(u);
-
-            // Se o grafo deixou de ser conexo, a aresta é uma ponte
-            if (!conexo) {
-                return true;
-            }
-
-            atual = atual->getProx();
-        }
-    }
-
-    return false; // Nenhuma ponte encontrada
-}
-
-bool GrafoLista::eh_bipartido() const{
-    int total_combinacoes = (1 << ordem);  // 2^ordem
-    bool conjunto1[ordem], conjunto2[ordem];
-
-    for (int mascara = 1; mascara < total_combinacoes - 1; ++mascara) {
-        for (int i = 0; i < ordem; ++i) {
-            conjunto1[i] = (mascara & (1 << i)) != 0;
-            conjunto2[i] = !conjunto1[i];
-        }
-
-        if (particao_valida(conjunto1, conjunto2)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool GrafoLista::particao_valida(const bool conjunto1[], const bool conjunto2[]) const {
-    for (int u = 0; u < ordem; ++u) {
-        No* no = vertices[u].getPrimeiro();
-        while (no != nullptr) {
-            int v = no->getInfo();
-            if ((conjunto1[u] && conjunto1[v]) || (conjunto2[u] && conjunto2[v])) {
-                return false;
-            }
-            no = no->getProx();
-        }
-    }
-    return true;
-}
-
-*/
