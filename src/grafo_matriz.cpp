@@ -342,7 +342,7 @@ void GrafoMatriz::novo_grafo(const std::string &arquivo)
             }
 
             return;
-        }
+        } 
     }
 }
 
@@ -505,5 +505,60 @@ void GrafoMatriz::salva_grafo(std::ofstream &saida) const
     }
 }
 
-void GrafoMatriz::novo_no(int peso = 0) {
+void GrafoMatriz::novo_no(int peso) {
 }
+
+
+void GrafoMatriz::deleta_no(int no){
+    int indexNo =  no - 1;
+    if(indexNo < 0 || indexNo >= ordem){
+        cout << "Vértice não encontrado" << endl;
+        return;
+    }
+    for(int i = indexNo; i < ordem - 1; i++){
+        vertices[i] = vertices[i + 1];
+    }
+
+    
+    if(direcionado){
+        for(int i = 0; i< ordem; i++){
+            for(int j = indexNo; j < ordem - 1; j++){
+                int proxJ = j + 1;
+                matriz[i][j] = matriz[i][proxJ];
+            }
+        }
+        for(int i = indexNo; i < ordem - 1; i++){
+            matriz[i] = matriz[i + 1];
+        }
+    }else{
+        int n = ordem;
+        int tam = (n * (n - 1)) / 2;
+        int index = indexNo;
+        for (int i = indexNo; i < ordem; i++) {
+            for (int j = i + 1; j < ordem; j++) {
+                if (i != indexNo && j != indexNo) {
+                    int indexAtual = (n * (n - 1)) / 2 - ((n - i) * (n - i - 1)) / 2 + (j - i - 1);
+                    matriz_sem_direcao[index] = matriz_sem_direcao[indexAtual];
+                    index++;
+                }
+            }
+        }
+    }
+    
+    ordem--;
+    
+}
+
+/*void GrafoMatriz::imprime_vertices(){
+    cout << "=========================" << endl;
+    if(!direcionado){
+        for(int i = 0; i < ordem ; i++){
+            
+           for(int j = 0; j < ordem; j++){
+            cout << get_aresta(i, j) << " ";
+           }
+            cout << endl;
+        }
+        cout << "=========================" << endl;
+    }   
+}*/
