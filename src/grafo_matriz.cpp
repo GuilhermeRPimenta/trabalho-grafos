@@ -40,7 +40,7 @@ GrafoMatriz::~GrafoMatriz()
 
     if (direcionado)
     {
-        for (int i = 0; i < ordem; i++)
+        for (int i = 0; i < dim_matriz; i++)
         {
             delete[] matriz[i];
         }
