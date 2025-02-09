@@ -44,6 +44,11 @@ int main(int argc, char *argv[])
             GrafoMatriz grafo;
             grafo.carrega_grafo(arquivo_grafo);
             imprimir_dados_grafo(&grafo);
+            //grafo.imprime_vertices();
+            cout << "Excluindo no 1..." << endl;
+            grafo.deleta_no(1);
+            imprimir_dados_grafo(&grafo);
+            //grafo.imprime_vertices();
         }
         else if (estrutura == "-l")
         {
