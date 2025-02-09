@@ -68,10 +68,10 @@ int main(int argc, char *argv[])
         // Caso 1 e Caso 2: Carregar e descrever o grafo
         if (estrutura == "-m")
         {
-            /* Carregar grafo com matriz de adjacência
+            // Carregar grafo com matriz de adjacência
             GrafoMatriz grafo;
             grafo.carrega_grafo(arquivo_grafo);
-            imprimir_dados_grafo(&grafo);*/
+            imprimir_dados_grafo(&grafo);
         }
         else if (estrutura == "-l")
         {

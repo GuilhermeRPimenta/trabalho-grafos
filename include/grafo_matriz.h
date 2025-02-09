@@ -21,14 +21,15 @@ class GrafoMatriz: public Grafo {
         void salva_grafo(std::ofstream &saida) const;
         void novo_grafo(const std::string &arquivo);
 
-        void nova_aresta(int origem, float peso, int destino);
-        void deleta_aresta(int origem, int destino);
-
-        void novo_no(int indice, float peso);
-        void deleta_no(int indice);
-
+        void novo_no(int indice, float peso) override;
+        void deleta_no(int indice) override;
+        void nova_aresta(int origem, float peso, int destino) override;
+        void deleta_aresta(int origem, int destino) override;
 
     private:
+        int dim_matriz;
+
+        void aumentar_matriz();
         int get_aresta(int i, int j) const;
         void setAresta(int i,float valor, int j ) override;
         void inicializar_vertices(int ordem) override;
