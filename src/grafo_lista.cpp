@@ -28,26 +28,238 @@ GrafoLista::~GrafoLista()
 {
     if (vertices)
     {
-        delete[] vertices;
+        delete vertices; // Apenas deletamos a LinkedList
     }
 }
 
 void GrafoLista::inicializar_vertices(int tam)
 {
-    vertices = new ListaEncadeada[tam]; // N numeros de LL (mesmo nr de nos)
+    this->vertices = new LinkedList(); // Aloca memória dinamicamente
+
+    for (int i = 0; i < tam; i++)
+    {
+        this->vertices->adicionarVertice(i, 0.0);
+    }
+}
+
+void GrafoLista::novo_no(int indice, float peso)
+{
+    if (!vertices)
+    {
+        std::cerr << "Erro: Lista de vértices não inicializada!" << std::endl;
+        return;
+    }
+    vertices->adicionarVertice(indice-1, peso);
+    this->ordem = ordem +1;
+
+}
+
+void GrafoLista::deleta_no(int indice)
+{
+    vertices->removerVertice(indice-1);
+    this->ordem = ordem -1;
 }
 
 void GrafoLista::setPesoV(float peso, int vertice)
 {
+    if (!vertices || !vertices->primeiro)
+    {
+        std::cerr << "Erro: Lista de vértices não inicializada!" << std::endl;
+        return;
+    }
 
-    vertices[vertice].setPesoV(peso);
+    NoLL *atual = vertices->primeiro;
+    while (atual && atual->indice != vertice)
+    {
+        atual = atual->proximo;
+    }
+
+    if (!atual)
+    {
+        std::cerr << "Erro: Vértice " << vertice  << " não encontrado!" << std::endl;
+        return;
+    }
+
+    atual->lista.setPesoV(peso);
+}
+
+void GrafoLista::nova_aresta(int origem, float pesoAresta, int destino)
+{
+    setAresta(origem, pesoAresta, destino-1);
+}
+
+void GrafoLista::deleta_aresta(int origem, int destino)
+{
+    NoLL *atual = vertices->primeiro;
+    while (atual->indice != (origem-1))
+    {
+        atual = atual->proximo;
+    }
+    atual->lista.remove(destino-1);
+
 }
 
 void GrafoLista::setAresta(int origem, float pesoAresta, int destino)
 {
-    vertices[origem - 1].insereFinal(destino - 1, pesoAresta);
+    if (!vertices || !vertices->primeiro)
+    {
+        std::cerr << "Erro: Lista de vértices não inicializada!" << std::endl;
+        return;
+    }
+
+    NoLL *atual = vertices->primeiro;
+    while (atual && atual->indice != (origem-1))
+    {
+        atual = atual->proximo;
+    }
+
+    if (!atual)
+    {
+        std::cerr << "Erro: Vértice de origem " << origem << " não encontrado!" << std::endl;
+        return;
+    }
+
+    atual->lista.insereFinal((destino-1), pesoAresta);
 }
 
+void GrafoLista::salva_grafo(std::ofstream &saida) const
+{
+    saida << ordem << " " << direcionado << " "
+          << vertices_ponderados << " " << arestas_ponderadas << std::endl;
+
+    if (vertices_ponderados)
+    {
+        NoLL *atual = vertices->primeiro;
+        while (atual != nullptr)
+        {
+            saida << atual->lista.getPesoV() << " ";
+            atual = atual->proximo;
+        }
+        saida << std::endl;
+
+        atual = vertices->primeiro;
+        while (atual != nullptr)
+        {
+            atual->lista.escrever(saida, atual->indice);
+            atual = atual->proximo;
+        }
+        saida << std::endl;
+    }
+}
+
+int GrafoLista::getGrauV(int indice)
+{
+    NoLL *atual = vertices->primeiro;
+    while (atual && atual->indice != indice)
+    {
+        atual = atual->proximo;
+    }
+    if (!atual)
+    {
+        return -1;
+    }
+
+    return atual->lista.tamanho();
+}
+
+void GrafoLista::aux_dfs_ordem(NoLL *atual, int vertice, bool *visitado, int *pilha, int &topo)
+{
+    visitado[vertice] = true;
+
+    No *noAtual = atual->lista.getPrimeiro();
+    while (noAtual)
+    {
+        int adj = noAtual->getInfo();
+        if (!visitado[adj])
+        {
+            aux_dfs_ordem(atual->proximo, adj, visitado, pilha, topo);
+        }
+        noAtual = noAtual->getProx();
+    }
+    pilha[++topo] = vertice;
+}
+
+void GrafoLista::dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo)
+{
+    NoLL *atual = vertices->primeiro;
+    aux_dfs_ordem(atual, vertice, visitado, pilha, topo);
+}
+
+void GrafoLista::aux_dfs(NoLL *atual, int vertice, bool *visitado)
+{
+    visitado[vertice] = true;
+
+    No *noAtual = atual->lista.getPrimeiro();
+    while (noAtual)
+    {
+        int adj = noAtual->getInfo();
+        if (!visitado[adj])
+        {
+            aux_dfs(atual->proximo, adj, visitado);
+        }
+        noAtual = noAtual->getProx();
+    }
+}
+
+void GrafoLista::dfs(int vertice, bool *visitado)
+{
+    NoLL *atual = vertices->primeiro;
+    aux_dfs(atual, vertice, visitado);
+}
+
+int GrafoLista::conta_transposto(bool *visitado, int *pilha, int &topo)
+{
+    NoLL *atual = vertices->primeiro;
+    NoLL *transp;
+    GrafoLista transposto(ordem, true, vertices_ponderados, arestas_ponderadas);
+    for (int i = 0; i < ordem; ++i)
+    {
+        No *noAtual = atual->lista.getPrimeiro();
+        while (noAtual)
+        {
+            int adj = noAtual->getInfo();
+            float peso = noAtual->getPeso();
+            transposto.vertices->adicionarVertice(adj, peso);
+            transp = transposto.vertices->buscarIndice(adj);
+            transp->lista.insereFinal(i, peso);
+            noAtual = noAtual->getProx();
+        }
+    }
+
+    for (int i = 0; i < ordem; ++i)
+        visitado[i] = false;
+
+    int numComponentes = 0;
+    while (topo >= 0)
+    {
+        int v = pilha[topo--];
+        if (!visitado[v])
+        {
+            transposto.dfs(v, visitado);
+            numComponentes++;
+        }
+    }
+    return numComponentes;
+}
+
+void GrafoLista::imprimir()
+{
+    if (!vertices || !vertices->primeiro)
+    {
+        std::cerr << "Erro: Grafo vazio!" << std::endl;
+        return;
+    }
+
+    NoLL *atual = vertices->primeiro;
+    while (atual != nullptr)
+    {
+        std::cout << "Vértice " << atual->indice << ": ";
+        atual->lista.imprimir();
+        atual = atual->proximo;
+    }
+}
+
+/*
 void GrafoLista::novo_grafo(const std::string &descricao)
 {
     std::string caminho_completo = "./entradas/" + descricao; // Ajuste para o diretório atual
@@ -220,315 +432,4 @@ void GrafoLista::novo_grafo(const std::string &descricao)
         }
     }
 }
-
-void GrafoLista::salva_grafo(std::ofstream &saida) const
-{
-    saida << ordem << " " << direcionado << " "
-          << vertices_ponderados << " " << arestas_ponderadas << std::endl;
-
-    if (vertices_ponderados)
-    {
-        for (int i = 0; i < ordem; ++i)
-        {
-            saida << vertices[i].getPesoV() << " ";
-        }
-        saida << std::endl;
-    }
-
-    for (int i = 0; i < ordem; ++i)
-    {
-        vertices[i].escrever(saida, i);
-    }
-}
-
-int GrafoLista::getGrauV(int indice)
-{
-    return vertices[indice].tamanho();
-}
-
-void GrafoLista::dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo)
-{
-    visitado[vertice] = true;
-    No *noAtual = vertices[vertice].getPrimeiro();
-    while (noAtual)
-    {
-        int adj = noAtual->getInfo();
-        if (!visitado[adj])
-        {
-            dfs_ordem(adj, visitado, pilha, topo);
-        }
-        noAtual = noAtual->getProx();
-    }
-    pilha[++topo] = vertice;
-}
-
-void GrafoLista::dfs(int vertice, bool *visitado)
-{
-    visitado[vertice] = true;
-    No *noAtual = vertices[vertice].getPrimeiro();
-    while (noAtual)
-    {
-        int adj = noAtual->getInfo();
-        if (!visitado[adj])
-        {
-            dfs(adj, visitado);
-        }
-        noAtual = noAtual->getProx();
-    }
-}
-
-int GrafoLista::conta_transposto(bool *visitado, int *pilha, int &topo)
-{
-    GrafoLista transposto(ordem, true, vertices_ponderados, arestas_ponderadas);
-    for (int i = 0; i < ordem; ++i)
-    {
-        No *noAtual = vertices[i].getPrimeiro();
-        while (noAtual)
-        {
-            int adj = noAtual->getInfo();
-            float peso = noAtual->getPeso();
-            transposto.vertices[adj].insereFinal(i, peso);
-            noAtual = noAtual->getProx();
-        }
-    }
-
-    for (int i = 0; i < ordem; ++i)
-        visitado[i] = false;
-
-    int numComponentes = 0;
-    while (topo >= 0)
-    {
-        int v = pilha[topo--];
-        if (!visitado[v])
-        {
-            transposto.dfs(v, visitado);
-            ++numComponentes;
-        }
-    }
-    return numComponentes;
-}
-
-/*
-bool GrafoLista::bfs_bipartido(int inicio, int *cor) const
-{
-    int *fila = new int[ordem];
-    int inicioFila = 0, fimFila = 0;
-
-    // vértice inicial adicionado a uma fila e colore com 0
-    fila[fimFila++] = inicio;
-    cor[inicio] = 0;
-
-    // processa os vértices da fila
-    while (inicioFila < fimFila)
-    {
-        int atual = fila[inicioFila++];
-
-        // percorre todos os adjacentes ao vértice atual
-        No *noAtual = vertices[atual].getPrimeiro();
-        while (noAtual)
-        {
-            int adj = noAtual->getInfo();
-            if (cor[adj] == -1)
-            {
-                // adjacente ainda não foi visitado, colore com a cor oposta
-                cor[adj] = 1 - cor[atual];
-                fila[fimFila++] = adj;
-            }
-            else if (cor[adj] == cor[atual])
-            {
-                // vértice adjacente tem a mesma cor
-                delete[] fila;
-                return false;
-            }
-            noAtual = noAtual->getProx();
-        }
-    }
-
-    delete[] fila;
-    return true;
-}
-
-bool GrafoLista::eh_bipartido_sem_bruta() const
-{
-    if(ordem == 1) return false;
-    // -1: não visitado, 0: cor 0, 1: cor 1
-    int *cor = new int[ordem];
-    for (int i = 0; i < ordem; ++i)
-    {
-        cor[i] = -1; // todos os vértices estão sem cor
-    }
-
-    // percorre todos os vértices (para lidar com grafos desconexos)
-    for (int i = 0; i < ordem; ++i)
-    {
-        if (cor[i] == -1)
-        { // o vértice ainda não foi visitado
-            if (!bfs_bipartido(i, cor))
-            {
-                delete[] cor;
-                return false;
-            }
-        }
-    }
-
-    delete[] cor;
-    return true;
-}
-
-bool GrafoLista::eh_arvore() const
-{
-    // Verifica se o grafo é conexo
-    if (n_conexo() != 1)
-    {
-        return false;
-    }
-
-    // Verifica se o grafo tem exatamente ordem - 1 arestas
-    int num_arestas = 0;
-    for (int i = 0; i < ordem; ++i)
-    {
-        num_arestas += vertices[i].tamanho();
-    }
-    if (direcionado)
-        num_arestas = num_arestas / 2;
-
-    // Retorna true se o número de arestas for exatamente ordem - 1
-    return (num_arestas == ordem - 1);
-}
-
-bool GrafoLista::possui_articulacao() const {
-    // Verificar conectividade inicial
-    if (n_conexo() > 1) {
-        return false; // Se já não é conexo, não faz sentido buscar pontes
-    }
-    if(ordem == 1) return false;
-
-    // Para cada vértice do grafo
-    for (int u = 0; u < ordem; u++) {
-        // Armazenar os vizinhos de u em um array dinâmico
-        int grau = vertices[u].tamanho(); // Supondo que getGrau() retorna o número de conexões
-        int* conexoes_originais = new int[grau]; // Array para armazenar os vizinhos
-        int idx = 0;
-
-        for (No* atual = vertices[u].getPrimeiro(); atual != nullptr; atual = atual->getProx()) {
-            conexoes_originais[idx++] = atual->getInfo();
-        }
-
-        // Remover todas as arestas conectadas ao vértice u
-        for (int i = 0; i < grau; i++) {
-            int v = conexoes_originais[i];
-            vertices[v].remove(u); // Remove a referência a u nos vértices adjacentes
-        }
-        vertices[u].limpar(); // Remove todas as arestas do vértice u
-
-        // Verificar conectividade
-        bool* visitado = new bool[ordem]();
-        int inicio = (u == 0) ? 1 : 0;
-        dfs(inicio, visitado);
-
-        bool conexo = true;
-        for (int i = 0; i < ordem; i++) {
-            if (i != u && !visitado[i]) {
-                conexo = false;
-                break;
-            }
-        }
-        delete[] visitado;
-
-        // Restaurar as conexões originais
-        for (int i = 0; i < grau; i++) {
-            int v = conexoes_originais[i];
-            vertices[v].insereFinal(u); // Restaura u nas listas adjacentes
-            vertices[u].insereFinal(v); // Restaura v nas listas adjacentes de u
-        }
-
-        delete[] conexoes_originais; // Liberar memória
-        if (!conexo) {
-            return true; // Encontrou articulação
-        }
-    }
-    return false;
-}
-
-bool GrafoLista::possui_ponte() const {
-    // Verificar conectividade inicial
-    if (n_conexo() > 1) {
-        return false; // Se já não é conexo, não faz sentido buscar pontes
-    }
-
-    // Para cada vértice, iterar sobre suas arestas
-    for (int u = 0; u < ordem; u++) {
-        No* atual = vertices[u].getPrimeiro();
-        while (atual != nullptr) {
-            int v = atual->getInfo();
-
-            // Remover aresta (u, v)
-            vertices[u].remove(v);
-            vertices[v].remove(u);
-
-            // Verificar se o grafo continua conexo
-            bool* visitado = new bool[ordem];
-            for (int i = 0; i < ordem; i++) {
-                visitado[i] = false;
-            }
-
-            dfs(0, visitado); // Realizar DFS a partir do vértice 0
-
-            bool conexo = true;
-            for (int i = 0; i < ordem; i++) {
-                if (!visitado[i]) {
-                    conexo = false;
-                    break;
-                }
-            }
-
-            delete[] visitado;
-
-            // Restaurar aresta (u, v)
-            vertices[u].insereFinal(v);
-            vertices[v].insereFinal(u);
-
-            // Se o grafo deixou de ser conexo, a aresta é uma ponte
-            if (!conexo) {
-                return true;
-            }
-
-            atual = atual->getProx();
-        }
-    }
-
-    return false; // Nenhuma ponte encontrada
-}
-
-bool GrafoLista::eh_bipartido() const{
-    int total_combinacoes = (1 << ordem);  // 2^ordem
-    bool conjunto1[ordem], conjunto2[ordem];
-
-    for (int mascara = 1; mascara < total_combinacoes - 1; ++mascara) {
-        for (int i = 0; i < ordem; ++i) {
-            conjunto1[i] = (mascara & (1 << i)) != 0;
-            conjunto2[i] = !conjunto1[i];
-        }
-
-        if (particao_valida(conjunto1, conjunto2)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool GrafoLista::particao_valida(const bool conjunto1[], const bool conjunto2[]) const {
-    for (int u = 0; u < ordem; ++u) {
-        No* no = vertices[u].getPrimeiro();
-        while (no != nullptr) {
-            int v = no->getInfo();
-            if ((conjunto1[u] && conjunto1[v]) || (conjunto2[u] && conjunto2[v])) {
-                return false;
-            }
-            no = no->getProx();
-        }
-    }
-    return true;
-}
-
 */
