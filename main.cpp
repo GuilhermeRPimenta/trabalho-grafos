@@ -73,21 +73,7 @@ int main(int argc, char *argv[])
 
         if (estrutura == "-m")
         {
-           GrafoMatriz grafo;
-            grafo.novo_grafo(arquivo_descricao);
-
-            std::ofstream saida(caminho_completo);
-            if (!saida.is_open())
-            {
-                std::cerr << "Erro ao abrir arquivo para salvar o grafo: " << arquivo_grafo << std::endl;
-                return 1;
-            }
-            grafo.salva_grafo(saida);
-            saida.close() ;
-        }
-        else if (estrutura == "-l")
-        {
-            GrafoLista grafo;
+            GrafoMatriz grafo;
             grafo.novo_grafo(arquivo_descricao);
 
             std::ofstream saida(caminho_completo);
@@ -98,6 +84,20 @@ int main(int argc, char *argv[])
             }
             grafo.salva_grafo(saida);
             saida.close();
+        }
+        else if (estrutura == "-l")
+        {
+            /*GrafoLista grafo;
+            grafo.novo_grafo(arquivo_descricao);
+
+            std::ofstream saida(caminho_completo);
+            if (!saida.is_open())
+            {
+                std::cerr << "Erro ao abrir arquivo para salvar o grafo: " << arquivo_grafo << std::endl;
+                return 1;
+            }
+            grafo.salva_grafo(saida);
+            saida.close();*/
         }
         else
         {

@@ -6,7 +6,6 @@
 #include <sstream>
 #include <cmath>
 
-
 GrafoLista::GrafoLista()
 {
     this->direcionado = false;
@@ -29,36 +28,245 @@ GrafoLista::~GrafoLista()
 {
     if (vertices)
     {
-        delete[] vertices;
+        delete vertices; // Apenas deletamos a LinkedList
     }
 }
 
 void GrafoLista::inicializar_vertices(int tam)
 {
-    vertices = new ListaEncadeada[tam]; // N numeros de LL (mesmo nr de nos)
+    this->vertices = new LinkedList(); // Aloca memória dinamicamente
+
+    for (int i = 1; i <= tam; i++)
+    {
+        this->vertices->adicionarVertice(i, 0.0);
+    }
+}
+
+void GrafoLista::novo_no(int indice, float peso)
+{
+    if (!vertices)
+    {
+        std::cerr << "Erro: Lista de vértices não inicializada!" << std::endl;
+        return;
+    }
+    vertices->adicionarVertice(indice, peso);
+    std::ofstream saida("entradas/grafo2.txt");
+    salva_grafo(saida);
+}
+
+void GrafoLista::deleta_no(int indice)
+{
+    vertices->removerVertice(indice);
+    std::ofstream saida("entradas/grafo2.txt");
+    salva_grafo(saida);
 }
 
 void GrafoLista::setPesoV(float peso, int vertice)
 {
+    if (!vertices || !vertices->primeiro)
+    {
+        std::cerr << "Erro: Lista de vértices não inicializada!" << std::endl;
+        return;
+    }
 
-    vertices[vertice].setPesoV(peso);
-}
+    NoLL *atual = vertices->primeiro;
+    while (atual && atual->indice != (vertice + 1))
+    {
+        atual = atual->proximo;
+    }
 
-void GrafoLista::setAresta(int origem, float pesoAresta, int destino)
-{
-    vertices[origem - 1].insereFinal(destino - 1, pesoAresta);
+    if (!atual)
+    {
+        std::cerr << "Erro: Vértice " << (vertice + 1) << " não encontrado!" << std::endl;
+        return;
+    }
+
+    atual->lista.setPesoV(peso);
 }
 
 void GrafoLista::nova_aresta(int origem, float pesoAresta, int destino)
 {
     setAresta(origem, pesoAresta, destino);
+
+    std::ofstream saida("entradas/grafo2.txt");
+    salva_grafo(saida);
 }
 
 void GrafoLista::deleta_aresta(int origem, int destino)
 {
-    vertices[origem].remove(destino);
+    NoLL *atual = vertices->primeiro;
+    while (atual->indice != origem)
+    {
+        atual = atual->proximo;
+    }
+    atual->lista.remove(destino);
+
+    std::ofstream saida("entradas/grafo2.txt");
+    salva_grafo(saida);
 }
 
+void GrafoLista::setAresta(int origem, float pesoAresta, int destino)
+{
+    if (!vertices || !vertices->primeiro)
+    {
+        std::cerr << "Erro: Lista de vértices não inicializada!" << std::endl;
+        return;
+    }
+
+    NoLL *atual = vertices->primeiro;
+    while (atual && atual->indice != origem)
+    {
+        atual = atual->proximo;
+    }
+
+    if (!atual)
+    {
+        std::cerr << "Erro: Vértice de origem " << origem << " não encontrado!" << std::endl;
+        return;
+    }
+
+    atual->lista.insereFinal(destino - 1, pesoAresta);
+}
+
+void GrafoLista::salva_grafo(std::ofstream &saida) const
+{
+    saida << ordem << " " << direcionado << " "
+          << vertices_ponderados << " " << arestas_ponderadas << std::endl;
+
+    if (vertices_ponderados)
+    {
+        NoLL *atual = vertices->primeiro;
+        while (atual != nullptr)
+        {
+            saida << atual->lista.getPesoV() << " ";
+            atual = atual->proximo;
+        }
+        saida << std::endl;
+
+        atual = vertices->primeiro;
+        while (atual != nullptr)
+        {
+            atual->lista.escrever(saida, atual->indice);
+            atual = atual->proximo;
+        }
+        saida << std::endl;
+    }
+}
+
+int GrafoLista::getGrauV(int indice)
+{
+    NoLL *atual = vertices->primeiro;
+    while (atual && atual->indice != (indice + 1))
+    {
+        atual = atual->proximo;
+    }
+    if (!atual)
+    {
+        std::cerr << "Erro: Vértice " << indice << " não encontrado!" << std::endl;
+        return -1;
+    }
+
+    return atual->lista.tamanho();
+}
+
+void GrafoLista::aux_dfs_ordem(NoLL *atual, int vertice, bool *visitado, int *pilha, int &topo)
+{
+    visitado[vertice] = true;
+
+    No *noAtual = atual->lista.getPrimeiro();
+    while (noAtual)
+    {
+        int adj = noAtual->getInfo();
+        if (!visitado[adj])
+        {
+            aux_dfs_ordem(atual->proximo, adj, visitado, pilha, topo);
+        }
+        noAtual = noAtual->getProx();
+    }
+    pilha[++topo] = vertice;
+}
+
+void GrafoLista::dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo)
+{
+    NoLL *atual = vertices->primeiro;
+    aux_dfs_ordem(atual, vertice, visitado, pilha, topo);
+}
+
+void GrafoLista::aux_dfs(NoLL *atual, int vertice, bool *visitado)
+{
+    visitado[vertice] = true;
+
+    No *noAtual = atual->lista.getPrimeiro();
+    while (noAtual)
+    {
+        int adj = noAtual->getInfo();
+        if (!visitado[adj])
+        {
+            aux_dfs(atual->proximo, adj, visitado);
+        }
+        noAtual = noAtual->getProx();
+    }
+}
+
+void GrafoLista::dfs(int vertice, bool *visitado)
+{
+    NoLL *atual = vertices->primeiro;
+    aux_dfs(atual, vertice, visitado);
+}
+
+int GrafoLista::conta_transposto(bool *visitado, int *pilha, int &topo)
+{
+    NoLL *atual = vertices->primeiro;
+    NoLL *transp;
+    GrafoLista transposto(ordem, true, vertices_ponderados, arestas_ponderadas);
+    for (int i = 0; i < ordem; ++i)
+    {
+        No *noAtual = atual->lista.getPrimeiro();
+        while (noAtual)
+        {
+            int adj = noAtual->getInfo();
+            float peso = noAtual->getPeso();
+            transposto.vertices->adicionarVertice(adj, peso);
+            transp = transposto.vertices->buscarIndice(adj);
+            transp->lista.insereFinal(i, peso);
+            noAtual = noAtual->getProx();
+        }
+    }
+
+    for (int i = 0; i < ordem; ++i)
+        visitado[i] = false;
+
+    int numComponentes = 0;
+    while (topo >= 0)
+    {
+        int v = pilha[topo--];
+        if (!visitado[v])
+        {
+            transposto.dfs(v, visitado);
+            numComponentes++;
+        }
+    }
+    return numComponentes;
+}
+
+void GrafoLista::imprimir()
+{
+    if (!vertices || !vertices->primeiro)
+    {
+        std::cerr << "Erro: Grafo vazio!" << std::endl;
+        return;
+    }
+
+    NoLL *atual = vertices->primeiro;
+    while (atual != nullptr)
+    {
+        std::cout << "Vértice " << atual->indice << ": ";
+        atual->lista.imprimir();
+        atual = atual->proximo;
+    }
+}
+
+/*
 void GrafoLista::novo_grafo(const std::string &descricao)
 {
     std::string caminho_completo = "./entradas/" + descricao; // Ajuste para o diretório atual
@@ -231,90 +439,4 @@ void GrafoLista::novo_grafo(const std::string &descricao)
         }
     }
 }
-
-void GrafoLista::salva_grafo(std::ofstream &saida) const
-{
-    saida << ordem << " " << direcionado << " "
-          << vertices_ponderados << " " << arestas_ponderadas << std::endl;
-
-    if (vertices_ponderados)
-    {
-        for (int i = 0; i < ordem; ++i)
-        {
-            saida << vertices[i].getPesoV() << " ";
-        }
-        saida << std::endl;
-    }
-
-    for (int i = 0; i < ordem; ++i)
-    {
-        vertices[i].escrever(saida, i);
-    }
-}
-
-int GrafoLista::getGrauV(int indice)
-{
-    return vertices[indice].tamanho();
-}
-
-void GrafoLista::dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo)
-{
-    visitado[vertice] = true;
-    No *noAtual = vertices[vertice].getPrimeiro();
-    while (noAtual)
-    {
-        int adj = noAtual->getInfo();
-        if (!visitado[adj])
-        {
-            dfs_ordem(adj, visitado, pilha, topo);
-        }
-        noAtual = noAtual->getProx();
-    }
-    pilha[++topo] = vertice;
-}
-
-void GrafoLista::dfs(int vertice, bool *visitado)
-{
-    visitado[vertice] = true;
-    No *noAtual = vertices[vertice].getPrimeiro();
-    while (noAtual)
-    {
-        int adj = noAtual->getInfo();
-        if (!visitado[adj])
-        {
-            dfs(adj, visitado);
-        }
-        noAtual = noAtual->getProx();
-    }
-}
-
-int GrafoLista::conta_transposto(bool *visitado, int *pilha, int &topo)
-{
-    GrafoLista transposto(ordem, true, vertices_ponderados, arestas_ponderadas);
-    for (int i = 0; i < ordem; ++i)
-    {
-        No *noAtual = vertices[i].getPrimeiro();
-        while (noAtual)
-        {
-            int adj = noAtual->getInfo();
-            float peso = noAtual->getPeso();
-            transposto.vertices[adj].insereFinal(i, peso);
-            noAtual = noAtual->getProx();
-        }
-    }
-
-    for (int i = 0; i < ordem; ++i)
-        visitado[i] = false;
-
-    int numComponentes = 0;
-    while (topo >= 0)
-    {
-        int v = pilha[topo--];
-        if (!visitado[v])
-        {
-            transposto.dfs(v, visitado);
-            ++numComponentes;
-        }
-    }
-    return numComponentes;
-}
+*/
