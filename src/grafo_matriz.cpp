@@ -503,3 +503,19 @@ void GrafoMatriz::salva_grafo(std::ofstream &saida) const
         }
     }
 }
+
+void GrafoMatriz::nova_aresta(int origem, float peso, int destino) {
+    // Implementação da inserção de aresta na matriz de adjacência
+}
+
+void GrafoMatriz::deleta_aresta(int origem, int destino) {
+    // Implementação da remoção de aresta na matriz de adjacência
+}
+
+void GrafoMatriz::novo_no(int indice, float peso) {
+    // Implementação para adicionar um novo nó na matriz
+}
+
+void GrafoMatriz::deleta_no(int indice) {
+    // Implementação para remover um nó da matriz
+}

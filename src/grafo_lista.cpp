@@ -36,7 +36,7 @@ void GrafoLista::inicializar_vertices(int tam)
 {
     this->vertices = new LinkedList(); // Aloca memória dinamicamente
 
-    for (int i = 1; i <= tam; i++)
+    for (int i = 0; i < tam; i++)
     {
         this->vertices->adicionarVertice(i, 0.0);
     }
@@ -49,16 +49,15 @@ void GrafoLista::novo_no(int indice, float peso)
         std::cerr << "Erro: Lista de vértices não inicializada!" << std::endl;
         return;
     }
-    vertices->adicionarVertice(indice, peso);
-    std::ofstream saida("entradas/grafo2.txt");
-    salva_grafo(saida);
+    vertices->adicionarVertice(indice-1, peso);
+    this->ordem = ordem +1;
+
 }
 
 void GrafoLista::deleta_no(int indice)
 {
-    vertices->removerVertice(indice);
-    std::ofstream saida("entradas/grafo2.txt");
-    salva_grafo(saida);
+    vertices->removerVertice(indice-1);
+    this->ordem = ordem -1;
 }
 
 void GrafoLista::setPesoV(float peso, int vertice)
@@ -70,14 +69,14 @@ void GrafoLista::setPesoV(float peso, int vertice)
     }
 
     NoLL *atual = vertices->primeiro;
-    while (atual && atual->indice != (vertice + 1))
+    while (atual && atual->indice != vertice)
     {
         atual = atual->proximo;
     }
 
     if (!atual)
     {
-        std::cerr << "Erro: Vértice " << (vertice + 1) << " não encontrado!" << std::endl;
+        std::cerr << "Erro: Vértice " << vertice  << " não encontrado!" << std::endl;
         return;
     }
 
@@ -86,23 +85,18 @@ void GrafoLista::setPesoV(float peso, int vertice)
 
 void GrafoLista::nova_aresta(int origem, float pesoAresta, int destino)
 {
-    setAresta(origem, pesoAresta, destino);
-
-    std::ofstream saida("entradas/grafo2.txt");
-    salva_grafo(saida);
+    setAresta(origem, pesoAresta, destino-1);
 }
 
 void GrafoLista::deleta_aresta(int origem, int destino)
 {
     NoLL *atual = vertices->primeiro;
-    while (atual->indice != origem)
+    while (atual->indice != (origem-1))
     {
         atual = atual->proximo;
     }
-    atual->lista.remove(destino);
+    atual->lista.remove(destino-1);
 
-    std::ofstream saida("entradas/grafo2.txt");
-    salva_grafo(saida);
 }
 
 void GrafoLista::setAresta(int origem, float pesoAresta, int destino)
@@ -114,7 +108,7 @@ void GrafoLista::setAresta(int origem, float pesoAresta, int destino)
     }
 
     NoLL *atual = vertices->primeiro;
-    while (atual && atual->indice != origem)
+    while (atual && atual->indice != (origem-1))
     {
         atual = atual->proximo;
     }
@@ -125,7 +119,7 @@ void GrafoLista::setAresta(int origem, float pesoAresta, int destino)
         return;
     }
 
-    atual->lista.insereFinal(destino - 1, pesoAresta);
+    atual->lista.insereFinal((destino-1), pesoAresta);
 }
 
 void GrafoLista::salva_grafo(std::ofstream &saida) const
@@ -156,13 +150,12 @@ void GrafoLista::salva_grafo(std::ofstream &saida) const
 int GrafoLista::getGrauV(int indice)
 {
     NoLL *atual = vertices->primeiro;
-    while (atual && atual->indice != (indice + 1))
+    while (atual && atual->indice != indice)
     {
         atual = atual->proximo;
     }
     if (!atual)
     {
-        std::cerr << "Erro: Vértice " << indice << " não encontrado!" << std::endl;
         return -1;
     }
 
