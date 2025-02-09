@@ -17,14 +17,9 @@ struct NoLL {
     NoLL(int i) : indice(i), proximo(nullptr) {}
 
     ~NoLL() {
-        // Limpar a lista de adjacências
-        No* p = lista.getPrimeiro();
-        while (p != nullptr) {
-            No* t = p->getProx();
-            delete p;  // Libera o nó atual
-            p = t;     // Avança para o próximo nó
-        }
+        
     }
+    
 
     // Método para adicionar um vértice à lista de adjacências
     void adicionarAdjacente(int destino, float peso) {
