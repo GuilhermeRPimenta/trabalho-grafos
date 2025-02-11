@@ -102,6 +102,7 @@ private:
     void setPesoV(float peso, int vertice) override;
     void setAresta(int origem, float pesoAresta, int destino) override;
     int getGrauV(int indice) override;
+    float get_Pesoaresta(int origem, int destino);
 
 public:
     GrafoLista();

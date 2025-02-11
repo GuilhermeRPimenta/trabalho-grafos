@@ -30,12 +30,16 @@ public:
     virtual void setAresta(int origem, float pesoAresta, int destino) = 0;
 
     virtual int  getGrauV(int indice) = 0;
+    virtual float  get_Pesoaresta(int origem, int destino) = 0;
 
     virtual void nova_aresta(int origem, float peso, int destino) = 0;
     virtual void deleta_aresta(int origem, int destino) = 0;
 
     virtual void novo_no(int indice, float peso) = 0;
     virtual void deleta_no(int indice) = 0;
+
+
+    float menor_caminho(int origem, int destino, int ordem);
 
 
 protected:

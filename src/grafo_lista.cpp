@@ -49,15 +49,14 @@ void GrafoLista::novo_no(int indice, float peso)
         std::cerr << "Erro: Lista de vértices não inicializada!" << std::endl;
         return;
     }
-    vertices->adicionarVertice(indice-1, peso);
-    this->ordem = ordem +1;
-
+    vertices->adicionarVertice(indice - 1, peso);
+    this->ordem = ordem + 1;
 }
 
 void GrafoLista::deleta_no(int indice)
 {
-    vertices->removerVertice(indice-1);
-    this->ordem = ordem -1;
+    vertices->removerVertice(indice - 1);
+    this->ordem = ordem - 1;
 }
 
 void GrafoLista::setPesoV(float peso, int vertice)
@@ -76,7 +75,7 @@ void GrafoLista::setPesoV(float peso, int vertice)
 
     if (!atual)
     {
-        std::cerr << "Erro: Vértice " << vertice  << " não encontrado!" << std::endl;
+        std::cerr << "Erro: Vértice " << vertice << " não encontrado!" << std::endl;
         return;
     }
 
@@ -85,18 +84,17 @@ void GrafoLista::setPesoV(float peso, int vertice)
 
 void GrafoLista::nova_aresta(int origem, float pesoAresta, int destino)
 {
-    setAresta(origem, pesoAresta, destino-1);
+    setAresta(origem, pesoAresta, destino - 1);
 }
 
 void GrafoLista::deleta_aresta(int origem, int destino)
 {
     NoLL *atual = vertices->primeiro;
-    while (atual->indice != (origem-1))
+    while (atual->indice != (origem - 1))
     {
         atual = atual->proximo;
     }
-    atual->lista.remove(destino-1);
-
+    atual->lista.remove(destino - 1);
 }
 
 void GrafoLista::setAresta(int origem, float pesoAresta, int destino)
@@ -108,7 +106,7 @@ void GrafoLista::setAresta(int origem, float pesoAresta, int destino)
     }
 
     NoLL *atual = vertices->primeiro;
-    while (atual && atual->indice != (origem-1))
+    while (atual && atual->indice != (origem - 1))
     {
         atual = atual->proximo;
     }
@@ -119,8 +117,36 @@ void GrafoLista::setAresta(int origem, float pesoAresta, int destino)
         return;
     }
 
-    atual->lista.insereFinal((destino-1), pesoAresta);
+    atual->lista.insereFinal((destino - 1), pesoAresta);
 }
+
+float GrafoLista::get_Pesoaresta(int origem, int destino) {
+    // Encontra o nó de origem
+    NoLL *atual = vertices->primeiro;
+    while (atual && atual->indice != (origem - 1)) {
+        atual = atual->proximo;
+    }
+
+    // Se o nó de origem não foi encontrado
+    if (!atual) {
+        return 1000000000;  // Retorna um valor de erro
+    }
+
+    // Encontra a aresta associada ao nó de origem
+    No *auxAresta = atual->lista.getPrimeiro();
+    while (auxAresta && auxAresta->getInfo() != (destino - 1)) {
+        auxAresta = auxAresta->getProx();
+    }
+
+    // Se a aresta não for encontrada
+    if (!auxAresta) {
+        return 1000000000;  // Retorna um valor de erro
+    }
+
+    // Retorna o peso da aresta
+    return auxAresta->getPeso();
+}
+
 
 void GrafoLista::salva_grafo(std::ofstream &saida) const
 {

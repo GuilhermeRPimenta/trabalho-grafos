@@ -361,7 +361,35 @@ void GrafoMatriz::novo_grafo(const std::string &arquivo)
     }
 }
 
-int GrafoMatriz::get_aresta(int i, int j) const
+float GrafoMatriz::get_aresta(int i, int j) const
+{
+    // Suporte a grafos direcionados e não direcionados
+
+    if (i == j)
+    {
+        return 0;
+    }
+    if (direcionado)
+    {
+        return matriz[i][j];
+    }
+    else
+    {
+        int n = ordem;
+        if (i < j)
+        {
+            int index = (n * (n - 1)) / 2 - ((n - i) * (n - i - 1)) / 2 + (j - i - 1);
+            return matriz_sem_direcao[index];
+        }
+        else
+        {
+            int index = (n * (n - 1)) / 2 - ((n - j) * (n - j - 1)) / 2 + (i - j - 1);
+            return matriz_sem_direcao[index];
+        }
+    }
+}
+
+float GrafoMatriz::get_Pesoaresta(int i, int j)
 {
     // Suporte a grafos direcionados e não direcionados
 
@@ -489,6 +517,7 @@ int GrafoMatriz::conta_transposto(bool *visitado, int *pilha, int &topo)
     return numComponentes;
 }
 
+/*
 void GrafoMatriz::salva_grafo(std::ofstream &saida) const
 {
     saida << ordem << " " << direcionado << " "
@@ -518,7 +547,7 @@ void GrafoMatriz::salva_grafo(std::ofstream &saida) const
             }
         }
     }
-}
+}*/
 
 void GrafoMatriz::deleta_no(int no){
     int indexNo =  no - 1;

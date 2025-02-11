@@ -1,5 +1,4 @@
 #include "../include/grafo.h"
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -144,3 +143,62 @@ int Grafo::n_conexo()
         return numComp;
     }
 }
+
+float Grafo::menor_caminho(int origem, int destino, int ordem) {
+    int dist[ordem + 1];  // Armazena as menores distâncias
+    bool processado[ordem + 1];  // Marca se um nó já foi processado
+
+    // Inicializa as distâncias como infinito e não processado
+    for (int i = 1; i <= ordem; i++) {
+        dist[i] = 1000000000;  // Usando um valor grande como "infinito"
+        processado[i] = false;
+    }
+
+    // A distância para a origem é 0
+    dist[origem] = 0;
+
+    // Executa o algoritmo de Bellman-Ford para relaxar as arestas
+    for (int i = 1; i < ordem; i++) {  // Relaxamento de todas as arestas (ordem-1 iterações)
+        for (int u = 1; u <= ordem; u++) {
+            for (int v = 1; v <= ordem; v++) {
+                int peso = get_Pesoaresta(u, v);  // Obtem o peso da aresta entre u e v
+
+                // Debug: Mostrar o peso da aresta
+                if (peso != 1000000000) {
+                    std::cout << "Aresta: " << u << " -> " << v << " com peso: " << peso << std::endl;
+                }
+
+                if (peso != 1000000000) {  // Se existe aresta entre u e v
+                    if (dist[u] + peso < dist[v]) {  // Relaxamento da aresta
+                        dist[v] = dist[u] + peso;
+                    }
+                }
+            }
+        }
+    }
+
+    // Verificação de ciclos negativos após o relaxamento
+    for (int u = 1; u <= ordem; u++) {
+        for (int v = 1; v <= ordem; v++) {
+            int peso = get_Pesoaresta(u, v);
+            if (peso != 1000000000) {
+                if (dist[u] + peso < dist[v]) {  // Se for possível melhorar a distância
+                    std::cout << "Erro: Ciclo negativo detectado!" << std::endl;
+                    return -1;  // Retorna -1 se houver um ciclo negativo
+                }
+            }
+        }
+    }
+
+    // Imprime a mensagem antes de retornar o valor
+    if (dist[destino] == 1000000000) {
+        std::cout << "MENOR CAMINHO entre " << origem << " e " << destino << ": -1 (sem caminho)";
+        return -1;  // Se não houver caminho, retorna -1
+    } else {
+        std::cout << "MENOR CAMINHO entre " << origem << " e " << destino << ": ";
+        return dist[destino];  // Retorna a distância mínima para o destino
+    }
+}
+
+
+
