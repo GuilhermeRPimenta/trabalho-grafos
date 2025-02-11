@@ -364,13 +364,16 @@ void GrafoMatriz::novo_grafo(const std::string &arquivo)
 int GrafoMatriz::get_aresta(int i, int j) const
 {
     // Suporte a grafos direcionados e não direcionados
-
+    
     if (i == j)
     {
         return 0;
     }
     if (direcionado)
     {
+        if(matriz[i][j] >= 1000000000){
+            return 0;
+        }
         return matriz[i][j];
     }
     else
@@ -379,11 +382,17 @@ int GrafoMatriz::get_aresta(int i, int j) const
         if (i < j)
         {
             int index = (n * (n - 1)) / 2 - ((n - i) * (n - i - 1)) / 2 + (j - i - 1);
+            if(matriz_sem_direcao[index] >= 1000000000){
+                return 0;
+            }
             return matriz_sem_direcao[index];
         }
         else
         {
             int index = (n * (n - 1)) / 2 - ((n - j) * (n - j - 1)) / 2 + (i - j - 1);
+            if(matriz_sem_direcao[index] >= 1000000000){
+                return 0;
+            }
             return matriz_sem_direcao[index];
         }
     }
