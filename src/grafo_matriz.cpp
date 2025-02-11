@@ -526,34 +526,10 @@ void GrafoMatriz::deleta_no(int no){
         cout << "Vértice não encontrado" << endl;
         return;
     }
-    for(int i = indexNo; i < ordem - 1; i++){
-        vertices[i] = vertices[i + 1];
-    }
-
-    
-    if(direcionado){
-        for(int i = 0; i< ordem; i++){
-            for(int j = indexNo; j < ordem - 1; j++){
-                int proxJ = j + 1;
-                matriz[i][j] = matriz[i][proxJ];
-            }
-        }
-        for(int i = indexNo; i < ordem - 1; i++){
-            matriz[i] = matriz[i + 1];
-        }
-    }else{
-        int n = ordem;
-        int tam = (n * (n - 1)) / 2;
-        int index = indexNo;
-        for (int i = indexNo; i < ordem; i++) {
-            for (int j = i + 1; j < ordem; j++) {
-                if (i != indexNo && j != indexNo) {
-                    int indexAtual = (n * (n - 1)) / 2 - ((n - i) * (n - i - 1)) / 2 + (j - i - 1);
-                    matriz_sem_direcao[index] = matriz_sem_direcao[indexAtual];
-                    index++;
-                }
-            }
-        }
+    setPesoV(1000000000, indexNo);
+    for(int i = 0; i < dim_matriz; i++){
+        setAresta(i, 1000000000, indexNo);
+        setAresta(indexNo, 1000000000, i);
     }
     
     ordem--;
