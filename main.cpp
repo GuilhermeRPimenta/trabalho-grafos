@@ -15,7 +15,8 @@ void imprimir_dados_grafo(Grafo *grafo)
     std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
     std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
-    std::cout << grafo->menor_caminho(1,3, 3)<<std:: endl<<std::endl<<std::endl;
+    std::cout << "Maior menor distancia: " << grafo->maior_menor_caminho(*grafo, grafo->get_ordem()) <<std::endl<<std::endl;
+
 
     std::cout<<"Excluindo no 1"<<std::endl;
     grafo->deleta_no(1);
@@ -30,6 +31,7 @@ void imprimir_dados_grafo(Grafo *grafo)
     std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
     std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Maior menor distancia: " << grafo->maior_menor_caminho(*grafo, grafo->get_ordem()) <<std::endl<<std::endl;
 
     
 
@@ -49,7 +51,9 @@ void imprimir_dados_grafo(Grafo *grafo)
     std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
     std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
-    std::cout << grafo->menor_caminho(1,3, 3)<<std::endl<<std::endl;    
+    std::cout << "Maior menor distancia: " << grafo->maior_menor_caminho(*grafo, grafo->get_ordem()) <<std::endl<<std::endl;
+    std::cout<<std::endl<<std::endl<<std::endl;
+    std::cout<<std::endl<<std::endl<<std::endl;  
 
     /*
     std::cout << "Componentes conexas: " << (grafo->n_conexo()) << std::endl;

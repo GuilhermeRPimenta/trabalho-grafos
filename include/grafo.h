@@ -40,6 +40,7 @@ public:
 
 
     float menor_caminho(int origem, int destino, int ordem);
+    float maior_menor_caminho(Grafo &grafo, int ordem);
 
 
 protected:

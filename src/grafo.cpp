@@ -165,7 +165,7 @@ float Grafo::menor_caminho(int origem, int destino, int ordem) {
 
                 // Debug: Mostrar o peso da aresta
                 if (peso != 1000000000) {
-                    std::cout << "Aresta: " << u << " -> " << v << " com peso: " << peso << std::endl;
+//                    std::cout << "Aresta: " << u << " -> " << v << " com peso: " << peso << std::endl;
                 }
 
                 if (peso != 1000000000) {  // Se existe aresta entre u e v
@@ -192,14 +192,31 @@ float Grafo::menor_caminho(int origem, int destino, int ordem) {
 
     // Imprime a mensagem antes de retornar o valor
     if (dist[destino] == 1000000000) {
-        std::cout << "MENOR CAMINHO entre " << origem << " e " << destino << ": -1 (sem caminho)";
+ //       std::cout << "MENOR CAMINHO entre " << origem << " e " << destino << ": -1 (sem caminho)";
         return -1;  // Se não houver caminho, retorna -1
     } else {
-        std::cout << "MENOR CAMINHO entre " << origem << " e " << destino << ": ";
+ //       std::cout << "MENOR CAMINHO entre " << origem << " e " << destino << ": ";
         return (dist[destino] > 900000000) ? std::cout << "Nao existe caminho" << std::endl, -1 : dist[destino];
 
     }
 }
 
+float Grafo::maior_menor_caminho(Grafo &grafo, int ordem) {
+    float maior_dist = -1;
+
+    for (int origem = 1; origem <= ordem; origem++) {
+        for (int destino = 1; destino <= ordem; destino++) {
+            if (origem != destino) {
+                float caminho = grafo.menor_caminho(origem, destino, ordem);
+                if (caminho > maior_dist && caminho != -1) {
+                    maior_dist = caminho;
+                }
+            }
+        }
+    }
+
+    //std::cout << maior_dist << std::endl;
+    return maior_dist;
+}
 
 
