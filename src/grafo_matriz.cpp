@@ -392,13 +392,16 @@ float GrafoMatriz::get_aresta(int i, int j) const
 float GrafoMatriz::get_Pesoaresta(int i, int j)
 {
     // Suporte a grafos direcionados e não direcionados
-
+    i = i-1;
+    j = j-1;
     if (i == j)
     {
-        return 0;
+        return 1000000000;
     }
     if (direcionado)
-    {
+    {   
+        if(matriz[i][j] == 0)
+            return 1000000000;
         return matriz[i][j];
     }
     else
@@ -406,13 +409,15 @@ float GrafoMatriz::get_Pesoaresta(int i, int j)
         int n = ordem;
         if (i < j)
         {
+            if(matriz[i][j] == 0)
+                return 1000000000;
             int index = (n * (n - 1)) / 2 - ((n - i) * (n - i - 1)) / 2 + (j - i - 1);
             return matriz_sem_direcao[index];
+            
         }
         else
         {
-            int index = (n * (n - 1)) / 2 - ((n - j) * (n - j - 1)) / 2 + (i - j - 1);
-            return matriz_sem_direcao[index];
+            return 1000000000;
         }
     }
 }
