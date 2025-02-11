@@ -92,7 +92,7 @@ void GrafoMatriz::inicializar_vertices(int ordem)
 
 void GrafoMatriz::setPesoV(float peso, int vertice)
 {
-    vertices[vertice - 1] = peso;
+    vertices[vertice] = peso;
 }
 
 void GrafoMatriz::novo_grafo(const std::string &arquivo)
@@ -699,7 +699,7 @@ void GrafoMatriz::nova_aresta(int origem, float peso, int destino)
 
 void GrafoMatriz::deleta_aresta(int origem, int destino) {
     // Assumindo 1-indexado
-    origem = origem-1;
-    destino = destino-1;
-    setAresta(origem, destino, 0);
+    origem = origem;
+    destino = destino;
+    setAresta(origem, 0, destino);
 }

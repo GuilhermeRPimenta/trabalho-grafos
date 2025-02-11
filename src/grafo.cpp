@@ -196,7 +196,8 @@ float Grafo::menor_caminho(int origem, int destino, int ordem) {
         return -1;  // Se não houver caminho, retorna -1
     } else {
         std::cout << "MENOR CAMINHO entre " << origem << " e " << destino << ": ";
-        return dist[destino];  // Retorna a distância mínima para o destino
+        return (dist[destino] > 900000000) ? std::cout << "Nao existe caminho" << std::endl, -1 : dist[destino];
+
     }
 }
 
