@@ -541,7 +541,6 @@ void GrafoMatriz::deleta_no(int no){
         for(int i = indexNo; i < ordem - 1; i++){
             matriz[i] = matriz[i + 1];
         }
-        delete[] matriz[ordem - 1];
     }else{
         int n = ordem;
         int tam = (n * (n - 1)) / 2;
