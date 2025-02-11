@@ -25,6 +25,7 @@ class GrafoMatriz: public Grafo {
         void deleta_no(int indice) override;
         void nova_aresta(int origem, float peso, int destino) override;
         void deleta_aresta(int origem, int destino) override;
+        void imprime_vertices();
 
     private:
         int dim_matriz;

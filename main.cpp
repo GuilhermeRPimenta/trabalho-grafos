@@ -6,15 +6,14 @@
 #include <cstdlib>
 #include <cstring>
 
-void imprimir_dados_grafo(Grafo *grafo)
-{
-    
+void imprimir_dados_grafo_matriz(GrafoMatriz *grafo){
     std::cout << "Grau: " << grafo->get_grau() << std::endl;
     std::cout << "Ordem: " << grafo->get_ordem() << std::endl;
     std::cout << "Direcionado: " << (grafo->eh_direcionado() ? "Sim" : "Nao") << std::endl;
     std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
     std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
+    grafo->imprime_vertices();
     std::cout << grafo->menor_caminho(1,3, 3)<<std:: endl<<std::endl<<std::endl;
 
     std::cout<<"Excluindo no 1"<<std::endl;
@@ -30,8 +29,59 @@ void imprimir_dados_grafo(Grafo *grafo)
     std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
     std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
+    grafo->imprime_vertices();
+    std::cout << grafo->menor_caminho(1,3, 3)<<std::endl<<std::endl;    
 
+
+    std::cout<<std::endl<<std::endl<<std::endl;
+    std::cout<<std::endl<<std::endl<<std::endl;
+
+    std::cout<<"Criando no 1"<<std::endl;
+    grafo->novo_no(1,2);
+    std::cout<<"Criando aresta do no 2 com 1"<<std::endl;
+    grafo->nova_aresta(2, 4, 1);
+
+    std::cout<<std::endl<<std::endl<<std::endl;
+
+    std::cout << "Grau: " << grafo->get_grau() << std::endl;
+    std::cout << "Ordem: " << grafo->get_ordem() << std::endl;
+    std::cout << "Direcionado: " << (grafo->eh_direcionado() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
+    grafo->imprime_vertices();
+    std::cout << grafo->menor_caminho(1,3, 3)<<std::endl<<std::endl;    
+
+}
+
+void imprimir_dados_grafo(Grafo *grafo)
+{
     
+    std::cout << "Grau: " << grafo->get_grau() << std::endl;
+    std::cout << "Ordem: " << grafo->get_ordem() << std::endl;
+    std::cout << "Direcionado: " << (grafo->eh_direcionado() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Menor caminho: ";
+    std::cout << grafo->menor_caminho(1,3, 3)<<std:: endl<<std::endl<<std::endl;
+
+    std::cout<<"Excluindo no 1"<<std::endl;
+    grafo->deleta_no(1);
+    std::cout<<"Excluindo primeira aresta do no 2"<<std::endl;
+    grafo->deleta_aresta(2, 1);
+
+    std::cout<<std::endl<<std::endl<<std::endl;
+    
+    std::cout << "Grau: " << grafo->get_grau() << std::endl;
+    std::cout << "Ordem: " << grafo->get_ordem() << std::endl;
+    std::cout << "Direcionado: " << (grafo->eh_direcionado() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Menor caminho: ";
+    std::cout << grafo->menor_caminho(1,3, 3)<<std::endl<<std::endl;    
+
 
     std::cout<<std::endl<<std::endl<<std::endl;
     std::cout<<std::endl<<std::endl<<std::endl;
@@ -81,7 +131,7 @@ int main(int argc, char *argv[])
             // Carregar grafo com matriz de adjacência
             GrafoMatriz grafo;
             grafo.carrega_grafo(arquivo_grafo);
-            imprimir_dados_grafo(&grafo);
+            imprimir_dados_grafo_matriz(&grafo);
         }
         else if (estrutura == "-l")
         {

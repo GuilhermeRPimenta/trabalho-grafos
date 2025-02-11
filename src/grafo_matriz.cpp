@@ -575,6 +575,7 @@ void GrafoMatriz::deleta_no(int no){
         for(int i = indexNo; i < ordem - 1; i++){
             matriz[i] = matriz[i + 1];
         }
+        delete[] matriz[ordem - 1];
     }else{
         int n = ordem;
         int tam = (n * (n - 1)) / 2;
@@ -594,9 +595,9 @@ void GrafoMatriz::deleta_no(int no){
     
 }
 
-/*void GrafoMatriz::imprime_vertices(){
+void GrafoMatriz::imprime_vertices(){
     cout << "=========================" << endl;
-    if(!direcionado){
+    if(true){
         for(int i = 0; i < ordem ; i++){
             
            for(int j = 0; j < ordem; j++){
@@ -606,7 +607,7 @@ void GrafoMatriz::deleta_no(int no){
         }
         cout << "=========================" << endl;
     }   
-}*/
+}
 void GrafoMatriz::aumentar_matriz() {
     int nova_dim = dim_matriz * 2;
     if (direcionado)
