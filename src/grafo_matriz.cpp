@@ -685,13 +685,13 @@ void GrafoMatriz::novo_no(int indice, float peso)
 void GrafoMatriz::nova_aresta(int origem, float peso, int destino)
 {
     // Assumindo 1-indexado
-    origem = origem-1;
-    destino = destino-1;
+    origem = origem;
+    destino = destino;
     if (direcionado)
     {
-        setAresta(origem, destino, 1);    
+        setAresta(origem, 1,destino);    
     } else {
-        setAresta(origem, destino, peso);
+        setAresta(origem,peso, destino);
     }
     
     
