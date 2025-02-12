@@ -30,7 +30,8 @@ class GrafoMatriz: public Grafo {
         int dim_matriz;
 
         void aumentar_matriz();
-        int get_aresta(int i, int j) const;
+        float get_Pesoaresta(int i, int j) override;
+        float get_aresta(int i, int j) const;
         void setAresta(int i,float valor, int j ) override;
         void inicializar_vertices(int ordem) override;
         void dfs(int vertice, bool* visitado) override;

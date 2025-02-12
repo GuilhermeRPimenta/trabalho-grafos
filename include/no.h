@@ -16,7 +16,6 @@ class No
     void setInfo(int val);
     void setProx(No *p);
     void setPeso(float peso);
-
     
   private:
     int info;

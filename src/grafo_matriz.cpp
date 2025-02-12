@@ -92,7 +92,7 @@ void GrafoMatriz::inicializar_vertices(int ordem)
 
 void GrafoMatriz::setPesoV(float peso, int vertice)
 {
-    vertices[vertice - 1] = peso;
+    vertices[vertice] = peso;
 }
 
 void GrafoMatriz::novo_grafo(const std::string &arquivo)
@@ -361,7 +361,7 @@ void GrafoMatriz::novo_grafo(const std::string &arquivo)
     }
 }
 
-int GrafoMatriz::get_aresta(int i, int j) const
+float GrafoMatriz::get_aresta(int i, int j) const
 {
     // Suporte a grafos direcionados e não direcionados
 
@@ -385,6 +385,39 @@ int GrafoMatriz::get_aresta(int i, int j) const
         {
             int index = (n * (n - 1)) / 2 - ((n - j) * (n - j - 1)) / 2 + (i - j - 1);
             return matriz_sem_direcao[index];
+        }
+    }
+}
+
+float GrafoMatriz::get_Pesoaresta(int i, int j)
+{
+    // Suporte a grafos direcionados e não direcionados
+    i = i-1;
+    j = j-1;
+    if (i == j)
+    {
+        return 1000000000;
+    }
+    if (direcionado)
+    {   
+        if(matriz[i][j] == 0)
+            return 1000000000;
+        return matriz[i][j];
+    }
+    else
+    {
+        int n = ordem;
+        if (i < j)
+        {
+            if(matriz[i][j] == 0)
+                return 1000000000;
+            int index = (n * (n - 1)) / 2 - ((n - i) * (n - i - 1)) / 2 + (j - i - 1);
+            return matriz_sem_direcao[index];
+            
+        }
+        else
+        {
+            return 1000000000;
         }
     }
 }
@@ -489,6 +522,7 @@ int GrafoMatriz::conta_transposto(bool *visitado, int *pilha, int &topo)
     return numComponentes;
 }
 
+/*
 void GrafoMatriz::salva_grafo(std::ofstream &saida) const
 {
     saida << ordem << " " << direcionado << " "
@@ -518,7 +552,7 @@ void GrafoMatriz::salva_grafo(std::ofstream &saida) const
             }
         }
     }
-}
+}*/
 
 void GrafoMatriz::deleta_no(int no){
     int indexNo =  no - 1;
@@ -665,7 +699,7 @@ void GrafoMatriz::nova_aresta(int origem, float peso, int destino)
 
 void GrafoMatriz::deleta_aresta(int origem, int destino) {
     // Assumindo 1-indexado
-    origem = origem-1;
-    destino = destino-1;
-    setAresta(origem, destino, 0);
+    origem = origem;
+    destino = destino;
+    setAresta(origem, 0, destino);
 }

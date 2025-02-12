@@ -7,7 +7,17 @@
 #include <cstring>
 
 void imprimir_dados_grafo(Grafo *grafo)
-{   
+{
+    
+    std::cout << "Grau: " << grafo->get_grau() << std::endl;
+    std::cout << "Ordem: " << grafo->get_ordem() << std::endl;
+    std::cout << "Direcionado: " << (grafo->eh_direcionado() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Maior menor distancia: " << grafo->maior_menor_caminho(*grafo, grafo->get_ordem()) <<std::endl<<std::endl;
+
+
     std::cout<<"Excluindo no 1"<<std::endl;
     grafo->deleta_no(1);
     std::cout<<"Excluindo primeira aresta do no 2"<<std::endl;
@@ -21,6 +31,9 @@ void imprimir_dados_grafo(Grafo *grafo)
     std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
     std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
+    std::cout << "Maior menor distancia: " << grafo->maior_menor_caminho(*grafo, grafo->get_ordem()) <<std::endl<<std::endl;
+
+    
 
     std::cout<<std::endl<<std::endl<<std::endl;
     std::cout<<std::endl<<std::endl<<std::endl;
@@ -29,7 +42,6 @@ void imprimir_dados_grafo(Grafo *grafo)
     grafo->novo_no(1,2);
     std::cout<<"Criando aresta do no 2 com 1"<<std::endl;
     grafo->nova_aresta(2, 4, 1);
-    std::ofstream saida("entradas/grafo2.txt");
 
     std::cout<<std::endl<<std::endl<<std::endl;
 
@@ -39,7 +51,9 @@ void imprimir_dados_grafo(Grafo *grafo)
     std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
     std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
-    
+    std::cout << "Maior menor distancia: " << grafo->maior_menor_caminho(*grafo, grafo->get_ordem()) <<std::endl<<std::endl;
+    std::cout<<std::endl<<std::endl<<std::endl;
+    std::cout<<std::endl<<std::endl<<std::endl;  
 
     /*
     std::cout << "Componentes conexas: " << (grafo->n_conexo()) << std::endl;
@@ -86,6 +100,7 @@ int main(int argc, char *argv[])
             return 1;
         }
     }
+
     /*
     else if (operacao == "-c")
     {
