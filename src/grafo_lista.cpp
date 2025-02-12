@@ -84,7 +84,7 @@ void GrafoLista::setPesoV(float peso, int vertice)
 
 void GrafoLista::nova_aresta(int origem, float pesoAresta, int destino)
 {
-    setAresta(origem, pesoAresta, destino - 1);
+    setAresta(origem, pesoAresta, destino);
 }
 
 void GrafoLista::deleta_aresta(int origem, int destino)
