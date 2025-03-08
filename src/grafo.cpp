@@ -219,4 +219,38 @@ float Grafo::maior_menor_caminho(Grafo &grafo, int ordem) {
     return maior_dist;
 }
 
+void Grafo::carrega_grafo_clusters(const std::string &arquivo){
+    std::string caminho_completo = "./entradas/" + arquivo;
+    std::ifstream entrada(caminho_completo);
+
+    if (!entrada.is_open())
+    {
+        std::cerr << "Erro ao abrir o arquivo: " << arquivo << std::endl;
+        return;
+    }
+
+    entrada >> ordem >> nClusters;
+    inicializar_vertices(ordem);
+    inicializar_clusters(nClusters, ordem);
+
+    for(int i = 0; i < ordem; ++i){
+        int indexNo;
+        int indexCluster;
+        entrada >> indexNo >> indexCluster;
+        clusters[indexCluster][indexNo] = 1;
+    }
+    
+}
+
+void Grafo::inicializar_clusters(int nClusters, int ordem){
+    clusters = new int *[ordem];
+    for (int i = 0; i < ordem; i++){
+        clusters[i] = new int[nClusters];
+    }
+}
+
+void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
+
+}
+
 
