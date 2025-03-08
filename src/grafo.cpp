@@ -233,10 +233,15 @@ void Grafo::carrega_grafo_clusters(const std::string &arquivo){
     inicializar_vertices(ordem);
     inicializar_clusters(nClusters, ordem);
 
-    for(int i = 0; i < ordem; ++i){
-        int indexNo;
-        int indexCluster;
-        entrada >> indexNo >> indexCluster;
+    clusters_visitados = new bool[nClusters];
+
+    for(int i = 0; i < nClusters; i++){
+        clusters_visitados[i] = false;
+    }
+
+    int indexNo;
+    int indexCluster;
+    while(entrada >> indexNo >> indexCluster){
         clusters[indexNo][indexCluster] = 1;
     }
     
@@ -250,6 +255,31 @@ void Grafo::inicializar_clusters(int nClusters, int ordem){
 }
 
 void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
+    int nClusters = grafo.nClusters;
+    int **clusters = grafo.clusters;
+    
+    int noRand = rand() % ordem;
+    
+    for(int i = 0; i < nClusters; i++){
+        if(clusters[noRand][i] == 1){
+            clusters_visitados[i] = true;
+            setAresta(noRand, 1, i);
+        }
+    }
+
+    bool todosClustersVisitados = false;
+    while(!todosClustersVisitados){
+        for(int i = 0; i < nClusters; i++){
+            if(!clusters_visitados[i]){
+                todosClustersVisitados = false;
+                break;
+            }
+            todosClustersVisitados = true;
+        }
+
+        getVerticeVizinhoRand()
+    }
+
 
 }
 
