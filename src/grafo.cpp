@@ -237,7 +237,7 @@ void Grafo::carrega_grafo_clusters(const std::string &arquivo){
         int indexNo;
         int indexCluster;
         entrada >> indexNo >> indexCluster;
-        clusters[indexCluster][indexNo] = 1;
+        clusters[indexNo][indexCluster] = 1;
     }
     
 }
