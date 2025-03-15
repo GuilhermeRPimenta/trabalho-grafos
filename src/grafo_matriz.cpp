@@ -424,9 +424,8 @@ float GrafoMatriz::get_Pesoaresta(int i, int j)
 
 void GrafoMatriz::setAresta(int i, float valor, int j)
 {
-    /* Assumindo 0-indexado */
-    i = i;
-    j = j;
+    i = i-1;
+    j = j-1;
     if (i == j)
     {
         return;

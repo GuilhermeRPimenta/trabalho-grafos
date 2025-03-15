@@ -226,7 +226,7 @@ Alterações para testes usando com-Amazon...
 
 void Grafo::carrega_grafo_clusters(const std::string &arquivo){
     //std::string caminho_completo = "./entradas/" + arquivo;
-    std::string caminho_completo = "./com-Amazon_Communities_top5000_clustered_graph.txt";
+    std::string caminho_completo = "./grafo-teste-cluster.txt";
     std::ifstream entrada(caminho_completo);
 
     if (!entrada.is_open())
@@ -237,10 +237,17 @@ void Grafo::carrega_grafo_clusters(const std::string &arquivo){
 
     int nArestas = 0;
     entrada >> ordem >> nArestas;
-    nClusters = 500;
+    // nClusters = 400;
+    nClusters = 3;
+
+    clusters_visitados = new bool[nClusters];
+    for (int i = 0; i < nClusters; i++){
+        clusters_visitados[i] = false;
+    }
+
     inicializar_vertices(ordem);
 
-    relacao_id_cluster = new int[ordem];
+    relacao_id_cluster = new int[ordem+1];
 
     for (int i = 0; i < nArestas; i++){
         int origem, destino, cluster;
@@ -282,23 +289,24 @@ void Grafo::inicializar_clusters(int nClusters, int ordem){
 }
 */
 
-bool Grafo::no_valido(int no) {
-    for (int i = 0; i < ordem; i++) {
-        if (i==no) {
-            continue;
-        }
+// bool Grafo::no_valido(int no) {
+//     for (int i = 0; i < ordem; i++) {
+//         if (i==no) {
+//             continue;
+//         }
 
-        if (get_Pesoaresta(no, i) == 1) {
-            return true;
-        }
-    }
-    return false;
-}
+//         if (get_Pesoaresta(no, i) == 1) {
+//             return true;
+//         }
+//     }
+//     return false;
+// }
 
 int Grafo::get_vizinhos(int no, int* vizinhos) {
     int index = 0;
-    for (int i = 0; i < ordem; i++) {
-        if (get_Pesoaresta(no, i) == 1) {
+    for (int i = 1; i <= ordem; i++) {
+        std::cout<<"No: "<<no<<" | i: "<<i<<" | Peso: "<<get_Pesoaresta(no, i)<<std::endl;
+        if (get_Pesoaresta(no, i) == 1) {           
             vizinhos[index] = i;
             index++;
         }
@@ -310,29 +318,56 @@ int Grafo::getVerticeVizinhoRand(int origem) {
     int vizinhos[ordem];
     int nVizinhos = get_vizinhos(origem, vizinhos);
 
+    std::cout << "vizinhos: " ;
+    for (int i = 0; i < nVizinhos; i++) {
+        std::cout << vizinhos[i] << " ";
+    }
+    std::cout << std::endl;
 
+    int vizinhos_cluster_naovisitados[ordem];
+    int index = 0;
 
-    int index = rand() % nVizinhos;
-    return vizinhos[index];
+    for (int i = 0; i < nVizinhos; i++) {
+        if (!clusters_visitados[relacao_id_cluster[vizinhos[i]]]) {
+            std::cout << i << " " << relacao_id_cluster[vizinhos[i]] << std::endl;
+            vizinhos_cluster_naovisitados[index] = vizinhos[i];
+            index++;
+        }
+    }
+
+    if (index == 0) {
+        return -1;
+    }
+
+    // index = novo n de vizinhos
+    int vizinhoRand = rand() % index;
+    return vizinhos_cluster_naovisitados[vizinhoRand];
 }
 
 
 void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
-    
+    srand(time(0));
     int nClusters = grafo.nClusters;
-    int noRand = rand() % ordem;
-
-    /*for (int i = 0; i < nClusters; i++){
-
-    }*/
-
-    while (!no_valido(noRand)) {
-        noRand = rand() % ordem;
-    }
-
+    int noRand = 1 + rand() % (ordem-1);
+    // std::cout << "No rand: " << noRand << std::endl;
+    // std::cout << "Cluster: " << grafo.relacao_id_cluster[noRand] << std::endl;
+    
     std::cout << "No rand: " << noRand << std::endl;
-    std::cout << "Cluster: " << relacao_id_cluster[noRand] << std::endl;
+    std::cout << "Cluster: " << grafo.relacao_id_cluster[noRand] << std::endl;
 
+    
+    inicializar_vertices(0);
+    std::cout << "Inicializado " << std::endl;
+    novo_no(noRand, 0);
+    std::cout << "Novo no: " << noRand << std::endl;
+
+    grafo.clusters_visitados[grafo.relacao_id_cluster[noRand]] = true;
+
+    std::cout << "Definido cluster visitado" << std::endl;
+    int vizinho = grafo.getVerticeVizinhoRand(noRand);
+    novo_no(vizinho, 0);
+    setAresta(noRand, 1, vizinho);
+    
 
     
     /*
