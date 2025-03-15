@@ -44,7 +44,7 @@ public:
     float menor_caminho(int origem, int destino, int ordem);
     float maior_menor_caminho(Grafo &grafo, int ordem);
 
-    virtual int getVerticeVizinhoRand(int origem) = 0;
+    int getVerticeVizinhoRand(int origem);
     void AGMG_randomizada(Grafo &grafo, int ordem);
 
 
@@ -54,15 +54,17 @@ protected:
     bool vertices_ponderados;
     bool arestas_ponderadas;
     int nClusters;
-    int **clusters;
     bool *clusters_visitados;
+
+    int* relacao_id_cluster;
 
     virtual void dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo) = 0;
     virtual void dfs(int vertice, bool *visitado) = 0;
 
     virtual int conta_transposto(bool *visitado, int *pilha, int &topo) = 0;
 
-    
+    bool no_valido(int no);
+    int get_vizinhos(int no, int* vizinhos);
 
 };
 

@@ -101,6 +101,33 @@ int main(int argc, char *argv[])
         }
     }
 
+    else if (operacao == "-p") {
+        if (estrutura == "-m")
+        {
+            // Carregar grafo com matriz de adjacência
+            GrafoMatriz grafo;
+            std::cout<<"carregando..."<<std::endl;
+            grafo.carrega_grafo_clusters(arquivo_grafo);
+            std::cout<<"2"<<std::endl;
+            imprimir_dados_grafo(&grafo);
+        }
+        else if (estrutura == "-l")
+        {
+            // Carregar grafo com lista encadeada
+            GrafoLista grafo;
+            grafo.carrega_grafo_clusters(arquivo_grafo);
+
+            imprimir_dados_grafo(&grafo);
+        }
+        else
+        {
+            std::cerr << "Estrutura inválida: use -m para matriz ou -l para lista" << std::endl;
+            return 1;
+        }
+
+        
+    }
+
     /*
     else if (operacao == "-c")
     {
