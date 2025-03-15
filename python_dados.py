@@ -7,8 +7,15 @@ def load_graph(file_path):
         for line in f:
             if line.startswith('#'):
                 continue  # Ignorar cabeçalhos
-            from_node, to_node = map(int, line.strip().split())
-            G.add_edge(from_node, to_node)
+            parts = line.strip().split()
+            if len(parts) != 2:
+                print(f"Linha ignorada (formato inválido): {line.strip()}")
+                continue
+            try:
+                from_node, to_node = map(int, parts)
+                G.add_edge(from_node, to_node)
+            except ValueError:
+                print(f"Erro ao converter valores para inteiro: {line.strip()}")
     return G
 
 def get_largest_connected_component(G):
@@ -24,24 +31,23 @@ def assign_random_clusters(G, num_clusters):
     cluster_map = {node: i % num_clusters for i, node in enumerate(nodes)}
     return cluster_map
 
-def save_clustered_graph(file_path, G, cluster_map):
-    with open(file_path, 'w') as f:
-        f.write("FromNodeId\tToNodeId\tCluster\n")
-        for from_node, to_node in G.edges():
-            cluster = cluster_map.get(from_node, -1)
-            f.write(f"{from_node}\t{to_node}\t{cluster}\n")
+def normalize_node_ids(G):
+    node_mapping = {old_id: new_id for new_id, old_id in enumerate(sorted(G.nodes()))}
+    G = nx.relabel_nodes(G, node_mapping)
+    return G, node_mapping
 
-def save_cluster_info(file_path, cluster_map):
+def save_clustered_graph(file_path, G, cluster_map, node_mapping):
     with open(file_path, 'w') as f:
-        f.write("NodeId\tCluster\n")
-        for node, cluster in cluster_map.items():
-            f.write(f"{node}\t{cluster}\n")
+        f.write(f"{G.number_of_nodes()}\t{G.number_of_edges()}\n")  # Primeira linha com ordem do grafo
+        for from_node, to_node in G.edges():
+            new_from_node = from_node % G.number_of_nodes()
+            new_to_node = to_node % G.number_of_nodes()
+            cluster = cluster_map.get(from_node, -1)
+            f.write(f"{new_from_node}\t{new_to_node}\t{cluster}\n")
 
 # Configurações
-input_file = "entradas/web-BerkStan.txt"
-largest_component_file = "largest_component.txt"
-output_file = "web-BerkStan_clustered_graph.txt"
-cluster_info_file = "node_clusters.txt"
+input_file = "entradas/com-LiveJournal_Communities_top5000.txt"
+output_file = "com-LiveJournal_Communities_top5000.txt"
 num_clusters = 500  # Defina o número de clusters desejado
 
 # Processamento
@@ -53,12 +59,9 @@ largest_subgraph = get_largest_connected_component(graph)  # Obtém maior subgra
 print(f"Número total de nós no maior subgrafo conexo: {largest_subgraph.number_of_nodes()}")
 print(f"Número total de arestas no maior subgrafo conexo: {largest_subgraph.number_of_edges()}")
 
+largest_subgraph, node_mapping = normalize_node_ids(largest_subgraph)  # Normaliza os IDs dos nós
 cluster_map = assign_random_clusters(largest_subgraph, num_clusters)  # Atribui clusters aleatórios
 
 # Salvar resultados
-save_clustered_graph(output_file, largest_subgraph, cluster_map)
-save_cluster_info(cluster_info_file, cluster_map)
-
-print(f"Maior subgrafo conexo salvo como {largest_component_file}")
+save_clustered_graph(output_file, largest_subgraph, cluster_map, node_mapping)
 print(f"Clusterização concluída. Arquivo salvo como {output_file}")
-print(f"Informações dos clusters salvas em {cluster_info_file}")
