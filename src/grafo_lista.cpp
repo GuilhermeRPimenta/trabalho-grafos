@@ -30,6 +30,9 @@ GrafoLista::~GrafoLista()
     {
         delete vertices; // Apenas deletamos a LinkedList
     }
+
+    delete[] clusters_visitados;
+    delete[] relacao_id_cluster;
 }
 
 void GrafoLista::inicializar_vertices(int tam)
