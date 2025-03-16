@@ -11,49 +11,49 @@ void imprimir_dados_grafo(Grafo *grafo)
     
     std::cout << "Grau: " << grafo->get_grau() << std::endl;
     std::cout << "Ordem: " << grafo->get_ordem() << std::endl;
-    std::cout << "Direcionado: " << (grafo->eh_direcionado() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Maior menor distancia: " << grafo->maior_menor_caminho(*grafo, grafo->get_ordem()) <<std::endl<<std::endl;
+    // std::cout << "Direcionado: " << (grafo->eh_direcionado() ? "Sim" : "Nao") << std::endl;
+    // std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
+    // std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
+    // std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
+    // std::cout << "Maior menor distancia: " << grafo->maior_menor_caminho(*grafo, grafo->get_ordem()) <<std::endl<<std::endl;
 
 
-    std::cout<<"Excluindo no 1"<<std::endl;
-    grafo->deleta_no(1);
-    std::cout<<"Excluindo primeira aresta do no 2"<<std::endl;
-    grafo->deleta_aresta(2, 1);
+    // std::cout<<"Excluindo no 1"<<std::endl;
+    // grafo->deleta_no(1);
+    // std::cout<<"Excluindo primeira aresta do no 2"<<std::endl;
+    // grafo->deleta_aresta(2, 1);
 
-    std::cout<<std::endl<<std::endl<<std::endl;
+    // std::cout<<std::endl<<std::endl<<std::endl;
     
-    std::cout << "Grau: " << grafo->get_grau() << std::endl;
-    std::cout << "Ordem: " << grafo->get_ordem() << std::endl;
-    std::cout << "Direcionado: " << (grafo->eh_direcionado() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Maior menor distancia: " << grafo->maior_menor_caminho(*grafo, grafo->get_ordem()) <<std::endl<<std::endl;
+    // std::cout << "Grau: " << grafo->get_grau() << std::endl;
+    // std::cout << "Ordem: " << grafo->get_ordem() << std::endl;
+    // std::cout << "Direcionado: " << (grafo->eh_direcionado() ? "Sim" : "Nao") << std::endl;
+    // std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
+    // std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
+    // std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
+    // std::cout << "Maior menor distancia: " << grafo->maior_menor_caminho(*grafo, grafo->get_ordem()) <<std::endl<<std::endl;
 
     
 
-    std::cout<<std::endl<<std::endl<<std::endl;
-    std::cout<<std::endl<<std::endl<<std::endl;
+    // std::cout<<std::endl<<std::endl<<std::endl;
+    // std::cout<<std::endl<<std::endl<<std::endl;
 
-    std::cout<<"Criando no 1"<<std::endl;
-    grafo->novo_no(1,2);
-    std::cout<<"Criando aresta do no 2 com 1"<<std::endl;
-    grafo->nova_aresta(2, 4, 1);
+    // std::cout<<"Criando no 1"<<std::endl;
+    // grafo->novo_no(1,2);
+    // std::cout<<"Criando aresta do no 2 com 1"<<std::endl;
+    // grafo->nova_aresta(2, 4, 1);
 
-    std::cout<<std::endl<<std::endl<<std::endl;
+    // std::cout<<std::endl<<std::endl<<std::endl;
 
-    std::cout << "Grau: " << grafo->get_grau() << std::endl;
-    std::cout << "Ordem: " << grafo->get_ordem() << std::endl;
-    std::cout << "Direcionado: " << (grafo->eh_direcionado() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
-    std::cout << "Maior menor distancia: " << grafo->maior_menor_caminho(*grafo, grafo->get_ordem()) <<std::endl<<std::endl;
-    std::cout<<std::endl<<std::endl<<std::endl;
-    std::cout<<std::endl<<std::endl<<std::endl;  
+    // std::cout << "Grau: " << grafo->get_grau() << std::endl;
+    // std::cout << "Ordem: " << grafo->get_ordem() << std::endl;
+    // std::cout << "Direcionado: " << (grafo->eh_direcionado() ? "Sim" : "Nao") << std::endl;
+    // std::cout << "Vertices ponderados: " << (grafo->vertice_ponderado() ? "Sim" : "Nao") << std::endl;
+    // std::cout << "Arestas ponderadas: " << (grafo->aresta_ponderada() ? "Sim" : "Nao") << std::endl;
+    // std::cout << "Completo: " << (grafo->eh_completo() ? "Sim" : "Nao") << std::endl;
+    // std::cout << "Maior menor distancia: " << grafo->maior_menor_caminho(*grafo, grafo->get_ordem()) <<std::endl<<std::endl;
+    // std::cout<<std::endl<<std::endl<<std::endl;
+    // std::cout<<std::endl<<std::endl<<std::endl;  
 
     /*
     std::cout << "Componentes conexas: " << (grafo->n_conexo()) << std::endl;
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 {
     if (argc < 4)
     {
-        std::cerr << "Uso: main.out -d|-c -m|-l <arquivo_grafo> [<descricao>]" << std::endl;
+        std::cerr << "Uso: main.out -d|-c|-p -m|-l <arquivo_grafo> [<descricao>]" << std::endl;
         return 1;
     }
 
@@ -108,9 +108,9 @@ int main(int argc, char *argv[])
                 // Carregar grafo com matriz de adjacência
                 GrafoMatriz grafo;
                 grafo.carrega_grafo_clusters(arquivo_grafo);
-                //GrafoMatriz grafo_agmg;
-                //grafo_agmg.AGMG_randomizada(grafo, grafo.get_ordem());
-                //grafo.AGMG_guloso(grafo.get_ordem());
+                GrafoMatriz grafo_agmg;
+                grafo_agmg.AGMG_randomizada(grafo, grafo.get_ordem());
+                grafo_agmg.AGMG_guloso(grafo, grafo.get_ordem());
                 grafo.agmg_reativo();
                 //imprimir_dados_grafo(&grafo);
 
@@ -124,9 +124,9 @@ int main(int argc, char *argv[])
                 // Carregar grafo com lista encadeada
                 GrafoLista grafo;
                 grafo.carrega_grafo_clusters(arquivo_grafo);
-                //GrafoLista grafo_agmg;
-                //grafo_agmg.AGMG_randomizada(grafo, grafo.get_ordem());
-                //grafo.AGMG_guloso(grafo.get_ordem());
+                GrafoLista grafo_agmg;
+                grafo_agmg.AGMG_randomizada(grafo, grafo.get_ordem());
+                grafo_agmg.AGMG_guloso(grafo, grafo.get_ordem());
                 grafo.agmg_reativo();
                 //imprimir_dados_grafo(&grafo);
             }catch(const std::exception& e){

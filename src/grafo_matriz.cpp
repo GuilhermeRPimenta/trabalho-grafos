@@ -14,14 +14,14 @@ GrafoMatriz::GrafoMatriz()
     dim_matriz = 10;
     vertices = nullptr;
     ordem = 0;
-    direcionado = false;
+    direcionado = true;
     arestas_ponderadas = false;
     vertices_ponderados = false;
 }
 
 GrafoMatriz::GrafoMatriz(int ordem, bool direcionado, bool vertices_ponderados, bool arestas_ponderadas)
 {
-    this->direcionado = direcionado;
+    this->direcionado = true;
     this->arestas_ponderadas = arestas_ponderadas;
     this->vertices_ponderados = vertices_ponderados;
     inicializar_vertices(ordem);
@@ -455,8 +455,8 @@ float GrafoMatriz::get_Pesoaresta(int i, int j)
 
 void GrafoMatriz::setAresta(int i, float valor, int j)
 {
-    i = i - 1;
-    j = j - 1;
+    i = i-1;
+    j = j-1;
     if (i == j)
     {
         return;
@@ -485,10 +485,12 @@ void GrafoMatriz::setAresta(int i, float valor, int j)
 int GrafoMatriz::getGrauV(int vertice)
 {
     int grau = 0;
-    for (int i = 0; i < ordem; i++)
+    for (int i = 0; i < dim_matriz; i++)
     {
         if (get_aresta(vertice, i) != 0)
         {
+            grau++;
+        } else if (get_aresta(i, vertice) != 0) {
             grau++;
         }
     }
@@ -705,12 +707,12 @@ void GrafoMatriz::aumentar_matriz() {
 
 void GrafoMatriz::novo_no(int indice, float peso)
 {
-    if (ordem == dim_matriz)
+    while (ordem >= dim_matriz || indice >= dim_matriz)
     {
         aumentar_matriz();
     }
     if (vertices_ponderados)
-        vertices[ordem] = peso;
+        vertices[indice] = peso;
     ordem++;
 }
 

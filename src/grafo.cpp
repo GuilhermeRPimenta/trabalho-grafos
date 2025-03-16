@@ -5,6 +5,8 @@
 #include <cmath>
 #include <ctime>
 
+using namespace std;
+
 void Grafo::carrega_grafo(const std::string &arquivo)
 {
     std::string caminho_completo = "./entradas/" + arquivo;
@@ -237,16 +239,18 @@ float Grafo::maior_menor_caminho(Grafo &grafo, int ordem)
     return maior_dist;
 }
 
-void Grafo::carrega_grafo_clusters(const std::string &arquivo)
-{
-    std::string caminho_completo = arquivo;
+/*
+Alterações para testes usando com-Amazon...
+*/
+
+void Grafo::carrega_grafo_clusters(const std::string &arquivo){
+    std::string caminho_completo = "./entradas/" + arquivo;
     std::ifstream entrada(caminho_completo);
 
     if (!entrada.is_open()) {
         std::cerr << "Erro ao abrir o arquivo: " << arquivo << std::endl;
         return;
     }
-
     int num_arestas;
     entrada >> ordem >> num_arestas;  // Leitura da ordem e número de arestas
 
@@ -262,6 +266,47 @@ void Grafo::carrega_grafo_clusters(const std::string &arquivo)
         clusters[indexNo][indexCluster] = 1;
         setAresta(indexNo, 1, destino);
     }
+
+
+    direcionado = true;
+    arestas_ponderadas = false;
+    vertices_ponderados = false;
+
+    clusters_visitados = new bool[nClusters+1];
+    for (int i = 0; i < nClusters+1; i++){
+        clusters_visitados[i] = false;
+    }
+
+    inicializar_vertices(ordem);
+
+    relacao_id_cluster = new int[ordem+1];
+
+    for (int i = 0; i < num_arestas; i++){
+        int origem, destino, cluster;
+        entrada >> origem >> destino >> cluster;
+        setAresta(origem, 1, destino);
+        setAresta(destino, 1, origem);
+        relacao_id_cluster[origem] = cluster;
+    }
+
+    entrada.close();
+
+    std::cout << "Grafo carregado com sucesso!" << std::endl;
+    std::cout << "Ordem: " << ordem << " | Direcionado: " << (direcionado ? "Sim" : "Não") << std::endl
+              << std::endl;
+
+    /*
+    inicializar_clusters(nClusters, ordem);
+
+    clusters_visitados = new bool[nClusters](); 
+
+    int indexNo, destino, indexCluster;
+    while (entrada >> indexNo >> destino >> indexCluster) {
+        clusters[indexNo][indexCluster] = 1;
+        setAresta(indexNo, 1, destino);
+    }
+        */
+    
 }
 
 void Grafo::inicializar_clusters(int nClusters, int ordem)
@@ -270,6 +315,337 @@ void Grafo::inicializar_clusters(int nClusters, int ordem)
     for (int i = 0; i < ordem; i++) {
         clusters[i] = new int[nClusters]();  // Inicializa todos os valores como 0
     }
+}
+
+int Grafo::find_cluster(int node)
+{
+    // Ajuste o índice para acessar corretamente os clusters (como os índices começam em 1)
+    for (int i = 0; i < nClusters; i++) { 
+        if (clusters[node - 1][i] == 1) {  // Ajuste para node - 1
+            return i; // Encontrou o cluster
+        }
+    }
+    return -1; // Caso não encontre
+}
+
+bool Grafo::explore_cluster(int start_node, int &novo_cluster, bool *clusters_visitados)
+{
+    visited[start_node - 1] = true;  // Ajuste para start_node - 1
+
+    // Tenta explorar os vizinhos do nó
+    for (int i = 0; i < ordem; i++) {
+        if (!visited[i] && existe_Aresta(start_node - 1, i)) {  // Ajuste para start_node - 1
+            novo_cluster = find_cluster(i + 1);  // Passa i + 1 porque o índice começa em 1
+
+            if (!clusters_visitados[novo_cluster]) {
+                clusters_visitados[novo_cluster] = true; 
+                return true;  
+            }
+        }
+    }
+
+    return false;
+}
+/*
+void Grafo::inicializar_clusters(int nClusters, int ordem){
+    clusters = new int *[ordem];
+    for (int i = 0; i < ordem; i++)
+    {
+        clusters[i] = new int[nClusters];
+    }
+}
+*/
+
+// bool Grafo::no_valido(int no) {
+//     for (int i = 0; i < ordem; i++) {
+//         if (i==no) {
+//             continue;
+//         }
+
+//         if (get_Pesoaresta(no, i) == 1) {
+//             return true;
+//         }
+//     }
+//     return false;
+// }
+
+
+int Grafo::get_vizinhos(int no, int* vizinhos) {
+    int index = 0;
+    for (int i = 1; i <= ordem; i++) {
+        if (get_Pesoaresta(no, i) == 1) {           
+            vizinhos[index] = i;
+            index++;
+        }
+    }
+
+    // std::cout << "Vizinhos: " << std::endl;
+    // for (int i = 0; i<index; i++) {
+    //     std::cout << vizinhos[i] << " ";
+    // }
+    // std::cout << std::endl;
+
+    return index;
+}
+
+int Grafo::getVerticeVizinhoRand(int origem) {
+    int vizinhos[ordem];
+    int nVizinhos = get_vizinhos(origem, vizinhos);
+
+    int vizinhos_cluster_naovisitados[ordem];
+    int index = 0;
+
+    for (int i = 0; i < nVizinhos; i++) {
+        if (!clusters_visitados[relacao_id_cluster[vizinhos[i]]]) {
+            vizinhos_cluster_naovisitados[index] = vizinhos[i];
+            index++;
+        }
+    }
+
+    if (index == 0) {
+        return -1;
+    }
+
+    // index = novo n de vizinhos
+    int vizinhoRand = rand() % index;
+    return vizinhos_cluster_naovisitados[vizinhoRand];
+}
+
+
+void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
+    srand(time(0));
+    int nClusters = grafo.nClusters;
+    int noRand = 1 + rand() % (ordem-1);
+    int* vertices = new int[ordem];
+    int verticeNum = 0;
+
+    
+    std::cout << "No rand: " << noRand << std::endl;
+    std::cout << "Cluster: " << grafo.relacao_id_cluster[noRand] << std::endl;
+
+
+    inicializar_vertices(0);
+    std::cout << "Inicializado " << std::endl;
+
+
+    novo_no(noRand, 0);
+    vertices[verticeNum] = noRand;
+    verticeNum++;
+
+    vertices[verticeNum] = noRand;
+    verticeNum++;
+
+    std::cout << "Novo no: " << noRand << std::endl;
+    grafo.clusters_visitados[grafo.relacao_id_cluster[noRand]] = true;
+
+    std::cout << "Definido cluster visitado" << std::endl;
+
+    bool todosVisitados = false;
+
+    while (!todosVisitados)
+    {
+        for (int i = verticeNum-1; i >= 0; i--) {
+            int vizinho = grafo.getVerticeVizinhoRand(vertices[i]);
+            // std::cout << "Vizinho rand encontrado: " << vizinho << std::endl;
+            if (vizinho == -1 && i == 0) {
+                //Não encontrado nenhum vizinho aleatório possível de outro cluster não visitado:
+                for (int j = verticeNum-1; j >= 0; j--) {
+                    int viz[ordem];
+                    int nViz = grafo.get_vizinhos(vertices[j], viz);
+                    int vizNaoVisitado[nViz];
+                    int nVizNaoVisitado = 0;
+                    // encontramos todos os vizinhos de J não visitados ainda e escolhemos um
+                    for (int k = 0; k<nViz; k++) {
+                        bool visitado = false;
+                        for (int l = 0; l < verticeNum; l++) {
+                            // std::cout << vertices[l] << std::endl;
+                            if (viz[k] == vertices[l]) {
+                                visitado = true;
+                            }
+                        }
+                        if (!visitado) {
+                            vizNaoVisitado[nVizNaoVisitado] = viz[k];
+                            nVizNaoVisitado++;
+                        }
+                    }
+
+                    if (nVizNaoVisitado > 0) {
+                        int vizRand;
+                        if (nVizNaoVisitado == 1)
+                            vizRand = 0;
+                        else vizRand = rand() % nVizNaoVisitado;
+                        novo_no(vizNaoVisitado[vizRand], 0);
+                        std::cout << "Novo no: " << vizNaoVisitado[vizRand] << std::endl;
+                        setAresta(vertices[j], 1, vizNaoVisitado[vizRand]);
+                        setAresta(vizNaoVisitado[vizRand], 1, vertices[j]);
+
+                        std::cout << "Set aresta: " << "[" << vertices[j]  << "] " << vizNaoVisitado[vizRand] << std::endl;
+
+                        vertices[verticeNum] = vizNaoVisitado[vizRand];
+                        verticeNum++;
+                        break;
+                    }
+                }
+            } else if (vizinho == -1) {
+                continue;
+            }
+            else {
+                novo_no(vizinho, 0);
+                std::cout << "Novo no: " << vizinho << std::endl;
+                setAresta(vertices[i], 1, vizinho);
+                setAresta(vizinho, 1, vertices[i]);
+
+                std::cout << "Set aresta: " << "[" << vertices[i]  << "] " << vizinho << std::endl;
+
+                grafo.clusters_visitados[grafo.relacao_id_cluster[vizinho]] = true;
+                vertices[verticeNum] = vizinho;
+                verticeNum++;
+
+
+                for (int i = 1; i < grafo.nClusters + 1; i++) {
+                    if (grafo.clusters_visitados[i]) {
+                        todosVisitados = true;
+                    }
+                    else {
+                        todosVisitados = false;
+                        break;
+                    }    
+                }
+
+                break;
+            }
+        }
+    }
+
+    std::cout << "clusters visitados : " << std::endl;
+            
+    for (int i = 0; i< nClusters+1; i++) {
+        std::cout << grafo.clusters_visitados[i] << std::endl;
+    }
+
+
+    
+    /*
+    int noRand = rand() % ordem;
+    
+    for(int i = 0; i < nClusters; i++){
+        if(clusters[noRand][i] == 1){
+            clusters_visitados[i] = true;
+            setAresta(noRand, 1, i);
+        }
+    }
+
+    bool todosClustersVisitados = false;
+    while(!todosClustersVisitados){
+        for(int i = 0; i < nClusters; i++){
+            if(!clusters_visitados[i]){
+                todosClustersVisitados = false;
+                break;
+            }
+            todosClustersVisitados = true;
+        }
+
+        getVerticeVizinhoRand()
+    }*/
+}
+
+bool Grafo::todosClustersVisitados(Grafo &grafo) {
+    for(int i = 0; i < grafo.nClusters; i++) {
+        if(!grafo.clusters_visitados[i])
+            return false;
+    }
+    return true;
+}
+
+bool Grafo::aux_AGMG_guloso(Grafo &grafo, int atual, int ordem, bool* nosVisitados) {
+    if (todosClustersVisitados(grafo)) {
+        return true;
+    }
+
+    int vizinhos[ordem];
+    int nVizinhos = grafo.get_vizinhos(atual + 1, vizinhos);
+    for (int i = 0; i < nVizinhos; i++) {
+        vizinhos[i] = vizinhos[i] - 1;
+    }
+    struct VizinhoInfo {
+        int id;
+        int grau;
+    };
+    VizinhoInfo candidatos[nVizinhos];
+    int nCandidatos = 0;
+
+    for (int i = 0; i < nVizinhos; i++) {
+        
+        if(nosVisitados[i]){
+            continue;
+        }
+        int v = vizinhos[i];
+        int grauV = grafo.getGrauV(v);
+        candidatos[nCandidatos++] = {v, grauV};
+    }
+
+    // Ordena candidatos por grau decrescente de grau
+    for (int i = 0; i < nCandidatos - 1; i++) {
+        for (int j = i + 1; j < nCandidatos; j++) {
+            if (candidatos[j].grau > candidatos[i].grau) {
+                VizinhoInfo temp = candidatos[i];
+                candidatos[i] = candidatos[j];
+                candidatos[j] = temp;
+            }
+        }
+    }
+
+    for (int i = 0; i < nCandidatos; i++) {
+        int v = candidatos[i].id;
+        int clusterV = grafo.relacao_id_cluster[v + 1];
+        bool jaVisitado = grafo.clusters_visitados[clusterV];
+        
+        if (!jaVisitado) {
+            grafo.clusters_visitados[clusterV] = true;
+        }
+        
+        // Adiciona nó ao grafo, mesmo que seu cluster já tenha sido visitado
+        novo_no(v, 0);
+        setAresta(atual, 1, v);
+        nosVisitados[v] = true;
+
+        aux_AGMG_guloso(grafo, v, ordem, nosVisitados);
+
+        if (todosClustersVisitados(grafo)) {
+            return true;
+        }
+    }
+
+    return todosClustersVisitados(grafo);
+            
+}
+
+void Grafo::AGMG_guloso(Grafo &grafo, int ordem){
+    int nClusters = grafo.nClusters;
+    bool *nosVisitados = new bool[ordem];
+    for (int i = 0; i < ordem; i++) {
+        nosVisitados[i] = false;
+    }
+    for(int i = 0; i < nClusters; i++){
+        grafo.clusters_visitados[i] = false;
+    }
+
+    int maiorGrau = grafo.getGrauV(0);
+    int noMaiorGrau = 0;
+    for(int i = 0; i < ordem; i++){
+        int grau = grafo.getGrauV(i);
+
+        if(grau > maiorGrau){
+            maiorGrau = grau;
+            noMaiorGrau = i;
+        }
+    }
+
+    inicializar_vertices(0);
+    novo_no(noMaiorGrau, 0);
+    nosVisitados[noMaiorGrau] = true;
+    grafo.clusters_visitados[grafo.relacao_id_cluster[noMaiorGrau]] = true;
+    aux_AGMG_guloso(grafo, noMaiorGrau, ordem, nosVisitados);
 }
 
 int Grafo::find_cluster(int node)
@@ -305,28 +681,28 @@ void Grafo::agmg_reativo()
 {
     srand(time(0));
 
-    visited = new bool[ordem]();  
-    bool* clusters_visitados = new bool[nClusters]();  
+    visited = new bool[ordem]();
+    bool* clusters_visitados = new bool[nClusters]();
 
-    int total_clusters_explored = 0;  
+    int total_clusters_explored = 0;
     int novo_cluster;
-    
+
     int *expansao = new int[ordem]; // Lista para simular uma fila
     int frente = 0, tras = 0;
 
     // Começa de um nó aleatório
-    int start_node = rand() % ordem;
+    int start_node = rand() % ordem + 1;  // Ajuste para garantir que o nó começa em 1
     expansao[tras++] = start_node;
-    visited[start_node] = true;
-    clusters_visitados[find_cluster(start_node)] = true;
+    visited[start_node - 1] = true;  // Ajuste para start_node - 1
+    clusters_visitados[find_cluster(start_node) - 1] = true; // Ajuste para start_node - 1
     total_clusters_explored++;
 
-    while (total_clusters_explored < nClusters && frente < tras) {  
+    while (total_clusters_explored < nClusters && frente < tras) {
         int node_atual = expansao[frente++];
 
         for (int i = 0; i < ordem; i++) {
-            if (!visited[i] && existe_Aresta(node_atual, i)) {
-                novo_cluster = find_cluster(i);
+            if (!visited[i] && existe_Aresta(node_atual - 1, i)) {  // Ajuste para node_atual - 1
+                novo_cluster = find_cluster(i + 1);  // Passa i + 1 porque o índice começa em 1
 
                 if (!clusters_visitados[novo_cluster]) {
                     clusters_visitados[novo_cluster] = true; 
@@ -336,7 +712,7 @@ void Grafo::agmg_reativo()
 
                 // Marca o nó e o adiciona à expansão
                 visited[i] = true;
-                expansao[tras++] = i;
+                expansao[tras++] = i + 1; // Armazena no expansao com índice ajustado
             }
         }
     }
