@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 {
     if (argc < 4)
     {
-        std::cerr << "Uso: main.out -d|-c -m|-l <arquivo_grafo> [<descricao>]" << std::endl;
+        std::cerr << "Uso: main.out -d|-c|-p -m|-l <arquivo_grafo> [<descricao>]" << std::endl;
         return 1;
     }
 
@@ -93,6 +93,43 @@ int main(int argc, char *argv[])
             GrafoLista grafo;
             grafo.carrega_grafo(arquivo_grafo);
             imprimir_dados_grafo(&grafo);
+        }
+        else
+        {
+            std::cerr << "Estrutura inválida: use -m para matriz ou -l para lista" << std::endl;
+            return 1;
+        }
+    }
+    else if(operacao == "-p")
+    {
+        if (estrutura == "-m")
+        {
+            try{
+                // Carregar grafo com matriz de adjacência
+                GrafoMatriz grafo;
+                grafo.carrega_grafo(arquivo_grafo);
+                grafo.AGMG_randomizada(grafo, grafo.get_ordem());
+                //grafo.AGMG_guloso(grafo.get_ordem());
+                grafo.agmg_reativo(grafo.get_ordem());
+                imprimir_dados_grafo(&grafo);
+
+            }catch(const std::exception& e){
+                std::cerr << e.what() << std::endl;
+            }
+        }
+        else if (estrutura == "-l")
+        {
+            try{
+                // Carregar grafo com lista encadeada
+                GrafoLista grafo;
+                grafo.carrega_grafo(arquivo_grafo);
+                grafo.AGMG_randomizada(grafo, grafo.get_ordem());
+                //grafo.AGMG_guloso(grafo.get_ordem());
+                grafo.agmg_reativo(grafo.get_ordem());
+                imprimir_dados_grafo(&grafo);
+            }catch(const std::exception& e){
+                std::cerr << e.what() << std::endl;
+            }
         }
         else
         {
