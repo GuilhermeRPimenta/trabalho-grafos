@@ -150,13 +150,12 @@ int Grafo::n_conexo()
 float Grafo::menor_caminho(int origem, int destino, int ordem)
 {
     int dist[ordem + 1];        // Armazena as menores distâncias
-    bool processado[ordem + 1]; // Marca se um nó já foi processado
+
 
     // Inicializa as distâncias como infinito e não processado
     for (int i = 1; i <= ordem; i++)
     {
         dist[i] = 1000000000; // Usando um valor grande como "infinito"
-        processado[i] = false;
     }
 
     // A distância para a origem é 0

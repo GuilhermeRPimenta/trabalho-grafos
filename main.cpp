@@ -200,7 +200,7 @@ int main(int argc, char *argv[])
         }
         else if (estrutura == "-l")
         {
-            /*GrafoLista grafo;
+            GrafoLista grafo;
             grafo.novo_grafo(arquivo_descricao);
 
             std::ofstream saida(caminho_completo);
