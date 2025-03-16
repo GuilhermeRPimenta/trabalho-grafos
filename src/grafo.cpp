@@ -250,6 +250,8 @@ void Grafo::carrega_grafo_clusters(const std::string &arquivo)
     int num_arestas;
     entrada >> ordem >> num_arestas;  // Leitura da ordem e número de arestas
 
+    nClusters = 400;
+
     inicializar_vertices(ordem);
     inicializar_clusters(nClusters, ordem);
 
@@ -301,49 +303,55 @@ bool Grafo::explore_cluster(int start_node, int &novo_cluster, bool *clusters_vi
 
 void Grafo::agmg_reativo()
 {
-    srand(time(0));  
+    srand(time(0));
 
-    visited = new bool[ordem](); 
+    visited = new bool[ordem]();  
     bool* clusters_visitados = new bool[nClusters]();  
 
     int total_clusters_explored = 0;  
-    int start_node;
     int novo_cluster;
+    
+    int *expansao = new int[ordem]; // Lista para simular uma fila
+    int frente = 0, tras = 0;
 
-    int limit = 600000;  
+    // Começa de um nó aleatório
+    int start_node = rand() % ordem;
+    expansao[tras++] = start_node;
+    visited[start_node] = true;
+    clusters_visitados[find_cluster(start_node)] = true;
+    total_clusters_explored++;
 
-    while (total_clusters_explored < nClusters && limit > 0) {  
-        limit--; 
+    while (total_clusters_explored < nClusters && frente < tras) {  
+        int node_atual = expansao[frente++];
 
-        // Escolher um nó inicial aleatório
-        start_node = rand() % ordem;
+        for (int i = 0; i < ordem; i++) {
+            if (!visited[i] && existe_Aresta(node_atual, i)) {
+                novo_cluster = find_cluster(i);
 
-        // Tentar explorar um cluster a partir do nó inicial
-        if (explore_cluster(start_node, novo_cluster, clusters_visitados)) {
-            total_clusters_explored++;
-            std::cout << "Cluster " << novo_cluster << " visitado!" << std::endl;
-        } else {
-            std::cout << "Não foi possível explorar mais clusters a partir do nó " << start_node << std::endl;
-        }
+                if (!clusters_visitados[novo_cluster]) {
+                    clusters_visitados[novo_cluster] = true; 
+                    total_clusters_explored++;
+                    std::cout << "Cluster " << novo_cluster << " visitado!" << std::endl;
+                }
 
-        // Para evitar loops infinitos
-        if (total_clusters_explored == nClusters) {
-            break;
+                // Marca o nó e o adiciona à expansão
+                visited[i] = true;
+                expansao[tras++] = i;
+            }
         }
     }
 
-    // Verifica se todos os clusters foram explorados
-    if (total_clusters_explored == 400) {
+    if (total_clusters_explored == nClusters) {
         std::cout << "Todos os clusters foram explorados!" << std::endl;
     } else {
-        std::cout << "Erro: Não foi possível conectar todos os clusters. "<< std::endl<<"Apenas " 
-                  << total_clusters_explored << " clusters foram explorados."<<std::endl;
+        std::cout << "Erro: Apenas " << total_clusters_explored << " clusters foram explorados." << std::endl;
     }
 
-    // Limpeza de memória
     delete[] visited;
     delete[] clusters_visitados;
+    delete[] expansao;
 }
+
 
 
 
