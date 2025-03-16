@@ -394,4 +394,103 @@ void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
     }*/
 }
 
+bool Grafo::todosClustersVisitados(Grafo &grafo) {
+    for(int i = 0; i < grafo.nClusters; i++) {
+        if(!grafo.clusters_visitados[i])
+            return false;
+    }
+    return true;
+}
 
+bool Grafo::aux_AGMG_guloso(Grafo &grafo, int atual, int ordem){
+    if (todosClustersVisitados(grafo)) {
+        return true;
+    }
+
+    int vizinhos[ordem];
+    int vizinhosVisitados[grafo.getGrauV(atual)];
+    int nVizinhos = grafo.get_vizinhos(atual, vizinhos);
+
+    int melhorVizinho = -1;
+    int melhorGrau = -1;
+
+    for (int i = 0; i < nVizinhos; i++) {
+        int v = vizinhos[i];
+        int clusterV = grafo.relacao_id_cluster[v];
+        if (!grafo.clusters_visitados[clusterV]) {
+            int grauV = grafo.getGrauV(v);
+            if (grauV > melhorGrau) {
+                melhorGrau = grauV;
+                melhorVizinho = v;
+            }
+        }
+    }
+
+    if (melhorVizinho != -1) {
+        int indexVizinhoVisitado = 0;
+        
+        
+        bool fim = aux_AGMG_guloso(grafo, melhorVizinho, ordem);
+        if(!fim){
+            while (!fim || indexVizinhoVisitado < nVizinhos) {
+                for (int i = indexVizinhoVisitado; i < nVizinhos; i++) {
+                    int v = vizinhos[i];
+                    int clusterV = grafo.relacao_id_cluster[v];
+                    if (!grafo.clusters_visitados[clusterV]) {
+                        int grauV = grafo.getGrauV(v);
+                        if (grauV > melhorGrau) {
+                            melhorGrau = grauV;
+                            melhorVizinho = v;
+                        }
+                    }
+                }
+                if(melhorVizinho != -1){
+                    fim = aux_AGMG_guloso(grafo, melhorVizinho, ordem);
+                }else{
+                    return false;
+                }
+                indexVizinhoVisitado++;
+            }
+            if(!fim){
+                return false;
+            }else{
+                novo_no(melhorVizinho, 0);
+                setAresta(atual, 1, melhorVizinho);
+                grafo.clusters_visitados[grafo.relacao_id_cluster[melhorVizinho]] = true;
+            }
+            
+        }else{
+            novo_no(melhorVizinho, 0);
+            setAresta(atual, 1, melhorVizinho);
+            grafo.clusters_visitados[grafo.relacao_id_cluster[melhorVizinho]] = true;
+        }
+    } else {
+        return false;
+    }
+}
+
+void Grafo::AGMG_guloso(Grafo &grafo, int ordem){
+    int nClusters = grafo.nClusters;
+
+    for(int i = 0; i < nClusters; i++){
+        grafo.clusters_visitados[i] = false;
+    }
+
+    int maiorGrau = grafo.getGrauV(0);
+    int noMaiorGrau = 0;
+    for(int i = 0; i < ordem; i++){
+        int grau = grafo.getGrauV(i);
+        if(grau > maiorGrau){
+            maiorGrau = grau;
+            noMaiorGrau = i;
+        }
+    }
+
+    inicializar_vertices(0);
+    novo_no(noMaiorGrau, 0);
+    grafo.clusters_visitados[grafo.relacao_id_cluster[noMaiorGrau]] = true;
+
+    if (todosClustersVisitados(grafo)) {
+        return;
+    }
+}
