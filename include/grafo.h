@@ -14,6 +14,7 @@ public:
     virtual int n_conexo();
     
     virtual void carrega_grafo(const std::string& arquivo);
+    virtual void carrega_grafo_clusters(const std::string& arquivo);
 
     /*
     virtual bool eh_bipartido() const = 0;
@@ -24,6 +25,7 @@ public:
     */
 
     virtual void inicializar_vertices(int ordem) = 0;
+    void inicializar_clusters(int nClusters, int ordem);
     
 
     virtual void setPesoV(float peso, int vertice) = 0;
@@ -42,12 +44,23 @@ public:
     float menor_caminho(int origem, int destino, int ordem);
     float maior_menor_caminho(Grafo &grafo, int ordem);
 
+    //virtual int getVerticeVizinhoRand(int origem) = 0;
+    void AGMG_randomizada(Grafo &grafo, int ordem);
+
+    int find_cluster(int node);
+    bool explore_cluster(int start_node, bool *visited, int target_cluster, int origem);
+    void agmg_reativo(int origem);
+    virtual bool  existe_Aresta(int node, int i, int origem) = 0;
+
 
 protected:
     int ordem;
     bool direcionado;
     bool vertices_ponderados;
     bool arestas_ponderadas;
+    int nClusters;
+    int **clusters;
+    bool *clusters_visitados;
 
     virtual void dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo) = 0;
     virtual void dfs(int vertice, bool *visitado) = 0;
