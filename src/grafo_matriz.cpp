@@ -52,6 +52,8 @@ GrafoMatriz::~GrafoMatriz()
     }
 
     delete[] vertices;
+    delete[] clusters_visitados;
+    delete[] relacao_id_cluster;
 }
 
 void GrafoMatriz::inicializar_vertices(int ordem)
