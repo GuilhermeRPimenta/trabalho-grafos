@@ -5,6 +5,8 @@
 #include <cmath>
 #include <ctime>
 
+using namespace std;
+
 void Grafo::carrega_grafo(const std::string &arquivo)
 {
     std::string caminho_completo = "./entradas/" + arquivo;
@@ -375,14 +377,20 @@ void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
     int noRand = 1 + rand() % (ordem-1);
     int* vertices = new int[ordem];
     int verticeNum = 0;
+
     
     std::cout << "No rand: " << noRand << std::endl;
     std::cout << "Cluster: " << grafo.relacao_id_cluster[noRand] << std::endl;
 
+
     inicializar_vertices(0);
     std::cout << "Inicializado " << std::endl;
 
+
     novo_no(noRand, 0);
+    vertices[verticeNum] = noRand;
+    verticeNum++;
+
     vertices[verticeNum] = noRand;
     verticeNum++;
 
@@ -494,6 +502,104 @@ void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
     }*/
 }
 
+bool Grafo::todosClustersVisitados(Grafo &grafo) {
+    for(int i = 0; i < grafo.nClusters; i++) {
+        if(!grafo.clusters_visitados[i])
+            return false;
+    }
+    return true;
+}
+
+bool Grafo::aux_AGMG_guloso(Grafo &grafo, int atual, int ordem, bool* nosVisitados) {
+    if (todosClustersVisitados(grafo)) {
+        return true;
+    }
+
+    int vizinhos[ordem];
+    int nVizinhos = grafo.get_vizinhos(atual + 1, vizinhos);
+    for (int i = 0; i < nVizinhos; i++) {
+        vizinhos[i] = vizinhos[i] - 1;
+    }
+    struct VizinhoInfo {
+        int id;
+        int grau;
+    };
+    VizinhoInfo candidatos[nVizinhos];
+    int nCandidatos = 0;
+
+    for (int i = 0; i < nVizinhos; i++) {
+        
+        if(nosVisitados[i]){
+            continue;
+        }
+        int v = vizinhos[i];
+        int grauV = grafo.getGrauV(v);
+        candidatos[nCandidatos++] = {v, grauV};
+    }
+
+    // Ordena candidatos por grau decrescente de grau
+    for (int i = 0; i < nCandidatos - 1; i++) {
+        for (int j = i + 1; j < nCandidatos; j++) {
+            if (candidatos[j].grau > candidatos[i].grau) {
+                VizinhoInfo temp = candidatos[i];
+                candidatos[i] = candidatos[j];
+                candidatos[j] = temp;
+            }
+        }
+    }
+
+    for (int i = 0; i < nCandidatos; i++) {
+        int v = candidatos[i].id;
+        int clusterV = grafo.relacao_id_cluster[v + 1];
+        bool jaVisitado = grafo.clusters_visitados[clusterV];
+        
+        if (!jaVisitado) {
+            grafo.clusters_visitados[clusterV] = true;
+        }
+        
+        // Adiciona nó ao grafo, mesmo que seu cluster já tenha sido visitado
+        novo_no(v, 0);
+        setAresta(atual, 1, v);
+        nosVisitados[v] = true;
+
+        aux_AGMG_guloso(grafo, v, ordem, nosVisitados);
+
+        if (todosClustersVisitados(grafo)) {
+            return true;
+        }
+    }
+
+    return todosClustersVisitados(grafo);
+            
+}
+
+void Grafo::AGMG_guloso(Grafo &grafo, int ordem){
+    int nClusters = grafo.nClusters;
+    bool *nosVisitados = new bool[ordem];
+    for (int i = 0; i < ordem; i++) {
+        nosVisitados[i] = false;
+    }
+    for(int i = 0; i < nClusters; i++){
+        grafo.clusters_visitados[i] = false;
+    }
+
+    int maiorGrau = grafo.getGrauV(0);
+    int noMaiorGrau = 0;
+    for(int i = 0; i < ordem; i++){
+        int grau = grafo.getGrauV(i);
+
+        if(grau > maiorGrau){
+            maiorGrau = grau;
+            noMaiorGrau = i;
+        }
+    }
+
+    inicializar_vertices(0);
+    novo_no(noMaiorGrau, 0);
+    nosVisitados[noMaiorGrau] = true;
+    grafo.clusters_visitados[grafo.relacao_id_cluster[noMaiorGrau]] = true;
+    aux_AGMG_guloso(grafo, noMaiorGrau, ordem, nosVisitados);
+}
 
 // Função para buscar o cluster de um nó
 int Grafo::find_cluster(int node)
