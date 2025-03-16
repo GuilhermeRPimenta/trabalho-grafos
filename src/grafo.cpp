@@ -332,6 +332,11 @@ void Grafo::agmg_reativo(int origem)
         visited[i] = false;
     }
 
+    // Inicializa clusters_visitados para garantir que todos os clusters começam como não visitados
+    for (int i = 0; i < nClusters; ++i) {
+        clusters_visitados[i] = false;  // Marca todos os clusters como não visitados
+    }
+
     bool first_node_found = false;   // Flag para o primeiro nó sorteado
     int total_clusters_explored = 0; // Para contar clusters visitados
 
@@ -347,11 +352,12 @@ void Grafo::agmg_reativo(int origem)
 
             for (int i = 0; i < nClusters; ++i)
             {
-                if (i != start_cluster)
+                if (!clusters_visitados[i] && i != start_cluster)
                 {
                     // Tenta explorar um novo cluster
                     if (explore_cluster(start_node, visited, i, origem))
                     {
+                        clusters_visitados[i] = true;  // Marca o cluster como visitado
                         found_new_cluster = true;
                         total_clusters_explored++;
                         break;
