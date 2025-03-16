@@ -55,12 +55,14 @@ def save_clustered_graph(file_path, G, cluster_map):
     with open(file_path, 'w') as f:
         f.write(f"{G.number_of_nodes()}\t{G.number_of_edges()}\n")  # Primeira linha com ordem do grafo
         for from_node, to_node in G.edges():
-            cluster = cluster_map.get(from_node, -1)
-            f.write(f"{from_node}\t{to_node}\t{cluster}\n")
+            cluster_from = cluster_map.get(from_node, -1)
+            cluster_to = cluster_map.get(to_node, -1)
+            f.write(f"{from_node}\t{to_node}\t{cluster_from}\n")  # Aresta de from_node para to_node
+            f.write(f"{to_node}\t{from_node}\t{cluster_to}\n")  # Aresta inversa de to_node para from_node
 
 # Configurações
-input_file = "soc-Epinions1.txt"
-output_file = "soc-Epinions1_clustered_graph.txt"
+input_file = "entradas/web-Stanford.txt"
+output_file = "web-Stanford_clustered_graph.txt"
 num_clusters = 400  # Defina o número de clusters desejado
 
 # Processamento

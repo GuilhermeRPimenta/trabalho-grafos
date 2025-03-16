@@ -47,6 +47,11 @@ public:
     int getVerticeVizinhoRand(int origem);
     void AGMG_randomizada(Grafo &grafo, int ordem);
 
+    int find_cluster(int node);
+    bool explore_cluster(int start_node, bool *visited, int target_cluster, int origem);
+    void agmg_reativo(int origem);
+    virtual bool  existe_Aresta(int node, int i, int origem) = 0;
+
 
 protected:
     int ordem;
@@ -54,6 +59,7 @@ protected:
     bool vertices_ponderados;
     bool arestas_ponderadas;
     int nClusters;
+    int **clusters;
     bool *clusters_visitados;
 
     int* relacao_id_cluster;

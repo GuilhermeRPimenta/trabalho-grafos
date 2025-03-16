@@ -389,6 +389,38 @@ float GrafoMatriz::get_aresta(int i, int j) const
     }
 }
 
+bool GrafoMatriz::existe_Aresta(int i, int j, int origem)
+{
+    // Suporte a grafos direcionados e não direcionados
+    i = i-1;
+    j = j-1;
+    if (i == j)
+    {
+        return false;
+    }
+    if (direcionado)
+    {   
+        if(matriz[i][j] == 0)
+            return false;
+        return true;
+    }
+    else
+    {
+        int n = ordem;
+        if (i < j)
+        {
+            if(matriz[i][j] == 0)
+                return false;
+            return true;
+            
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
 float GrafoMatriz::get_Pesoaresta(int i, int j)
 {
     // Suporte a grafos direcionados e não direcionados
@@ -607,6 +639,8 @@ void GrafoMatriz::deleta_no(int no){
         cout << "=========================" << endl;
     }   
 }*/
+
+
 void GrafoMatriz::aumentar_matriz() {
     int nova_dim = dim_matriz * 2;
     if (direcionado)

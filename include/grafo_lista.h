@@ -104,6 +104,8 @@ private:
     int getGrauV(int indice) override;
     float get_Pesoaresta(int origem, int destino);
 
+    bool existe_Aresta(int node, int i, int origem);
+
 public:
     GrafoLista();
     GrafoLista(int ordem, bool direcionado, bool vertices_ponderados, bool arestas_ponderadas);
