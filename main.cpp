@@ -107,8 +107,9 @@ int main(int argc, char *argv[])
             try{
                 // Carregar grafo com matriz de adjacência
                 GrafoMatriz grafo;
-                grafo.carrega_grafo(arquivo_grafo);
-                grafo.AGMG_randomizada(grafo, grafo.get_ordem());
+                grafo.carrega_grafo_clusters(arquivo_grafo);
+                GrafoMatriz grafo_agmg;
+                grafo_agmg.AGMG_randomizada(grafo, grafo.get_ordem());
                 //grafo.AGMG_guloso(grafo.get_ordem());
                 grafo.agmg_reativo(grafo.get_ordem());
                 imprimir_dados_grafo(&grafo);
@@ -122,8 +123,9 @@ int main(int argc, char *argv[])
             try{
                 // Carregar grafo com lista encadeada
                 GrafoLista grafo;
-                grafo.carrega_grafo(arquivo_grafo);
-                grafo.AGMG_randomizada(grafo, grafo.get_ordem());
+                grafo.carrega_grafo_clusters(arquivo_grafo);
+                GrafoLista grafo_agmg;
+                grafo_agmg.AGMG_randomizada(grafo, grafo.get_ordem());
                 //grafo.AGMG_guloso(grafo.get_ordem());
                 grafo.agmg_reativo(grafo.get_ordem());
                 imprimir_dados_grafo(&grafo);
