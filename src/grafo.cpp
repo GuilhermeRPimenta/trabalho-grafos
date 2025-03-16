@@ -247,7 +247,7 @@ Alterações para testes usando com-Amazon...
 
 void Grafo::carrega_grafo_clusters(const std::string &arquivo){
     //std::string caminho_completo = "./entradas/" + arquivo;
-    std::string caminho_completo = "./grafo-teste-cluster.txt";
+    std::string caminho_completo = "grafo-teste-cluster.txt";
     std::ifstream entrada(caminho_completo);
 
     if (!entrada.is_open())
@@ -277,6 +277,7 @@ void Grafo::carrega_grafo_clusters(const std::string &arquivo){
         int origem, destino, cluster;
         entrada >> origem >> destino >> cluster;
         setAresta(origem, 1, destino);
+        setAresta(destino, 1, origem);
         relacao_id_cluster[origem] = cluster;
     }
 
@@ -427,10 +428,6 @@ void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
                             nVizNaoVisitado++;
                         }
                     }
-                    
-                    for (int k = 0; k < nVizNaoVisitado; k++) {
-                        std::cout << "Vizinho nao visitado: " << vizNaoVisitado[k] << std::endl;
-                    }
 
                     if (nVizNaoVisitado > 0) {
                         int vizRand;
@@ -438,8 +435,12 @@ void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
                             vizRand = 0;
                         else vizRand = rand() % nVizNaoVisitado;
                         novo_no(vizNaoVisitado[vizRand], 0);
+                        std::cout << "Novo no: " << vizNaoVisitado[vizRand] << std::endl;
                         setAresta(vertices[j], 1, vizNaoVisitado[vizRand]);
                         setAresta(vizNaoVisitado[vizRand], 1, vertices[j]);
+
+                        std::cout << "Set aresta: " << "[" << vertices[j]  << "] " << vizNaoVisitado[vizRand] << std::endl;
+
                         vertices[verticeNum] = vizNaoVisitado[vizRand];
                         verticeNum++;
                         break;
@@ -450,8 +451,12 @@ void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
             }
             else {
                 novo_no(vizinho, 0);
+                std::cout << "Novo no: " << vizinho << std::endl;
                 setAresta(vertices[i], 1, vizinho);
                 setAresta(vizinho, 1, vertices[i]);
+
+                std::cout << "Set aresta: " << "[" << vertices[i]  << "] " << vizinho << std::endl;
+
                 grafo.clusters_visitados[grafo.relacao_id_cluster[vizinho]] = true;
                 vertices[verticeNum] = vizinho;
                 verticeNum++;
@@ -477,6 +482,8 @@ void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
     for (int i = 0; i< nClusters+1; i++) {
         std::cout << grafo.clusters_visitados[i] << std::endl;
     }
+
+
     
     /*
     int noRand = rand() % ordem;
