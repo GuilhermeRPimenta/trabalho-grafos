@@ -236,6 +236,9 @@ void Grafo::carrega_grafo_clusters(const std::string &arquivo){
     }
 
     int nArestas = 0;
+    direcionado = true;
+    arestas_ponderadas = false;
+    vertices_ponderados = false;
     entrada >> ordem >> nArestas;
     // nClusters = 400;
     nClusters = 3;
@@ -320,7 +323,7 @@ int Grafo::getVerticeVizinhoRand(int origem) {
 
     std::cout << "vizinhos: " ;
     for (int i = 0; i < nVizinhos; i++) {
-        std::cout << vizinhos[i] << " ";
+        std::cout << "[" << i << "]: " << vizinhos[i] << " ";
     }
     std::cout << std::endl;
 
@@ -328,8 +331,8 @@ int Grafo::getVerticeVizinhoRand(int origem) {
     int index = 0;
 
     for (int i = 0; i < nVizinhos; i++) {
+        std::cout << vizinhos[i] << " " << relacao_id_cluster[vizinhos[i]] << std::endl;
         if (!clusters_visitados[relacao_id_cluster[vizinhos[i]]]) {
-            std::cout << i << " " << relacao_id_cluster[vizinhos[i]] << std::endl;
             vizinhos_cluster_naovisitados[index] = vizinhos[i];
             index++;
         }
