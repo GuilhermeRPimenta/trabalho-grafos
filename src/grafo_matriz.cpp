@@ -391,7 +391,7 @@ float GrafoMatriz::get_aresta(int i, int j) const
     }
 }
 
-bool GrafoMatriz::existe_Aresta(int i, int j, int origem)
+bool GrafoMatriz::existe_Aresta(int i, int j)
 {
     // Suporte a grafos direcionados e não direcionados
     i = i-1;
@@ -408,7 +408,6 @@ bool GrafoMatriz::existe_Aresta(int i, int j, int origem)
     }
     else
     {
-        int n = ordem;
         if (i < j)
         {
             if(matriz[i][j] == 0)
@@ -613,7 +612,6 @@ void GrafoMatriz::deleta_no(int no){
         }
     }else{
         int n = ordem;
-        int tam = (n * (n - 1)) / 2;
         int index = indexNo;
         for (int i = indexNo; i < ordem; i++) {
             for (int j = i + 1; j < ordem; j++) {

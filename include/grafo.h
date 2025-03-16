@@ -51,9 +51,9 @@ public:
     bool todosClustersVisitados(Grafo &grafo);
 
     int find_cluster(int node);
-    bool explore_cluster(int start_node, bool *visited, int target_cluster, int origem);
-    void agmg_reativo(int origem);
-    virtual bool  existe_Aresta(int node, int i, int origem) = 0;
+    bool explore_cluster(int start_node, int &novo_cluster, bool *clusters_visitados);
+    void agmg_reativo();
+    virtual bool  existe_Aresta(int node, int i) = 0;
 
 
 protected:
@@ -66,6 +66,8 @@ protected:
     bool *clusters_visitados;
 
     int* relacao_id_cluster;
+    
+    bool *visited;
 
     virtual void dfs_ordem(int vertice, bool *visitado, int *pilha, int &topo) = 0;
     virtual void dfs(int vertice, bool *visitado) = 0;

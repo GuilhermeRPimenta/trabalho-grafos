@@ -104,7 +104,7 @@ private:
     int getGrauV(int indice) override;
     float get_Pesoaresta(int origem, int destino);
 
-    bool existe_Aresta(int node, int i, int origem);
+    bool existe_Aresta(int node, int i);
 
 public:
     GrafoLista();

@@ -26,7 +26,7 @@ class GrafoMatriz: public Grafo {
         void nova_aresta(int origem, float peso, int destino) override;
         void deleta_aresta(int origem, int destino) override;
 
-        bool existe_Aresta(int node, int i, int origem);
+        bool existe_Aresta(int node, int i);
 
     private:
         int dim_matriz;

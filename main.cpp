@@ -110,9 +110,9 @@ int main(int argc, char *argv[])
                 grafo.carrega_grafo_clusters(arquivo_grafo);
                 GrafoMatriz grafo_agmg;
                 grafo_agmg.AGMG_randomizada(grafo, grafo.get_ordem());
-                //grafo.AGMG_guloso(grafo.get_ordem());
-                //grafo.agmg_reativo(grafo.get_ordem());
-                imprimir_dados_grafo(&grafo_agmg);
+                grafo_agmg.AGMG_guloso(grafo, grafo.get_ordem());
+                grafo.agmg_reativo();
+                //imprimir_dados_grafo(&grafo);
 
             }catch(const std::exception& e){
                 std::cerr << e.what() << std::endl;
@@ -126,9 +126,9 @@ int main(int argc, char *argv[])
                 grafo.carrega_grafo_clusters(arquivo_grafo);
                 GrafoLista grafo_agmg;
                 grafo_agmg.AGMG_randomizada(grafo, grafo.get_ordem());
-                //grafo.AGMG_guloso(grafo.get_ordem());
-                //grafo.agmg_reativo(grafo.get_ordem());
-                imprimir_dados_grafo(&grafo_agmg);
+                grafo_agmg.AGMG_guloso(grafo, grafo.get_ordem());
+                grafo.agmg_reativo();
+                //imprimir_dados_grafo(&grafo);
             }catch(const std::exception& e){
                 std::cerr << e.what() << std::endl;
             }
@@ -139,37 +139,6 @@ int main(int argc, char *argv[])
             return 1;
         }
     }
-
-    else if (operacao == "-p") {
-        if (estrutura == "-m")
-        {
-            // Carregar grafo com matriz de adjacência
-            GrafoMatriz grafo;
-            grafo.carrega_grafo_clusters(arquivo_grafo);
-            GrafoMatriz grafo_agmg;
-            grafo_agmg.AGMG_guloso(grafo, grafo.get_ordem());
-
-            imprimir_dados_grafo(&grafo_agmg);
-        }
-        else if (estrutura == "-l")
-        {
-            // Carregar grafo com lista encadeada
-            GrafoLista grafo;
-            grafo.carrega_grafo_clusters(arquivo_grafo);
-            GrafoLista grafo_agmg;
-            grafo_agmg.AGMG_guloso(grafo, grafo.get_ordem());
-
-            imprimir_dados_grafo(&grafo_agmg);
-        }
-        else
-        {
-            std::cerr << "Estrutura inválida: use -m para matriz ou -l para lista" << std::endl;
-            return 1;
-        }
-
-        
-    }
-
     /*
     else if (operacao == "-c")
     {
@@ -200,7 +169,7 @@ int main(int argc, char *argv[])
         }
         else if (estrutura == "-l")
         {
-            /*GrafoLista grafo;
+            GrafoLista grafo;
             grafo.novo_grafo(arquivo_descricao);
 
             std::ofstream saida(caminho_completo);
