@@ -14,14 +14,14 @@ GrafoMatriz::GrafoMatriz()
     dim_matriz = 10;
     vertices = nullptr;
     ordem = 0;
-    direcionado = false;
+    direcionado = true;
     arestas_ponderadas = false;
     vertices_ponderados = false;
 }
 
 GrafoMatriz::GrafoMatriz(int ordem, bool direcionado, bool vertices_ponderados, bool arestas_ponderadas)
 {
-    this->direcionado = direcionado;
+    this->direcionado = true;
     this->arestas_ponderadas = arestas_ponderadas;
     this->vertices_ponderados = vertices_ponderados;
     inicializar_vertices(ordem);
