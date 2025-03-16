@@ -147,7 +147,7 @@ int Grafo::n_conexo()
 
 float Grafo::menor_caminho(int origem, int destino, int ordem)
 {
-    int dist[ordem + 1];        // Armazena as menores distâncias
+    int dist[ordem + 1]; // Armazena as menores distâncias
 
     // Inicializa as distâncias como infinito e não processado
     for (int i = 1; i <= ordem; i++)
@@ -239,26 +239,28 @@ float Grafo::maior_menor_caminho(Grafo &grafo, int ordem)
 
 void Grafo::carrega_grafo_clusters(const std::string &arquivo)
 {
-    std::string caminho_completo = arquivo;
+    std::string caminho_completo = "./entradas/" + arquivo;
     std::ifstream entrada(caminho_completo);
 
-    if (!entrada.is_open()) {
+    if (!entrada.is_open())
+    {
         std::cerr << "Erro ao abrir o arquivo: " << arquivo << std::endl;
         return;
     }
 
     int num_arestas;
-    entrada >> ordem >> num_arestas;  // Leitura da ordem e número de arestas
+    entrada >> ordem >> num_arestas; // Leitura da ordem e número de arestas
 
     nClusters = 400;
 
     inicializar_vertices(ordem);
     inicializar_clusters(nClusters, ordem);
 
-    clusters_visitados = new bool[nClusters](); 
+    clusters_visitados = new bool[nClusters]();
 
     int indexNo, destino, indexCluster;
-    while (entrada >> indexNo >> destino >> indexCluster) {
+    while (entrada >> indexNo >> destino >> indexCluster)
+    {
         clusters[indexNo][indexCluster] = 1;
         setAresta(indexNo, 1, destino);
     }
@@ -266,16 +268,19 @@ void Grafo::carrega_grafo_clusters(const std::string &arquivo)
 
 void Grafo::inicializar_clusters(int nClusters, int ordem)
 {
-    clusters = new int*[ordem];
-    for (int i = 0; i < ordem; i++) {
-        clusters[i] = new int[nClusters]();  // Inicializa todos os valores como 0
+    clusters = new int *[ordem];
+    for (int i = 0; i < ordem; i++)
+    {
+        clusters[i] = new int[nClusters](); // Inicializa todos os valores como 0
     }
 }
 
 int Grafo::find_cluster(int node)
 {
-    for (int i = 0; i < nClusters; i++) { 
-        if (clusters[node][i] == 1) {
+    for (int i = 0; i < nClusters; i++)
+    {
+        if (clusters[node][i] == 1)
+        {
             return i; // Encontrou o cluster
         }
     }
@@ -287,13 +292,16 @@ bool Grafo::explore_cluster(int start_node, int &novo_cluster, bool *clusters_vi
     visited[start_node] = true;
 
     // Tenta explorar os vizinhos do nó
-    for (int i = 0; i < ordem; i++) {
-        if (!visited[i] && existe_Aresta(start_node, i)) {
-            novo_cluster = find_cluster(i);  // Encontra o cluster do vizinho
+    for (int i = 0; i < ordem; i++)
+    {
+        if (!visited[i] && existe_Aresta(start_node, i))
+        {
+            novo_cluster = find_cluster(i); // Encontra o cluster do vizinho
 
-            if (!clusters_visitados[novo_cluster]) {
-                clusters_visitados[novo_cluster] = true; 
-                return true;  
+            if (!clusters_visitados[novo_cluster])
+            {
+                clusters_visitados[novo_cluster] = true;
+                return true;
             }
         }
     }
@@ -305,12 +313,12 @@ void Grafo::agmg_reativo()
 {
     srand(time(0));
 
-    visited = new bool[ordem]();  
-    bool* clusters_visitados = new bool[nClusters]();  
+    visited = new bool[ordem]();
+    bool *clusters_visitados = new bool[nClusters]();
 
-    int total_clusters_explored = 0;  
+    int total_clusters_explored = 0;
     int novo_cluster;
-    
+
     int *expansao = new int[ordem]; // Lista para simular uma fila
     int frente = 0, tras = 0;
 
@@ -321,15 +329,19 @@ void Grafo::agmg_reativo()
     clusters_visitados[find_cluster(start_node)] = true;
     total_clusters_explored++;
 
-    while (total_clusters_explored < nClusters && frente < tras) {  
+    while (total_clusters_explored < nClusters && frente < tras)
+    {
         int node_atual = expansao[frente++];
 
-        for (int i = 0; i < ordem; i++) {
-            if (!visited[i] && existe_Aresta(node_atual, i)) {
+        for (int i = 0; i < ordem; i++)
+        {
+            if (!visited[i] && existe_Aresta(node_atual, i))
+            {
                 novo_cluster = find_cluster(i);
 
-                if (!clusters_visitados[novo_cluster]) {
-                    clusters_visitados[novo_cluster] = true; 
+                if (!clusters_visitados[novo_cluster])
+                {
+                    clusters_visitados[novo_cluster] = true;
                     total_clusters_explored++;
                     std::cout << "Cluster " << novo_cluster << " visitado!" << std::endl;
                 }
@@ -341,9 +353,12 @@ void Grafo::agmg_reativo()
         }
     }
 
-    if (total_clusters_explored == nClusters) {
+    if (total_clusters_explored == nClusters)
+    {
         std::cout << "Todos os clusters foram explorados!" << std::endl;
-    } else {
+    }
+    else
+    {
         std::cout << "Erro: Apenas " << total_clusters_explored << " clusters foram explorados." << std::endl;
     }
 
@@ -351,10 +366,3 @@ void Grafo::agmg_reativo()
     delete[] clusters_visitados;
     delete[] expansao;
 }
-
-
-
-
-
-
-
