@@ -486,10 +486,12 @@ void GrafoMatriz::setAresta(int i, float valor, int j)
 int GrafoMatriz::getGrauV(int vertice)
 {
     int grau = 0;
-    for (int i = 0; i < ordem; i++)
+    for (int i = 0; i < dim_matriz; i++)
     {
         if (get_aresta(vertice, i) != 0)
         {
+            grau++;
+        } else if (get_aresta(i, vertice) != 0) {
             grau++;
         }
     }
@@ -707,12 +709,12 @@ void GrafoMatriz::aumentar_matriz() {
 
 void GrafoMatriz::novo_no(int indice, float peso)
 {
-    if (ordem == dim_matriz)
+    while (ordem >= dim_matriz || indice >= dim_matriz)
     {
         aumentar_matriz();
     }
     if (vertices_ponderados)
-        vertices[ordem] = peso;
+        vertices[indice] = peso;
     ordem++;
 }
 
