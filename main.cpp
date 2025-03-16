@@ -111,8 +111,8 @@ int main(int argc, char *argv[])
                 GrafoMatriz grafo_agmg;
                 grafo_agmg.AGMG_randomizada(grafo, grafo.get_ordem());
                 //grafo.AGMG_guloso(grafo.get_ordem());
-                grafo.agmg_reativo(grafo.get_ordem());
-                imprimir_dados_grafo(&grafo);
+                //grafo.agmg_reativo(grafo.get_ordem());
+                imprimir_dados_grafo(&grafo_agmg);
 
             }catch(const std::exception& e){
                 std::cerr << e.what() << std::endl;
@@ -127,8 +127,8 @@ int main(int argc, char *argv[])
                 GrafoLista grafo_agmg;
                 grafo_agmg.AGMG_randomizada(grafo, grafo.get_ordem());
                 //grafo.AGMG_guloso(grafo.get_ordem());
-                grafo.agmg_reativo(grafo.get_ordem());
-                imprimir_dados_grafo(&grafo);
+                //grafo.agmg_reativo(grafo.get_ordem());
+                imprimir_dados_grafo(&grafo_agmg);
             }catch(const std::exception& e){
                 std::cerr << e.what() << std::endl;
             }
