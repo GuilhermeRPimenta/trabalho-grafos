@@ -46,6 +46,9 @@ public:
 
     int getVerticeVizinhoRand(int origem);
     void AGMG_randomizada(Grafo &grafo, int ordem);
+    void AGMG_guloso(Grafo &grafo, int ordem);
+    bool aux_AGMG_guloso(Grafo &grafo, int atual, int ordem, bool* nosVisitados);
+    bool todosClustersVisitados(Grafo &grafo);
 
     int find_cluster(int node);
     bool explore_cluster(int start_node, bool *visited, int target_cluster, int origem);

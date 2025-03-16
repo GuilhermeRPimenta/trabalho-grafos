@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
             GrafoMatriz grafo;
             grafo.carrega_grafo_clusters(arquivo_grafo);
             GrafoMatriz grafo_agmg;
-            grafo_agmg.AGMG_randomizada(grafo, grafo.get_ordem());
+            grafo_agmg.AGMG_guloso(grafo, grafo.get_ordem());
 
             imprimir_dados_grafo(&grafo_agmg);
         }
@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
             GrafoLista grafo;
             grafo.carrega_grafo_clusters(arquivo_grafo);
             GrafoLista grafo_agmg;
-            grafo_agmg.AGMG_randomizada(grafo, grafo.get_ordem());
+            grafo_agmg.AGMG_guloso(grafo, grafo.get_ordem());
 
             imprimir_dados_grafo(&grafo_agmg);
         }
