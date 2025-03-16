@@ -44,8 +44,13 @@ public:
     float menor_caminho(int origem, int destino, int ordem);
     float maior_menor_caminho(Grafo &grafo, int ordem);
 
-    virtual int getVerticeVizinhoRand(int origem) = 0;
+    //virtual int getVerticeVizinhoRand(int origem) = 0;
     void AGMG_randomizada(Grafo &grafo, int ordem);
+
+    int find_cluster(int node);
+    bool explore_cluster(int start_node, bool *visited, int target_cluster, int origem);
+    void agmg_reativo(int origem);
+    virtual bool  existe_Aresta(int node, int i, int origem) = 0;
 
 
 protected:

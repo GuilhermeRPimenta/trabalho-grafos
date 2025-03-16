@@ -120,6 +120,19 @@ void GrafoLista::setAresta(int origem, float pesoAresta, int destino)
     atual->lista.insereFinal((destino - 1), pesoAresta);
 }
 
+bool GrafoLista::existe_Aresta(int node, int i, int origem)
+{
+    NoLL *atual = vertices->primeiro;
+    while (atual && atual->indice != (origem - 1)) {
+        atual = atual->proximo;
+    } 
+    if (!atual) 
+    {
+        return false;
+    }
+    return true; 
+}
+
 float GrafoLista::get_Pesoaresta(int origem, int destino) {
     // Encontra o nó de origem
     NoLL *atual = vertices->primeiro;
