@@ -352,26 +352,41 @@ void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
     srand(time(0));
     int nClusters = grafo.nClusters;
     int noRand = 1 + rand() % (ordem-1);
-    // std::cout << "No rand: " << noRand << std::endl;
-    // std::cout << "Cluster: " << grafo.relacao_id_cluster[noRand] << std::endl;
+    int* vertices = new int[ordem];
+    int verticeNum = 0;
     
     std::cout << "No rand: " << noRand << std::endl;
     std::cout << "Cluster: " << grafo.relacao_id_cluster[noRand] << std::endl;
 
-    
     inicializar_vertices(0);
     std::cout << "Inicializado " << std::endl;
+
     novo_no(noRand, 0);
+    vertices[verticeNum] = noRand;
+    verticeNum++;
+
     std::cout << "Novo no: " << noRand << std::endl;
-
     grafo.clusters_visitados[grafo.relacao_id_cluster[noRand]] = true;
-
-    std::cout << "Definido cluster visitado" << std::endl;
-    int vizinho = grafo.getVerticeVizinhoRand(noRand);
-    novo_no(vizinho, 0);
-    setAresta(noRand, 1, vizinho);
     
+    std::cout << "Definido cluster visitado" << std::endl;
 
+    bool encontrouContinuidade = true;
+    while (encontrouContinuidade)
+    {
+        for (int i = verticeNum-1; i >= 0; i--) {
+            int vizinho = grafo.getVerticeVizinhoRand(vertices[i]);
+            if (vizinho == -1)
+                continue;
+            else if (vizinho == -1 && i == 0) {
+                encontrouContinuidade = false;
+            }
+            else {
+                novo_no(vizinho, 0);
+                setAresta(vertices[i], 1, vizinho);
+                grafo.clusters_visitados[grafo.relacao_id_cluster[noRand]] = true;
+            }
+        }
+    }
     
     /*
     int noRand = rand() % ordem;
