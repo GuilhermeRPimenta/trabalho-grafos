@@ -243,8 +243,8 @@ void Grafo::carrega_grafo_clusters(const std::string &arquivo){
     // nClusters = 400;
     nClusters = 3;
 
-    clusters_visitados = new bool[nClusters];
-    for (int i = 0; i < nClusters; i++){
+    clusters_visitados = new bool[nClusters+1];
+    for (int i = 0; i < nClusters+1; i++){
         clusters_visitados[i] = false;
     }
 
@@ -308,12 +308,18 @@ void Grafo::inicializar_clusters(int nClusters, int ordem){
 int Grafo::get_vizinhos(int no, int* vizinhos) {
     int index = 0;
     for (int i = 1; i <= ordem; i++) {
-        std::cout<<"No: "<<no<<" | i: "<<i<<" | Peso: "<<get_Pesoaresta(no, i)<<std::endl;
         if (get_Pesoaresta(no, i) == 1) {           
             vizinhos[index] = i;
             index++;
         }
     }
+
+    // std::cout << "Vizinhos: " << std::endl;
+    // for (int i = 0; i<index; i++) {
+    //     std::cout << vizinhos[i] << " ";
+    // }
+    // std::cout << std::endl;
+
     return index;
 }
 
@@ -321,17 +327,10 @@ int Grafo::getVerticeVizinhoRand(int origem) {
     int vizinhos[ordem];
     int nVizinhos = get_vizinhos(origem, vizinhos);
 
-    std::cout << "vizinhos: " ;
-    for (int i = 0; i < nVizinhos; i++) {
-        std::cout << "[" << i << "]: " << vizinhos[i] << " ";
-    }
-    std::cout << std::endl;
-
     int vizinhos_cluster_naovisitados[ordem];
     int index = 0;
 
     for (int i = 0; i < nVizinhos; i++) {
-        std::cout << vizinhos[i] << " " << relacao_id_cluster[vizinhos[i]] << std::endl;
         if (!clusters_visitados[relacao_id_cluster[vizinhos[i]]]) {
             vizinhos_cluster_naovisitados[index] = vizinhos[i];
             index++;
@@ -367,25 +366,86 @@ void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
 
     std::cout << "Novo no: " << noRand << std::endl;
     grafo.clusters_visitados[grafo.relacao_id_cluster[noRand]] = true;
-    
+
     std::cout << "Definido cluster visitado" << std::endl;
 
-    bool encontrouContinuidade = true;
-    while (encontrouContinuidade)
+    bool todosVisitados = false;
+
+    while (!todosVisitados)
     {
         for (int i = verticeNum-1; i >= 0; i--) {
             int vizinho = grafo.getVerticeVizinhoRand(vertices[i]);
-            if (vizinho == -1)
+            // std::cout << "Vizinho rand encontrado: " << vizinho << std::endl;
+            if (vizinho == -1 && i == 0) {
+                //Não encontrado nenhum vizinho aleatório possível de outro cluster não visitado:
+                for (int j = verticeNum-1; j >= 0; j--) {
+                    int viz[ordem];
+                    int nViz = grafo.get_vizinhos(vertices[j], viz);
+                    int vizNaoVisitado[nViz];
+                    int nVizNaoVisitado = 0;
+                    // encontramos todos os vizinhos de J não visitados ainda e escolhemos um
+                    for (int k = 0; k<nViz; k++) {
+                        bool visitado = false;
+                        for (int l = 0; l < verticeNum; l++) {
+                            // std::cout << vertices[l] << std::endl;
+                            if (viz[k] == vertices[l]) {
+                                visitado = true;
+                            }
+                        }
+                        if (!visitado) {
+                            vizNaoVisitado[nVizNaoVisitado] = viz[k];
+                            nVizNaoVisitado++;
+                        }
+                    }
+                    
+                    for (int k = 0; k < nVizNaoVisitado; k++) {
+                        std::cout << "Vizinho nao visitado: " << vizNaoVisitado[k] << std::endl;
+                    }
+
+                    if (nVizNaoVisitado > 0) {
+                        int vizRand;
+                        if (nVizNaoVisitado == 1)
+                            vizRand = 0;
+                        else vizRand = rand() % nVizNaoVisitado;
+                        novo_no(vizNaoVisitado[vizRand], 0);
+                        setAresta(vertices[j], 1, vizNaoVisitado[vizRand]);
+                        setAresta(vizNaoVisitado[vizRand], 1, vertices[j]);
+                        vertices[verticeNum] = vizNaoVisitado[vizRand];
+                        verticeNum++;
+                        break;
+                    }
+                }
+            } else if (vizinho == -1) {
                 continue;
-            else if (vizinho == -1 && i == 0) {
-                encontrouContinuidade = false;
             }
             else {
                 novo_no(vizinho, 0);
                 setAresta(vertices[i], 1, vizinho);
-                grafo.clusters_visitados[grafo.relacao_id_cluster[noRand]] = true;
+                setAresta(vizinho, 1, vertices[i]);
+                grafo.clusters_visitados[grafo.relacao_id_cluster[vizinho]] = true;
+                vertices[verticeNum] = vizinho;
+                verticeNum++;
+
+
+                for (int i = 1; i < grafo.nClusters + 1; i++) {
+                    if (grafo.clusters_visitados[i]) {
+                        todosVisitados = true;
+                    }
+                    else {
+                        todosVisitados = false;
+                        break;
+                    }    
+                }
+
+                break;
             }
         }
+    }
+
+    std::cout << "clusters visitados : " << std::endl;
+            
+    for (int i = 0; i< nClusters+1; i++) {
+        std::cout << grafo.clusters_visitados[i] << std::endl;
     }
     
     /*
