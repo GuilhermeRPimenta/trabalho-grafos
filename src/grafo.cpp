@@ -263,7 +263,7 @@ void Grafo::carrega_grafo_clusters(const std::string &arquivo){
     nClusters = 400;
 
     clusters_visitados = new bool[nClusters+1];
-    for (int i = 0; i < nClusters+1; i++){
+    for (int i = 0; i < nClusters; i++){
         clusters_visitados[i] = false;
     }
 
@@ -393,7 +393,7 @@ void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
     std::cout << "Definido cluster visitado" << std::endl;
 
     bool todosVisitados = false;
-    int limite_superior = 600;
+    int limite_superior = 1000;
     int q = 0;
     while (!todosVisitados && q<limite_superior)
     {
@@ -457,7 +457,7 @@ void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
                 verticeNum++;
 
 
-                for (int i = 1; i < grafo.nClusters + 1; i++) {
+                for (int i = 1; i < grafo.nClusters; i++) {
                     if (grafo.clusters_visitados[i]) {
                         todosVisitados = true;
                     }
