@@ -245,7 +245,7 @@ Alterações para testes usando com-Amazon...
 
 void Grafo::carrega_grafo_clusters(const std::string &arquivo){
     //std::string caminho_completo = "./entradas/" + arquivo;
-    std::string caminho_completo = "./com-Amazon_Communities_top5000_clustered_graph.txt";
+    std::string caminho_completo = "./com-LiveJournal_Communities_top5000_clustered_graph.txt";
     std::ifstream entrada(caminho_completo);
 
     if (!entrada.is_open())
@@ -263,7 +263,7 @@ void Grafo::carrega_grafo_clusters(const std::string &arquivo){
     nClusters = 400;
 
     clusters_visitados = new bool[nClusters+1];
-    for (int i = 0; i < nClusters; i++){
+    for (int i = 0; i < nClusters+1; i++){
         clusters_visitados[i] = false;
     }
 
@@ -457,7 +457,7 @@ void Grafo::AGMG_randomizada(Grafo &grafo, int ordem){
                 verticeNum++;
 
 
-                for (int i = 1; i < grafo.nClusters; i++) {
+                for (int i = 1; i < grafo.nClusters+1; i++) {
                     if (grafo.clusters_visitados[i]) {
                         todosVisitados = true;
                     }
