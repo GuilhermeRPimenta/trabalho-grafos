@@ -245,7 +245,7 @@ Alterações para testes usando com-Amazon...
 */
 
 void Grafo::carrega_grafo_clusters(const std::string &arquivo){
-    std::string caminho_completo =  arquivo;
+    std::string caminho_completo =  "./entradas/" + arquivo;
     //std::string caminho_completo = "./com-Amazon_Communities_top5000_clustered_graph.txt";
     std::ifstream entrada(caminho_completo);
 
