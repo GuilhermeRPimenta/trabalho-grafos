@@ -1,5 +1,7 @@
 # Trabalho de Teoria dos Grafos - UFJF
 
+#Nota : É necessário baixar o arquivo zip, por causa do tamanho dos arquivos.
+
 ## Descrição
 Este projeto foi desenvolvido para a disciplina **DCC059 - Teoria dos Grafos** da **Universidade Federal de Juiz de Fora (UFJF)**. O objetivo principal é a implementação de uma aplicação em **C++** para manipulação de grafos.
 
