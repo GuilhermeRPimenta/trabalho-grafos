@@ -1,8 +1,3 @@
-# A FAZER
-- *Modificar a criação do grafo e leitura para ser AGMG* para Fazer os 3 Algoritimos: Guloso, Reativo e Aleatório.
-
-
-
 # Trabalho de Teoria dos Grafos - UFJF
 
 ## Descrição
